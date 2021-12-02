@@ -5,6 +5,15 @@ import (
 	"strconv"
 )
 
+// Atoi converts a string to an int.
+func Atoi(s string) int {
+	v, err := strconv.Atoi(s)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return v
+}
+
 // StringToInt takes a slice of strings and converts them to a
 // slice of ints. It crashes if there are any conversion errors.
 func StringToInt(lines []string) []int {
