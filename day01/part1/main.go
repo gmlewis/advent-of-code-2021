@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -17,9 +18,9 @@ func main() {
 
 func process(filename string) {
 	lines := must.ReadFileLines(filename)
-	vals := must.Map(lines, must.Atoi)
-	pairs := must.ChunkEvery(vals, 2, 1)
-	count := must.Reduce(pairs, 0, func(pair []int, acc int) int {
+	vals := enum.Map(lines, must.Atoi)
+	pairs := enum.ChunkEvery(vals, 2, 1)
+	count := enum.Reduce(pairs, 0, func(pair []int, acc int) int {
 		if pair[1] > pair[0] {
 			return acc + 1
 		}

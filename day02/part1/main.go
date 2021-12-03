@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -18,7 +19,7 @@ func main() {
 
 func process(filename string) {
 	lines := must.ReadFileLines(filename)
-	position := must.Reduce(lines, []int{0, 0}, func(line string, acc []int) []int {
+	position := enum.Reduce(lines, []int{0, 0}, func(line string, acc []int) []int {
 		switch {
 		case strings.HasPrefix(line, "forward "):
 			v := must.Atoi(line[8:])

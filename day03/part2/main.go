@@ -6,6 +6,7 @@ import (
 	"flag"
 	"log"
 
+	"github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -25,8 +26,8 @@ func process(filename string) {
 	fewerInput := lines[:]
 	for i := 0; i < numBits; i++ {
 		moreFilter, fewerFilter := genFilters(i, moreInput, fewerInput)
-		moreInput = must.Filter(moreInput, moreFilter)
-		fewerInput = must.Filter(fewerInput, fewerFilter)
+		moreInput = enum.Filter(moreInput, moreFilter)
+		fewerInput = enum.Filter(fewerInput, fewerFilter)
 		if len(moreInput) == 1 {
 			oxygenRating = must.ParseInt(moreInput[0], 2, 64)
 		}
@@ -38,7 +39,7 @@ func process(filename string) {
 	log.Printf("oxygen=%v, co2=%v, product=%v", oxygenRating, co2Rating, oxygenRating*co2Rating)
 }
 
-func genFilters(bit int, moreInput, fewerInput []string) (moreFilter, fewerFilter must.FilterFunc[string]) {
+func genFilters(bit int, moreInput, fewerInput []string) (moreFilter, fewerFilter enum.FilterFunc[string]) {
 	var moreCount int
 	for _, line := range moreInput {
 		if line[bit] == '1' {

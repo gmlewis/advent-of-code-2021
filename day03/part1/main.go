@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -21,7 +22,7 @@ func process(filename string) {
 	half := len(lines) / 2
 
 	acc := make([]int, numBits)
-	sums := must.Reduce(lines, acc, func(line string, acc []int) []int {
+	sums := enum.Reduce(lines, acc, func(line string, acc []int) []int {
 		for i, r := range line {
 			acc[i] += int(r - '0')
 		}

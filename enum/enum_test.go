@@ -1,10 +1,9 @@
-//go:build go1.18
-
-package must
+package enum
 
 import (
 	"testing"
 
+	"github.com/gmlewis/advent-of-code-2021/must"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -23,13 +22,13 @@ func TestMap_StringToInt(t *testing.T) {
 		{
 			name: "simple decimal string to int",
 			from: []string{"1", "2", "3", "100"},
-			f:    Atoi,
+			f:    must.Atoi,
 			want: []int{1, 2, 3, 100},
 		},
 		{
 			name: "simple binary string to int",
 			from: []string{"1", "10", "11", "10000000"},
-			f:    func(s string) int { return ParseInt(s, 2, 64) },
+			f:    func(s string) int { return must.ParseInt(s, 2, 64) },
 			want: []int{1, 2, 3, 128},
 		},
 	}
