@@ -17,9 +17,9 @@ func main() {
 
 func process(filename string) {
 	lines := must.ReadFileLines(filename)
-	vals := must.StringToInt(lines)
-	pairs := must.ChunkEveryInt(vals, 2, 1)
-	count := must.ReduceIntSlicesToInt(pairs, 0, func(pair []int, acc int) int {
+	vals := must.Map(lines, must.Atoi)
+	pairs := must.ChunkEvery(vals, 2, 1)
+	count := must.Reduce(pairs, 0, func(pair []int, acc int) int {
 		if pair[1] > pair[0] {
 			return acc + 1
 		}

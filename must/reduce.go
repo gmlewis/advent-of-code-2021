@@ -1,17 +1,9 @@
 package must
 
-// ReduceIntSlicesToInt reduces int slices using an int accumulator.
-func ReduceIntSlicesToInt(slices [][]int, acc int, f func(slice []int, acc int) int) int {
-	for _, slice := range slices {
-		acc = f(slice, acc)
-	}
-	return acc
-}
-
-// ReduceStringSlicesToIntSlice reduces string slices using an int slice accumulator.
-func ReduceStringSlicesToIntSlice(lines []string, acc []int, f func(line string, acc []int) []int) []int {
-	for _, line := range lines {
-		acc = f(line, acc)
+// Reduce reduces slices using an accumulator.
+func Reduce[S any, T any](values []S, acc T, f func(S, T) T) T {
+	for _, val := range values {
+		acc = f(val, acc)
 	}
 	return acc
 }

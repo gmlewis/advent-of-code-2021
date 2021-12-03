@@ -18,7 +18,7 @@ func main() {
 
 func process(filename string) {
 	lines := must.ReadFileLines(filename)
-	position := must.ReduceStringSlicesToIntSlice(lines, []int{0, 0}, func(line string, acc []int) []int {
+	position := must.Reduce(lines, []int{0, 0}, func(line string, acc []int) []int {
 		switch {
 		case strings.HasPrefix(line, "forward "):
 			v := must.Atoi(line[8:])

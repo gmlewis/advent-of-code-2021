@@ -1,16 +1,16 @@
 package must
 
-// FilterFunc takes a string and returns true if the
-// string is to be kept.
-type FilterFunc func(string) bool
+// FilterFunc takes a value and returns true if the
+// value is to be kept.
+type FilterFunc[T any] func(T) bool
 
-// FilterStrings filters a slice of strings and keeps
-// those values for which f returns true.
-func FilterStrings(lines []string, f FilterFunc) []string {
-	var result []string
-	for _, line := range lines {
-		if f(line) {
-			result = append(result, line)
+// Filter filters a slice of values and keeps
+// those for which f returns true.
+func Filter[T any](values []T, f FilterFunc[T]) []T {
+	var result []T
+	for _, v := range values {
+		if f(v) {
+			result = append(result, v)
 		}
 	}
 	return result
