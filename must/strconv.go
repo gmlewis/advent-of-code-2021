@@ -43,3 +43,13 @@ func StringToInt64(lines []string) []int64 {
 
 	return result
 }
+
+// ParseInt parses an integer with the given base and size.
+// It dies if there is an error.
+func ParseInt(s string, base, size int) int {
+	v, err := strconv.ParseInt(s, base, size)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return int(v)
+}
