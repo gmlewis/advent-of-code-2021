@@ -28,9 +28,9 @@ func process(filename string) {
 	boards := enum.Map(parts[1:], parseBoard)
 
 	best := enum.Reduce(boards, &tup{}, func(board *BoardT, acc *tup) *tup {
-		count := board.play(numbers)
-		if acc.board == nil || count > acc.count {
-			acc.count = count
+		turns := board.play(numbers)
+		if acc.board == nil || turns > acc.turns {
+			acc.turns = turns
 			acc.board = board
 		}
 		return acc
@@ -44,12 +44,12 @@ func process(filename string) {
 
 type tup struct {
 	board *BoardT
-	count int
+	turns int
 }
 
 type BoardT struct {
-	unmarked map[string]string
-	marked   map[string]string
+	unmarked map[string]string // number => "y,x"
+	marked   map[string]string // "y,x" => number
 	row      map[string][]string
 	col      map[string][]string
 	lastNum  int

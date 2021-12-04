@@ -31,7 +31,7 @@ func process(filename string) {
 
 	var gamma int
 	var toggle int
-	enum.WithIndex(sums, func(i int, sum int) {
+	enum.EachWithIndex(sums, func(i int, sum int) {
 		toggle += (1 << (numBits - i - 1))
 		if sum >= half {
 			gamma += (1 << (numBits - i - 1))
