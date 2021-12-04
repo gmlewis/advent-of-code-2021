@@ -53,10 +53,18 @@ func Map[S any, T any](slice []T, f func(a T) S) []S {
 	return result
 }
 
-// Reduce reduces slices using an accumulator.
+// Reduce reduces a slice using an accumulator.
 func Reduce[S any, T any](values []S, acc T, f func(S, T) T) T {
 	for _, v := range values {
 		acc = f(v, acc)
+	}
+	return acc
+}
+
+// Reduce reduces a map using an accumulator.
+func ReduceMap[K comparable, V any, T any](values map[K]V, acc T, f func(K, V, T) T) T {
+	for k, v := range values {
+		acc = f(k, v, acc)
 	}
 	return acc
 }

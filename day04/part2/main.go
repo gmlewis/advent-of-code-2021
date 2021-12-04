@@ -51,12 +51,9 @@ type BoardT struct {
 }
 
 func (b *BoardT) unmarkedSum() int {
-	var sum int
-	for k := range b.unmarked {
-		v := must.Atoi(k)
-		sum += v
-	}
-	return sum
+	return enum.ReduceMap(b.unmarked, 0, func(k, v string, acc int) int {
+		return acc + must.Atoi(k)
+	})
 }
 
 func (b *BoardT) play(numbers []string) int {
