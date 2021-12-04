@@ -8,6 +8,7 @@ import (
 
 	"github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
+	"github.com/gmlewis/advent-of-code-2021/strfn"
 )
 
 func main() {
@@ -34,8 +35,8 @@ func filterLines(lines []string, bit int, f func(a, b []string) []string) string
 		return lines[0]
 	}
 
-	ones := enum.Filter(lines, enum.StrSliceIs(bit, bit+1, "1"))
-	zeros := enum.Filter(lines, enum.StrSliceIs(bit, bit+1, "0"))
+	ones := enum.FilterMap(lines, strfn.Substr(bit, bit+1), strfn.Equals("1"))
+	zeros := enum.FilterMap(lines, strfn.Substr(bit, bit+1), strfn.Equals("0"))
 
 	return filterLines(f(ones, zeros), bit+1, f)
 }

@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/gmlewis/advent-of-code-2021/must"
+	"github.com/gmlewis/advent-of-code-2021/strfn"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -54,7 +55,7 @@ func TestGroupBy_StringToInt(t *testing.T) {
 		{
 			name:      "doc example",
 			values:    []string{"ant", "buffalo", "cat", "dingo"},
-			keyFunc:   StrLength,
+			keyFunc:   strfn.Length,
 			valueFunc: Identity[string],
 			want: map[int][]string{
 				3: {"ant", "cat"}, 5: {"dingo"}, 7: {"buffalo"},
@@ -63,8 +64,8 @@ func TestGroupBy_StringToInt(t *testing.T) {
 		{
 			name:      "doc example",
 			values:    []string{"ant", "buffalo", "cat", "dingo"},
-			keyFunc:   StrLength,
-			valueFunc: StrFirst,
+			keyFunc:   strfn.Length,
+			valueFunc: strfn.First,
 			want: map[int][]string{
 				3: {"a", "c"}, 5: {"d"}, 7: {"b"},
 			},

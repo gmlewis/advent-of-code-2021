@@ -12,32 +12,12 @@ func Identity[T any](value T) T { return value }
 // Length returns the length of the provided slice.
 func Length[T any](items []T) int { return len(items) }
 
-// StrLength returns the length of the provided slice.
-func StrLength(s string) int { return len(s) }
-
-// StrSliceIs returns a function that returns true if the substring
-// from [start, end) (just like s[start:end]) matches the value.
-func StrSliceIs(start, end int, value string) func(string) bool {
-	return func(s string) bool {
-		return s[start:end] == value
-	}
-}
-
 // First returns the first item of the provided slice or its zero value.
 func First[T any](items []T) (ret T) {
 	if len(items) == 0 {
 		return ret
 	}
 	return items[0]
-}
-
-// StrFirst returns the first character (as a string) of the provided string
-// or "".
-func StrFirst(s string) string {
-	if len(s) == 0 {
-		return ""
-	}
-	return s[0:1]
 }
 
 // All returns true if all f(item) calls return true.
@@ -131,6 +111,18 @@ func Filter[T any](values []T, f FilterFunc[T]) []T {
 	var result []T
 	for _, v := range values {
 		if f(v) {
+			result = append(result, v)
+		}
+	}
+	return result
+}
+
+// FilterMap filters a slice of mapped values and keeps
+// those for which f(value) returns true.
+func FilterMap[S any, T any](values []S, m func(S) T, f FilterFunc[T]) []S {
+	var result []S
+	for _, v := range values {
+		if f(m(v)) {
 			result = append(result, v)
 		}
 	}
@@ -288,13 +280,4 @@ func Sum[T Number](values []T) T {
 		sum += v
 	}
 	return sum
-}
-
-// RunesWithIndex iterates over a string and calls the provided
-// function with its index and rune. This is because I couldn't
-// figure out how to make WithIndex work with a string and its runes.
-func RunesWithIndex(s string, f func(i int, value rune)) {
-	for i, v := range s {
-		f(i, v)
-	}
 }

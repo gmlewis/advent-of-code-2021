@@ -9,6 +9,7 @@ import (
 
 	"github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
+	"github.com/gmlewis/advent-of-code-2021/strfn"
 )
 
 func main() {
@@ -25,7 +26,7 @@ func process(filename string) {
 
 	sums := make([]int, numBits)
 	sums = enum.Reduce(lines, sums, func(line string, acc []int) []int {
-		enum.RunesWithIndex(line, func(i int, r rune) { acc[i] += int(r - '0') })
+		strfn.RunesWithIndex(line, func(i int, r rune) { acc[i] += int(r - '0') })
 		return acc
 	})
 
