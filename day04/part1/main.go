@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -55,12 +56,9 @@ type BoardT struct {
 }
 
 func (b *BoardT) unmarkedSum() int {
-	var sum int
-	for k := range b.unmarked {
-		v := must.Atoi(k)
-		sum += v
-	}
-	return sum
+	return maps.Reduce(b.unmarked, 0, func(k, v string, acc int) int {
+		return acc + must.Atoi(k)
+	})
 }
 
 func (b *BoardT) play(numbers []string) int {
@@ -88,17 +86,8 @@ func (b *BoardT) bingo() bool {
 	if len(b.marked) < 5 {
 		return false
 	}
-	for _, v := range b.row {
-		if len(v) == 5 {
-			return true
-		}
-	}
-	for _, v := range b.col {
-		if len(v) == 5 {
-			return true
-		}
-	}
-	return false
+	return maps.Any(b.row, func(k string, v []string) bool { return len(v) == 5 }) ||
+		maps.Any(b.col, func(k string, v []string) bool { return len(v) == 5 })
 }
 
 var whitespaceRE = regexp.MustCompile(`\s+`)
