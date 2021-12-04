@@ -2,6 +2,14 @@
 
 Here are my solutions for [Advent of Code 2021](https://adventofcode.com/2021).
 
+This year, I chose to write my solutions using Go 1.18 with generics
+(by building the Go compiler from the latest master branch):
+
+```
+$ go version
+go version devel go1.18-deb988a286 Fri Dec 3 18:09:19 2021 +0000 linux/amd64
+```
+
 ----------------------------------------------------------------------
 
 # License
