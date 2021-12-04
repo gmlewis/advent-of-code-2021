@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -51,7 +52,7 @@ type BoardT struct {
 }
 
 func (b *BoardT) unmarkedSum() int {
-	return enum.ReduceMap(b.unmarked, 0, func(k, v string, acc int) int {
+	return maps.Reduce(b.unmarked, 0, func(k, v string, acc int) int {
 		return acc + must.Atoi(k)
 	})
 }

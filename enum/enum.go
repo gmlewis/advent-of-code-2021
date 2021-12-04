@@ -61,14 +61,6 @@ func Reduce[S any, T any](values []S, acc T, f func(S, T) T) T {
 	return acc
 }
 
-// Reduce reduces a map using an accumulator.
-func ReduceMap[K comparable, V any, T any](values map[K]V, acc T, f func(K, V, T) T) T {
-	for k, v := range values {
-		acc = f(k, v, acc)
-	}
-	return acc
-}
-
 // Longer returns the longer slice.
 // If len(a)==len(b), then a is preferred.
 func Longer[T any](a, b []T) []T {
