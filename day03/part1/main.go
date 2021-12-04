@@ -5,6 +5,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 
 	"github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
@@ -13,10 +14,11 @@ import (
 func main() {
 	flag.Parse()
 
-	must.Process(process)
+	enum.Each(flag.Args(), process)
 }
 
 func process(filename string) {
+	log.Printf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
 	numBits := len(lines[0])
 	half := len(lines) / 2

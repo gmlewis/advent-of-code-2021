@@ -20,6 +20,13 @@ func ChunkEvery[T any](values []T, n, step int) [][]T {
 	return result
 }
 
+// Each processes each item with the provided function.
+func Each[T any](items []T, f func(item T)) {
+	for _, item := range items {
+		f(item)
+	}
+}
+
 // FilterFunc takes a value and returns true if the
 // value is to be kept.
 type FilterFunc[T any] func(T) bool

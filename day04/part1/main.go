@@ -16,15 +16,15 @@ import (
 func main() {
 	flag.Parse()
 
-	must.Process(process)
+	enum.Each(flag.Args(), process)
 }
 
 func process(filename string) {
+	log.Printf("Processing %v ...", filename)
 	buf := must.ReadFile(filename)
 	parts := strings.Split(buf, "\n\n")
 	numbers := strings.Split(parts[0], ",")
 	boards := enum.Map(parts[1:], parseBoard)
-	// log.Printf("%v, %v", len(numbers), len(boards))
 
 	var bestBoard *BoardT
 	var bestCount int
@@ -35,10 +35,9 @@ func process(filename string) {
 			bestBoard = board
 		}
 	}
-	// log.Printf("bestCount=%v", bestCount)
-	// log.Printf("bestBoard=%#v", bestBoard)
+
 	sum := bestBoard.unmarkedSum()
-	log.Printf("unmarkedSum=%v", sum)
+	log.Printf("unmarkedSum=%v, lastNum=%v", sum, bestBoard.lastNum)
 
 	fmt.Printf("Solution: %v\n", sum*bestBoard.lastNum)
 }

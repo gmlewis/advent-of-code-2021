@@ -13,10 +13,11 @@ import (
 func main() {
 	flag.Parse()
 
-	must.Process(process)
+	enum.Each(flag.Args(), process)
 }
 
 func process(filename string) {
+	log.Printf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
 
 	oxygen := filterLines(lines, 0, enum.Longer[string])

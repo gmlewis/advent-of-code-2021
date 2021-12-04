@@ -5,6 +5,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/gmlewis/advent-of-code-2021/enum"
@@ -14,10 +15,11 @@ import (
 func main() {
 	flag.Parse()
 
-	must.Process(process)
+	enum.Each(flag.Args(), process)
 }
 
 func process(filename string) {
+	log.Printf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
 	position := enum.Reduce(lines, []int{0, 0, 0}, processLine)
 	fmt.Printf("Solution: %v - product: %v\n", position, position[0]*position[1])
