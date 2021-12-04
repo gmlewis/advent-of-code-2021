@@ -86,8 +86,10 @@ func (b *BoardT) bingo() bool {
 	if len(b.marked) < 5 {
 		return false
 	}
-	return maps.Any(b.row, func(k string, v []string) bool { return len(v) == 5 }) ||
-		maps.Any(b.col, func(k string, v []string) bool { return len(v) == 5 })
+	f := func(m map[string][]string) bool {
+		return enum.Any(maps.Map(m, maps.ValueLen[string, string]), enum.Equals(5))
+	}
+	return f(b.row) || f(b.col)
 }
 
 var whitespaceRE = regexp.MustCompile(`\s+`)
