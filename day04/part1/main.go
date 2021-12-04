@@ -26,20 +26,24 @@ func process(filename string) {
 	numbers := strings.Split(parts[0], ",")
 	boards := enum.Map(parts[1:], parseBoard)
 
-	var bestBoard *BoardT
-	var bestCount int
-	for _, board := range boards {
+	best := enum.Reduce(boards, &tup{}, func(board *BoardT, acc *tup) *tup {
 		count := board.play(numbers)
-		if bestBoard == nil || count < bestCount {
-			bestCount = count
-			bestBoard = board
+		if acc.board == nil || count < acc.count {
+			acc.count = count
+			acc.board = board
 		}
-	}
+		return acc
+	})
 
-	sum := bestBoard.unmarkedSum()
-	log.Printf("unmarkedSum=%v, lastNum=%v", sum, bestBoard.lastNum)
+	sum := best.board.unmarkedSum()
+	log.Printf("unmarkedSum=%v, lastNum=%v", sum, best.board.lastNum)
 
-	fmt.Printf("Solution: %v\n", sum*bestBoard.lastNum)
+	fmt.Printf("Solution: %v\n", sum*best.board.lastNum)
+}
+
+type tup struct {
+	board *BoardT
+	count int
 }
 
 type BoardT struct {
