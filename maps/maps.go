@@ -2,6 +2,16 @@
 // functions that operate on map data types.
 package maps
 
+// Key returns the key of a map key/value pair.
+func Key[K comparable, V any](key K, value V) K {
+	return key
+}
+
+// Value returns the value of a map key/value pair.
+func Value[K any, V any](key K, value V) V {
+	return value
+}
+
 // All returns true if all f(key, value) calls return true.
 func All[K comparable, V any](pairs map[K]V, f func(K, V) bool) bool {
 	for k, v := range pairs {

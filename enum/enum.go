@@ -15,6 +15,14 @@ func Length[T any](items []T) int { return len(items) }
 // StrLength returns the length of the provided slice.
 func StrLength(s string) int { return len(s) }
 
+// StrSliceIs returns a function that returns true if the substring
+// from [start, end) (just like s[start:end]) matches the value.
+func StrSliceIs(start, end int, value string) func(string) bool {
+	return func(s string) bool {
+		return s[start:end] == value
+	}
+}
+
 // First returns the first item of the provided slice or its zero value.
 func First[T any](items []T) (ret T) {
 	if len(items) == 0 {
