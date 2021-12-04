@@ -6,6 +6,32 @@ import (
 	"constraints"
 )
 
+// Identity returns the value passed to it.
+func Identity[T any](value T) T { return value }
+
+// Length returns the length of the provided slice.
+func Length[T any](items []T) int { return len(items) }
+
+// StrLength returns the length of the provided slice.
+func StrLength(s string) int { return len(s) }
+
+// First returns the first item of the provided slice or its zero value.
+func First[T any](items []T) (ret T) {
+	if len(items) == 0 {
+		return ret
+	}
+	return items[0]
+}
+
+// StrFirst returns the first character (as a string) of the provided string
+// or "".
+func StrFirst(s string) string {
+	if len(s) == 0 {
+		return ""
+	}
+	return s[0:1]
+}
+
 // All returns true if all f(item) calls return true.
 func All[T any](items []T, f func(T) bool) bool {
 	for _, v := range items {
@@ -142,6 +168,7 @@ func FindWithIndex[T any](values []T, f FilterFuncWithIndex[T], defValue T) T {
 }
 
 // FlatMap maps the given f(value) and flattens the result.
+//
 // For example:
 //   FlatMap([]int{1,2,3}, func (v int) []string {
 //     s := fmt.Sprintf("%v", v)
@@ -162,6 +189,45 @@ func FlatMapWithIndex[S any, T any](values []S, f func(int, S) []T) []T {
 	result := []T{}
 	for i, v := range values {
 		result = append(result, f(i, v)...)
+	}
+	return result
+}
+
+// Frequencies returns a map with keys as unique elements of the
+// provided items and the values as the count of every item.
+func Frequencies[T comparable](items []T) map[T]int {
+	result := map[T]int{}
+	for _, item := range items {
+		result[item]++
+	}
+	return result
+}
+
+// FrequenciesBy returns a map with keys as unique elements of
+// keyFunc(item) and the values as the count of every item.
+func FrequenciesBy[S any, T comparable](items []S, keyFunc func(S) T) map[T]int {
+	result := map[T]int{}
+	for _, item := range items {
+		result[keyFunc(item)]++
+	}
+	return result
+}
+
+// GroupBy splits the items into groups based on keyFunc and valueFunc.
+//
+// For example:
+//    GroupBy([]string{"ant", "buffalo", "cat", "dingo"}, StrLength, Identity[string])
+// returns:
+//    {3: {"ant", "cat"}, 5: {"dingo"}, 7: {"buffalo"}}
+// and
+//    GroupBy([]string{ant buffalo cat dingo}, StrLength, StrFirst)
+// returns:
+//    {3: {"a", "c"}, 5: {"d"}, 7: {"b"}}
+func GroupBy[K comparable, V any, T any](items []T, keyFunc func(T) K, valueFunc func(T) V) map[K][]V {
+	result := map[K][]V{}
+	for _, item := range items {
+		k := keyFunc(item)
+		result[k] = append(result[k], valueFunc(item))
 	}
 	return result
 }
