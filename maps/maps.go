@@ -12,6 +12,11 @@ func Value[K any, V any](key K, value V) V {
 	return value
 }
 
+// ValueLen returns the length of the slice value of a map.
+func ValueLen[K any, T any](key K, value []T) int {
+	return len(value)
+}
+
 // All returns true if all f(key, value) calls return true.
 func All[K comparable, V any](pairs map[K]V, f func(K, V) bool) bool {
 	for k, v := range pairs {
@@ -30,6 +35,15 @@ func Any[K comparable, V any](pairs map[K]V, f func(K, V) bool) bool {
 		}
 	}
 	return false
+}
+
+// Map maps the (k,v) pairs to a slice of values.
+func Map[K comparable, V any, T any](pairs map[K]V, f func(K, V) T) []T {
+	result := []T{}
+	for k, v := range pairs {
+		result = append(result, f(k, v))
+	}
+	return result
 }
 
 // Reduce reduces a map using an accumulator.

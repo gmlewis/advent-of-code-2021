@@ -6,6 +6,12 @@ import (
 	"constraints"
 )
 
+// Equals returns a function that checks if a value
+// is equal to a given value.
+func Equals[T comparable](value T) func(T) bool {
+	return func(v T) bool { return v == value }
+}
+
 // Identity returns the value passed to it.
 func Identity[T any](value T) T { return value }
 

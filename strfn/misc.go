@@ -1,11 +1,5 @@
 package strfn
 
-// Equals returns a function that checks if a string
-// is equal to value.
-func Equals(value string) func(string) bool {
-	return func(s string) bool { return s == value }
-}
-
 // Length returns the length of the provided string.
 func Length(s string) int { return len(s) }
 

@@ -35,8 +35,8 @@ func filterLines(lines []string, bit int, f func(a, b []string) []string) string
 		return lines[0]
 	}
 
-	ones := enum.FilterMap(lines, strfn.Substr(bit, bit+1), strfn.Equals("1"))
-	zeros := enum.FilterMap(lines, strfn.Substr(bit, bit+1), strfn.Equals("0"))
+	ones := enum.FilterMap(lines, strfn.Substr(bit, bit+1), enum.Equals("1"))
+	zeros := enum.FilterMap(lines, strfn.Substr(bit, bit+1), enum.Equals("0"))
 
 	return filterLines(f(ones, zeros), bit+1, f)
 }
