@@ -54,6 +54,24 @@ func Reduce[S any, T any](values []S, acc T, f func(S, T) T) T {
 	return acc
 }
 
+// Longer returns the longer slice.
+// If len(a)==len(b), then a is preferred.
+func Longer[T any](a, b []T) []T {
+	if len(a) >= len(b) {
+		return a
+	}
+	return b
+}
+
+// Shorter returns the shorter slice.
+// If len(a)==len(b), then b is preferred.
+func Shorter[T any](a, b []T) []T {
+	if len(a) < len(b) {
+		return a
+	}
+	return b
+}
+
 // Number has the "+" operator.
 type Number interface {
 	constraints.Integer | constraints.Unsigned | constraints.Float | constraints.Complex

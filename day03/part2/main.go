@@ -18,53 +18,23 @@ func main() {
 
 func process(filename string) {
 	lines := must.ReadFileLines(filename)
-	numBits := len(lines[0])
 
-	var oxygenRating, co2Rating int
+	oxygen := filterLines(lines, 0, enum.Longer[string])
+	co2 := filterLines(lines, 0, enum.Shorter[string])
 
-	moreInput := lines[:]
-	fewerInput := lines[:]
-	for i := 0; i < numBits; i++ {
-		moreFilter, fewerFilter := genFilters(i, moreInput, fewerInput)
-		moreInput = enum.Filter(moreInput, moreFilter)
-		fewerInput = enum.Filter(fewerInput, fewerFilter)
-		if len(moreInput) == 1 {
-			oxygenRating = must.ParseInt(moreInput[0], 2, 64)
-		}
-		if len(fewerInput) == 1 {
-			co2Rating = must.ParseInt(fewerInput[0], 2, 64)
-		}
-	}
+	oxygenRating := must.ParseInt(oxygen, 2, 64)
+	co2Rating := must.ParseInt(co2, 2, 64)
 
 	log.Printf("oxygen=%v, co2=%v, product=%v", oxygenRating, co2Rating, oxygenRating*co2Rating)
 }
 
-func genFilters(bit int, moreInput, fewerInput []string) (moreFilter, fewerFilter enum.FilterFunc[string]) {
-	var moreCount int
-	for _, line := range moreInput {
-		if line[bit] == '1' {
-			moreCount++
-		}
+func filterLines(lines []string, bit int, f func(a, b []string) []string) string {
+	if len(lines) == 1 {
+		return lines[0]
 	}
 
-	if 2*moreCount >= len(moreInput) {
-		moreFilter = func(line string) bool { return line[bit] == '1' }
-	} else {
-		moreFilter = func(line string) bool { return line[bit] == '0' }
-	}
+	ones := enum.Filter(lines, func(line string) bool { return line[bit] == '1' })
+	zeros := enum.Filter(lines, func(line string) bool { return line[bit] == '0' })
 
-	var fewerCount int
-	for _, line := range fewerInput {
-		if line[bit] == '1' {
-			fewerCount++
-		}
-	}
-
-	if 2*fewerCount >= len(fewerInput) {
-		fewerFilter = func(line string) bool { return line[bit] == '0' }
-	} else {
-		fewerFilter = func(line string) bool { return line[bit] == '1' }
-	}
-
-	return moreFilter, fewerFilter
+	return filterLines(f(ones, zeros), bit+1, f)
 }
