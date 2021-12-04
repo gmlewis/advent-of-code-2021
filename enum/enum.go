@@ -67,3 +67,20 @@ func Sum[T Number](values []T) T {
 	}
 	return sum
 }
+
+// WithIndex iterates over a slice and calls the provided
+// function with its index and value.
+func WithIndex[T any](items []T, f func(i int, value T)) {
+	for i, value := range items {
+		f(i, value)
+	}
+}
+
+// RunesWithIndex iterates over a string and calls the provided
+// function with its index and rune. This is because I couldn't
+// figure out how to make WithIndex work with a string and its runes.
+func RunesWithIndex(s string, f func(i int, value rune)) {
+	for i, v := range s {
+		f(i, v)
+	}
+}
