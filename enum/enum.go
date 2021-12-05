@@ -311,6 +311,19 @@ func Reduce[S any, T any](values []S, acc T, f func(S, T) T) T {
 	return acc
 }
 
+// Scan applies the given function to each element,
+// emits the result and uses the same result as the accumulator for the
+// next computation. It uses the given acc as the starting value.
+func Scan[T any](items []T, acc T, f func(a, b T) T) (ret []T) {
+	for _, v := range items {
+		nv := f(acc, v)
+		ret = append(ret, nv)
+		acc = nv
+	}
+
+	return ret
+}
+
 // Longer returns the longer slice.
 // If len(a)==len(b), then a is preferred.
 func Longer[T any](a, b []T) []T {
