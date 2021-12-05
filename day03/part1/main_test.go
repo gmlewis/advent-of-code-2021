@@ -1,43 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
-	"log"
-	"os"
 	"testing"
+
+	"github.com/gmlewis/advent-of-code-2021/test"
 )
 
 func TestExample(t *testing.T) {
-	tmpfile, err := ioutil.TempFile("", "example1.txt")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.Remove(tmpfile.Name())
-	if _, err := tmpfile.WriteString(example1); err != nil {
-		log.Fatal(err)
-	}
-	if err := tmpfile.Close(); err != nil {
-		log.Fatal(err)
-	}
-
-	printf = testPrintf
-	process(tmpfile.Name())
-
 	want := "Sums: [7 5 8 7 5], gamma=22, toggle=31, epsilon=9, product: 198\n"
-	if got != want {
-		t.Errorf("process = %q, want %q", got, want)
-	}
+	test.Runner(t, example1, want, process, &printf)
 }
 
-var got string
-
-func testPrintf(format string, a ...interface{}) (int, error) {
-	got = fmt.Sprintf(format, a...)
-	return 0, nil
-}
-
-var example1 = `00100
+var example1 = `
+00100
 11110
 10110
 10111
