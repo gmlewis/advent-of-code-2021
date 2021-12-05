@@ -103,6 +103,7 @@ func ChunkEvery[T any](ch <-chan T, n, step int) <-chan []T {
 				chunk = chunk[step:]
 			}
 		}
+
 		close(outCh)
 	}()
 
@@ -124,14 +125,24 @@ func CountWithIndex[T any](ch <-chan T, f func(int, T) bool) int {
 
 // Dedup returns a channel where all consecutive duplicated
 // elements are collapsed to a single element.
-func Dedup[T comparable](ch <-chan T) []T {
-	result := []T{}
-	for v := range ch {
-		if len(result) == 0 || v != result[len(result)-1] {
-			result = append(result, v)
+func Dedup[T comparable](ch <-chan T) <-chan T {
+	outCh := make(chan T, defaultBufSize)
+
+	go func() {
+		var i int
+		var last T
+		for v := range ch {
+			if i == 0 || v != last {
+				outCh <- v
+			}
+			last = v
+			i++
 		}
-	}
-	return result
+
+		close(outCh)
+	}()
+
+	return outCh
 }
 
 // Each processes each item with the provided function.
@@ -355,6 +366,25 @@ func Repeatedly[T any](f func() T) <-chan T {
 	}()
 
 	return ch
+}
+
+// Scan creates a channel that applies the given function to each element,
+// emits the result and uses the same result as the accumulator for the
+// next computation. It uses the given acc as the starting value.
+func Scan[T any](ch <-chan T, acc T, f func(a, b T) T) <-chan T {
+	outCh := make(chan T, defaultBufSize)
+
+	go func() {
+		for v := range ch {
+			nv := f(acc, v)
+			outCh <- nv
+			acc = nv
+		}
+
+		close(outCh)
+	}()
+
+	return outCh
 }
 
 // Number has the "+" operator.
