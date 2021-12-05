@@ -362,7 +362,7 @@ outer:
 
 // Zip2 zips corresponding elements from different types into a slice of structs.
 //
-// The zipping finishes as soon as any slice ends.
+// The zipping finishes as soon as either slice ends.
 func Zip2[S any, T any, KV any](sList []S, tList []T, f func(S, T) KV) (ret []KV) {
 	for i := 0; i < len(sList) && i < len(tList); i++ {
 		ret = append(ret, f(sList[i], tList[i]))
