@@ -248,6 +248,38 @@ func Map[S any, T any](values []T, f func(a T) S) []S {
 	return result
 }
 
+// Max returns the maximal element in the slice
+// (or the zero value for an empty slice).
+func Max[T constraints.Ordered](values []T) (ret T) {
+	for i, v := range values {
+		if i == 0 || v > ret {
+			ret = v
+		}
+	}
+	return ret
+}
+
+// Min returns the minimal element in the slice
+// (or the zero value for an empty slice).
+func Min[T constraints.Ordered](values []T) (ret T) {
+	for i, v := range values {
+		if i == 0 || v < ret {
+			ret = v
+		}
+	}
+	return ret
+}
+
+// Member checks if elem exists within values.
+func Member[T comparable](values []T, elem T) bool {
+	for _, v := range values {
+		if elem == v {
+			return true
+		}
+	}
+	return false
+}
+
 // Reduce reduces a slice using an accumulator.
 func Reduce[S any, T any](values []S, acc T, f func(S, T) T) T {
 	for _, v := range values {
@@ -280,10 +312,21 @@ type Number interface {
 }
 
 // Sum sums up a slice of numbers.
-func Sum[T Number](values []T) T {
-	var sum T
+func Sum[T Number](values []T) (ret T) {
 	for _, v := range values {
-		sum += v
+		ret += v
 	}
-	return sum
+	return ret
+}
+
+// Product multiples a slice of numbers together.
+func Product[T Number](values []T) (ret T) {
+	for i, v := range values {
+		if i == 0 {
+			ret = v
+			continue
+		}
+		ret *= v
+	}
+	return ret
 }
