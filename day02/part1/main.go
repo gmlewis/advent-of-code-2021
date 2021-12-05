@@ -12,6 +12,8 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
+var printf = fmt.Printf
+
 func main() {
 	flag.Parse()
 
@@ -22,7 +24,7 @@ func process(filename string) {
 	log.Printf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
 	position := enum.Reduce(lines, []int{0, 0}, processLine)
-	fmt.Printf("Solution: %v - product: %v\n", position, position[0]*position[1])
+	printf("Solution: %v - product: %v\n", position, position[0]*position[1])
 }
 
 func processLine(line string, acc []int) []int {
