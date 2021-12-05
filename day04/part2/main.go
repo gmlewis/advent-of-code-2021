@@ -14,6 +14,8 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
+var printf = fmt.Printf
+
 func main() {
 	flag.Parse()
 
@@ -39,7 +41,7 @@ func process(filename string) {
 	sum := best.board.unmarkedSum()
 	log.Printf("unmarkedSum=%v, lastNum=%v", sum, best.board.lastNum)
 
-	fmt.Printf("Solution: %v\n", sum*best.board.lastNum)
+	printf("Solution: %v\n", sum*best.board.lastNum)
 }
 
 type tup struct {
