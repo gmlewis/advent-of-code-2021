@@ -4,12 +4,15 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 
 	"github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
 	"github.com/gmlewis/advent-of-code-2021/strfn"
 )
+
+var printf = fmt.Printf
 
 func main() {
 	flag.Parse()
@@ -27,7 +30,7 @@ func process(filename string) {
 	oxygenRating := must.ParseInt(oxygen, 2, 64)
 	co2Rating := must.ParseInt(co2, 2, 64)
 
-	log.Printf("oxygen=%v, co2=%v, product=%v", oxygenRating, co2Rating, oxygenRating*co2Rating)
+	printf("Solution: oxygen=%v, co2=%v, product=%v\n", oxygenRating, co2Rating, oxygenRating*co2Rating)
 }
 
 func filterLines(lines []string, bit int, f func(a, b []string) []string) string {

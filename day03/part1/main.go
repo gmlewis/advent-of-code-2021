@@ -12,6 +12,8 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/strfn"
 )
 
+var printf = fmt.Printf
+
 func main() {
 	flag.Parse()
 
@@ -40,5 +42,5 @@ func process(filename string) {
 	})
 	epsilon := gamma ^ toggle
 
-	fmt.Printf("Sums: %+v, gamma=%v, toggle=%v, epsilon=%v, product: %v\n", sums, gamma, toggle, epsilon, gamma*epsilon)
+	printf("Sums: %+v, gamma=%v, toggle=%v, epsilon=%v, product: %v\n", sums, gamma, toggle, epsilon, gamma*epsilon)
 }
