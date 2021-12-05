@@ -37,27 +37,11 @@ func parseLines(line string, b map[string]int) map[string]int {
 	if len(m) < 5 {
 		log.Fatalf("bad line: %q", line)
 	}
-	x1 := must.Atoi(m[1])
-	y1 := must.Atoi(m[2])
-	x2 := must.Atoi(m[3])
-	y2 := must.Atoi(m[4])
+	x1, y1, x2, y2 := must.Atoi(m[1]), must.Atoi(m[2]), must.Atoi(m[3]), must.Atoi(m[4])
 
-	if x1 == x2 {
-		if y1 > y2 {
-			y1, y2 = y2, y1
-		}
-		for y := y1; y <= y2; y++ {
-			k := fmt.Sprintf("%v,%v", y, x1)
-			b[k]++
-		}
-	} else if y1 == y2 {
-		if x1 > x2 {
-			x1, x2 = x2, x1
-		}
-		for x := x1; x <= x2; x++ {
-			k := fmt.Sprintf("%v,%v", y1, x)
-			b[k]++
-		}
+	if x1 == x2 || y1 == y2 {
+		pts := enum.Ranges([]int{x1, y1}, []int{x2, y2})
+		enum.Each(pts, func(pt []int) { b[fmt.Sprintf("%v,%v", pt[1], pt[0])]++ })
 	}
 
 	return b
