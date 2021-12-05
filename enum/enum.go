@@ -324,6 +324,20 @@ func Scan[T any](items []T, acc T, f func(a, b T) T) (ret []T) {
 	return ret
 }
 
+// Uniq removes all duplicated elements.
+func Uniq[T comparable](items []T) (ret []T) {
+	seen := map[T]struct{}{}
+	for _, item := range items {
+		if _, ok := seen[item]; ok {
+			continue
+		}
+		ret = append(ret, item)
+		seen[item] = struct{}{}
+	}
+
+	return ret
+}
+
 // Longer returns the longer slice.
 // If len(a)==len(b), then a is preferred.
 func Longer[T any](a, b []T) []T {
