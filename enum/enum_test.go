@@ -133,3 +133,11 @@ func TestUniq(t *testing.T) {
 		t.Errorf("Uniq = %+v, want %+v", got, want)
 	}
 }
+
+func TestZip(t *testing.T) {
+	want := [][]int{{1, 3, 5}, {2, 4, 6}}
+	got := Zip([][]int{{1, 2}, {3, 4}, {5, 6}})
+	if !cmp.Equal(got, want) {
+		t.Errorf("Zip = %+v, want %+v", got, want)
+	}
+}

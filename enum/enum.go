@@ -338,6 +338,28 @@ func Uniq[T comparable](items []T) (ret []T) {
 	return ret
 }
 
+// Zip zips corresponding elements from slice of slices.
+//
+// The zipping finishes as soon as any slice ends.
+func Zip[T any](lists [][]T) (ret [][]T) {
+	n := len(lists)
+	var i int
+outer:
+	for {
+		t := make([]T, 0, n)
+		for _, list := range lists {
+			if i >= len(list) {
+				break outer
+			}
+			t = append(t, list[i])
+		}
+		ret = append(ret, t)
+		i++
+	}
+
+	return ret
+}
+
 // Longer returns the longer slice.
 // If len(a)==len(b), then a is preferred.
 func Longer[T any](a, b []T) []T {
