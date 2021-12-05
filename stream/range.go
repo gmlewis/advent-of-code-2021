@@ -2,6 +2,7 @@ package stream
 
 import (
 	"log"
+	"math"
 )
 
 const (
@@ -96,20 +97,24 @@ func Ranges[T int](start, end []T) <-chan []T {
 		log.Fatal("start and end must be same length")
 	}
 
-	inc := make([]T, len(start))
+	inc := make([]float64, len(start))
 	steps := 1
 	for i, v := range start {
 		switch {
 		case end[i]-v > T(0):
-			inc[i] = T(1)
+			inc[i] = 1
 		case end[i]-v < T(0):
-			inc[i] = T(-1)
+			inc[i] = -1
 		}
 
-		s := int(1 + inc[i]*(end[i]-v))
+		s := 1 + int(0.5+inc[i]*float64(end[i]-v))
 		if s > steps {
 			steps = s
 		}
+	}
+
+	for i, v := range start {
+		inc[i] = inc[i] * (1 + math.Abs(float64(end[i]-v))) / float64(steps)
 	}
 
 	size := defaultBufSize
@@ -119,16 +124,14 @@ func Ranges[T int](start, end []T) <-chan []T {
 	ch := make(chan []T, size)
 
 	go func() {
-		last := make([]T, len(start))
-		copy(last, start)
 		for i := 0; i < steps; i++ {
 			v := make([]T, len(start))
-			copy(v, last)
-			ch <- v
 			for j, d := range inc {
-				last[j] += d
+				v[j] = T(math.Round(float64(start[j]) + float64(i)*d))
 			}
+			ch <- v
 		}
+
 		close(ch)
 	}()
 

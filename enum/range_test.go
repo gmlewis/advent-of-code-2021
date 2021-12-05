@@ -54,9 +54,36 @@ func TestRange(t *testing.T) {
 }
 
 func TestRanges(t *testing.T) {
-	want := [][]int{{0, 3, 0}, {1, 2, 0}, {2, 1, 0}}
-	got := Ranges([]int{0, 3, 0}, []int{2, 1, 0})
-	if !cmp.Equal(got, want) {
-		t.Errorf("Ranges = %+v, want %+v", got, want)
+	tests := []struct {
+		name  string
+		start []int
+		end   []int
+		want  [][]int
+	}{
+		{
+			name: "no steps",
+			want: [][]int{{}},
+		},
+		{
+			name:  "45 degrees",
+			start: []int{0, 3, 0},
+			end:   []int{2, 1, 0},
+			want:  [][]int{{0, 3, 0}, {1, 2, 0}, {2, 1, 0}},
+		},
+		{
+			name:  "fractional increment",
+			start: []int{0, 3, 0},
+			end:   []int{5, 1, 0},
+			want:  [][]int{{0, 3, 0}, {1, 3, 0}, {2, 2, 0}, {3, 2, 0}, {4, 1, 0}, {5, 1, 0}},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Ranges(tt.start, tt.end)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("Ranges = %+v, want %+v", got, tt.want)
+			}
+		})
 	}
 }
