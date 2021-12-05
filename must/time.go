@@ -5,6 +5,19 @@ import (
 	"time"
 )
 
+// ParseDuration parses a duration string.
+// A duration string is a possibly signed sequence of decimal numbers,
+// each with optional fraction and a unit suffix, such as "300ms",
+// "-1.5h" or "2h45m".
+// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+func ParseDuration(s string) time.Duration {
+	v, err := time.ParseDuration(s)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return v
+}
+
 // Parse parses a formatted string and returns the time value it represents.
 // It dies if there is an error.
 func Parse(layout, value string) time.Time {
