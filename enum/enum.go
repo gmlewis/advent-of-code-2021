@@ -80,6 +80,29 @@ func ChunkEvery[T any](values []T, n, step int) [][]T {
 	return result
 }
 
+// Count returns the count of items in the slice for which `f(item)` returns true.
+func Count[T any](items []T, f func(T) bool) int {
+	var result int
+	for _, v := range items {
+		if f(v) {
+			result++
+		}
+	}
+	return result
+}
+
+// CountWithIndex returns the count of items in the slice for which
+// `f(index, item)` returns true.
+func CountWithIndex[T any](items []T, f func(int, T) bool) int {
+	var result int
+	for i, v := range items {
+		if f(i, v) {
+			result++
+		}
+	}
+	return result
+}
+
 // Dedup returns a slice where all consecutive duplicated
 // elements are collapsed to a single element.
 func Dedup[T comparable](values []T) []T {

@@ -24,11 +24,6 @@ func process(filename string) {
 	lines := must.ReadFileLines(filename)
 	vals := enum.Map(lines, must.Atoi)
 	pairs := enum.ChunkEvery(vals, 2, 1)
-	count := enum.Reduce(pairs, 0, func(pair []int, acc int) int {
-		if pair[1] > pair[0] {
-			return acc + 1
-		}
-		return acc
-	})
+	count := enum.Count(pairs, func(pair []int) bool { return pair[1] > pair[0] })
 	printf("Solution: %v\n", count)
 }

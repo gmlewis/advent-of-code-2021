@@ -37,6 +37,17 @@ func Any[K comparable, V any](pairs map[K]V, f func(K, V) bool) bool {
 	return false
 }
 
+// Count returns the count of items in the map for which `f(k, v)` returns true.
+func Count[K comparable, V any](pairs map[K]V, f func(K, V) bool) int {
+	var result int
+	for k, v := range pairs {
+		if f(k, v) {
+			result++
+		}
+	}
+	return result
+}
+
 // Map maps the (k,v) pairs to a slice of values.
 func Map[K comparable, V any, T any](pairs map[K]V, f func(K, V) T) []T {
 	result := []T{}

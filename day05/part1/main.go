@@ -25,12 +25,7 @@ func process(filename string) {
 	log.Printf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
 	b := enum.Reduce(lines, map[string]int{}, parseLines)
-	crossings := maps.Reduce(b, 0, func(k string, v, acc int) int {
-		if v >= 2 {
-			return acc + 1
-		}
-		return acc
-	})
+	crossings := maps.Count(b, func(k string, v int) bool { return v >= 2 })
 
 	printf("Solution: %v\n", crossings)
 }
