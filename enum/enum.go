@@ -26,20 +26,6 @@ func First[T any](items []T) (ret T) {
 	return items[0]
 }
 
-// ChunkEvery takes a slice of values and chunks them n-at-a-time
-// with the given step size. It discards any left-over items.
-func ChunkEvery[T any](values []T, n, step int) [][]T {
-	result := [][]T{}
-	for i := 0; i+n-1 < len(values); i += step {
-		chunk := make([]T, 0, n)
-		for j := 0; j < n; j++ {
-			chunk = append(chunk, values[i+j])
-		}
-		result = append(result, chunk)
-	}
-	return result
-}
-
 // Count returns the count of items in the slice for which `f(item)` returns true.
 func Count[T any](items []T, f func(T) bool) int {
 	var result int
