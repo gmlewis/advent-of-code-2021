@@ -26,28 +26,6 @@ func First[T any](items []T) (ret T) {
 	return items[0]
 }
 
-// Find returns the first element for which f(value) returns true.
-// If no element is found, defValue is returned.
-func Find[T any](values []T, f FilterFunc[T], defValue T) T {
-	for _, v := range values {
-		if f(v) {
-			return v
-		}
-	}
-	return defValue
-}
-
-// FindWithIndex returns the first element for which f(index, value) returns true.
-// If no element is found, defValue is returned.
-func FindWithIndex[T any](values []T, f FilterFuncWithIndex[T], defValue T) T {
-	for i, v := range values {
-		if f(i, v) {
-			return v
-		}
-	}
-	return defValue
-}
-
 // FlatMap maps the given f(value) and flattens the result.
 //
 // For example:
