@@ -2,6 +2,8 @@
 // functions that operate on map data types.
 package maps
 
+import "constraints"
+
 // Key returns the key of a map key/value pair.
 func Key[K comparable, V any](key K, value V) K {
 	return key
@@ -63,4 +65,43 @@ func Reduce[K comparable, V any, T any](pairs map[K]V, acc T, f func(K, V, T) T)
 		acc = f(k, v, acc)
 	}
 	return acc
+}
+
+// Number has the "+" operator.
+type Number interface {
+	constraints.Integer | constraints.Unsigned | constraints.Float | constraints.Complex
+}
+
+// SumKeys sums up the keys in a map.
+func SumKeys[K Number, V any](pairs map[K]V) (ret K) {
+	for k := range pairs {
+		ret += k
+	}
+	return ret
+}
+
+// SumValues sums up the values in a map.
+func SumValues[K comparable, V Number](pairs map[K]V) (ret V) {
+	for _, v := range pairs {
+		ret += v
+	}
+	return ret
+}
+
+// ProductKeys multiples the keys in a map together.
+func ProductKeys[K Number, V any](pairs map[K]V) (ret K) {
+	ret = K(1)
+	for k := range pairs {
+		ret *= k
+	}
+	return ret
+}
+
+// ProductValues multiples the values in a map together.
+func ProductValues[K comparable, V Number](pairs map[K]V) (ret V) {
+	ret = V(1)
+	for _, v := range pairs {
+		ret *= v
+	}
+	return ret
 }

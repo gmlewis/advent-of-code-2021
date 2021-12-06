@@ -26,7 +26,7 @@ func process(filename string) {
 	buf := must.ReadFile(filename)
 	fish := enum.Map(strings.Split(strings.TrimSpace(buf), ","), must.Atoi)
 	m := enum.Reduce(enum.Range(1, 256), enum.Frequencies(fish), simFish)
-	sum := maps.Reduce(m, 0, func(k, v, acc int) int { return acc + v })
+	sum := maps.SumValues(m)
 
 	printf("Solution: %v\n", sum)
 }

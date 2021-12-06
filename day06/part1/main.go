@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -24,22 +25,22 @@ func process(filename string) {
 	log.Printf("Processing %v ...", filename)
 	buf := must.ReadFile(filename)
 	fish := enum.Map(strings.Split(strings.TrimSpace(buf), ","), must.Atoi)
-	fish = enum.Reduce(enum.Range(1, 80), fish, simFish)
+	m := enum.Reduce(enum.Range(1, 80), enum.Frequencies(fish), simFish)
+	sum := maps.SumValues(m)
 
-	printf("Solution: %v\n", len(fish))
+	printf("Solution: %v\n", sum)
 }
 
-func simFish(days int, fish []int) []int {
-	n := len(fish)
-	for i := 0; i < n; i++ {
-		if fish[i] == 0 {
-			fish = append(fish, 8)
-			fish[i] = 6
+func simFish(days int, fishMap map[int]int) map[int]int {
+	newFish := map[int]int{}
+	for k, v := range fishMap {
+		if k == 0 {
+			newFish[8] = v
+			newFish[6] += v
 			continue
 		}
-		fish[i]--
+		newFish[k-1] += v
 	}
 
-	// log.Printf("After %v days: %v fish: %+v", days, len(fish), fish)
-	return fish
+	return newFish
 }
