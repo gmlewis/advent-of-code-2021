@@ -26,28 +26,6 @@ func First[T any](items []T) (ret T) {
 	return items[0]
 }
 
-// Max returns the maximal element in the slice
-// (or the zero value for an empty slice).
-func Max[T constraints.Ordered](values []T) (ret T) {
-	for i, v := range values {
-		if i == 0 || v > ret {
-			ret = v
-		}
-	}
-	return ret
-}
-
-// Min returns the minimal element in the slice
-// (or the zero value for an empty slice).
-func Min[T constraints.Ordered](values []T) (ret T) {
-	for i, v := range values {
-		if i == 0 || v < ret {
-			ret = v
-		}
-	}
-	return ret
-}
-
 // Member checks if elem exists within values.
 func Member[T comparable](values []T, elem T) bool {
 	for _, v := range values {
