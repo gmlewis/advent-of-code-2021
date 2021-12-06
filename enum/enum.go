@@ -26,14 +26,6 @@ func First[T any](items []T) (ret T) {
 	return items[0]
 }
 
-// Reduce reduces a slice using an accumulator.
-func Reduce[S any, T any](values []S, acc T, f func(S, T) T) T {
-	for _, v := range values {
-		acc = f(v, acc)
-	}
-	return acc
-}
-
 // Scan applies the given function to each element,
 // emits the result and uses the same result as the accumulator for the
 // next computation. It uses the given acc as the starting value.
