@@ -1,155 +1,171 @@
 package enum
 
-import "testing"
+import (
+	"testing"
 
-func TestCount_Int(t *testing.T) {
+	"github.com/google/go-cmp/cmp"
+)
+
+func TestFilter_Int(t *testing.T) {
 	tests := []struct {
 		name  string
 		items []int
 		f     func(int) bool
-		want  int
+		want  []int
 	}{
 		{
 			name: "no items",
-			want: 0,
+			want: nil,
 		},
 		{
 			name:  "one item matches",
 			items: []int{0},
 			f:     func(v int) bool { return v >= 0 },
-			want:  1,
+			want:  []int{0},
 		},
 		{
 			name:  "no items match",
 			items: []int{-1, -2, -3},
 			f:     func(v int) bool { return v >= 0 },
-			want:  0,
+			want:  nil,
 		},
 		{
 			name:  "all items match",
 			items: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 			f:     func(v int) bool { return v >= 0 },
-			want:  11,
+			want:  []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 		},
 		{
 			name:  "one item does not match at start",
 			items: []int{-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 			f:     func(v int) bool { return v >= 0 },
-			want:  11,
+			want:  []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 		},
 		{
 			name:  "one item does not match at end",
 			items: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1},
 			f:     func(v int) bool { return v >= 0 },
-			want:  11,
+			want:  []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 		},
 		{
 			name:  "one item does not match at middle",
 			items: []int{0, 1, 2, 3, 4, -1, 5, 6, 7, 8, 9, 10},
 			f:     func(v int) bool { return v >= 0 },
-			want:  11,
+			want:  []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := Count(tt.items, tt.f)
-			if got != tt.want {
-				t.Errorf("Count = %v, want %v", got, tt.want)
+			got := Filter(tt.items, tt.f)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("Filter = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestCount_String(t *testing.T) {
+func TestFilter_String(t *testing.T) {
 	tests := []struct {
 		name  string
 		items []string
 		f     func(string) bool
-		want  int
+		want  []string
 	}{
 		{
 			name: "no items",
-			want: 0,
+			want: nil,
 		},
 		{
 			name:  "one item matches",
 			items: []string{"yo"},
 			f:     func(v string) bool { return len(v) >= 2 },
-			want:  1,
+			want:  []string{"yo"},
+		},
+		{
+			name:  "no items match",
+			items: []string{"a", "b", "c"},
+			f:     func(v string) bool { return len(v) >= 2 },
+			want:  nil,
 		},
 		{
 			name:  "all items match",
 			items: []string{"yo", "ho", "and", "barrel", "of", "rum"},
 			f:     func(v string) bool { return len(v) >= 2 },
-			want:  6,
+			want:  []string{"yo", "ho", "and", "barrel", "of", "rum"},
 		},
 		{
 			name:  "one item does not match",
 			items: []string{"yo", "ho", "and", "a", "barrel", "of", "rum"},
 			f:     func(v string) bool { return len(v) >= 2 },
-			want:  6,
+			want:  []string{"yo", "ho", "and", "barrel", "of", "rum"},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := Count(tt.items, tt.f)
-			if got != tt.want {
-				t.Errorf("Count = %v, want %v", got, tt.want)
+			got := Filter(tt.items, tt.f)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("Filter = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestCountWithIndex_Int(t *testing.T) {
+func TestFilterWithIndex_Int(t *testing.T) {
 	tests := []struct {
 		name  string
 		items []int
 		f     func(int, int) bool
-		want  int
+		want  []int
 	}{
 		{
 			name: "no items",
-			want: 0,
+			want: nil,
 		},
 		{
 			name:  "one item matches",
 			items: []int{0},
 			f:     func(i, v int) bool { return v >= 0 },
-			want:  1,
+			want:  []int{0},
+		},
+		{
+			name:  "no items match",
+			items: []int{-1, -2, -3},
+			f:     func(i, v int) bool { return v >= 0 },
+			want:  nil,
 		},
 		{
 			name:  "all items match",
 			items: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 			f:     func(i, v int) bool { return v >= 0 },
-			want:  11,
+			want:  []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 		},
 		{
 			name:  "one item does not match at start",
 			items: []int{-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 			f:     func(i, v int) bool { return v >= 0 },
-			want:  11,
+			want:  []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 		},
 		{
 			name:  "one item does not match at end",
 			items: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -1},
 			f:     func(i, v int) bool { return v >= 0 },
-			want:  11,
+			want:  []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 		},
 		{
 			name:  "one item does not match at middle",
 			items: []int{0, 1, 2, 3, 4, -1, 5, 6, 7, 8, 9, 10},
 			f:     func(i, v int) bool { return v >= 0 },
-			want:  11,
+			want:  []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := CountWithIndex(tt.items, tt.f)
-			if got != tt.want {
-				t.Errorf("CountWithIndex = %v, want %v", got, tt.want)
+			got := FilterWithIndex(tt.items, tt.f)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("FilterWithIndex = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -20,7 +20,13 @@ func TestAll_Int(t *testing.T) {
 			want:  true,
 		},
 		{
-			name:  "multiple items match",
+			name:  "no items match",
+			items: []int{-1, -2, -3},
+			f:     func(v int) bool { return v >= 0 },
+			want:  false,
+		},
+		{
+			name:  "all items match",
 			items: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 			f:     func(v int) bool { return v >= 0 },
 			want:  true,
@@ -73,7 +79,7 @@ func TestAll_String(t *testing.T) {
 			want:  true,
 		},
 		{
-			name:  "multiple items match",
+			name:  "all items match",
 			items: []string{"yo", "ho", "and", "barrel", "of", "rum"},
 			f:     func(v string) bool { return len(v) >= 2 },
 			want:  true,
@@ -114,7 +120,7 @@ func TestAllWithIndex_Int(t *testing.T) {
 			want:  true,
 		},
 		{
-			name:  "multiple items match",
+			name:  "all items match",
 			items: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
 			f:     func(i, v int) bool { return v >= 0 },
 			want:  true,
