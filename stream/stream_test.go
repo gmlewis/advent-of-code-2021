@@ -1,263 +1,103 @@
 package stream
 
 import (
-	"math/rand"
-	"strconv"
 	"testing"
 
-	"github.com/gmlewis/advent-of-code-2021/enum"
-	"github.com/gmlewis/advent-of-code-2021/must"
-	"github.com/gmlewis/advent-of-code-2021/strfn"
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestChunkEvery_Int(t *testing.T) {
-	tests := []struct {
-		name string
-		end  int
-		n    int
-		step int
-		want [][]int
-	}{
-		{
-			name: "1-element channel",
-			n:    2,
-			step: 1,
-			want: nil,
-		},
-		{
-			name: "2-element channel",
-			end:  1,
-			n:    2,
-			step: 1,
-			want: [][]int{{0, 1}},
-		},
-		{
-			name: "5-element channel, n=2, step=1",
-			end:  5,
-			n:    2,
-			step: 1,
-			want: [][]int{{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}},
-		},
-		{
-			name: "5-element channel, n=3, step=1",
-			end:  5,
-			n:    3,
-			step: 1,
-			want: [][]int{{0, 1, 2}, {1, 2, 3}, {2, 3, 4}, {3, 4, 5}},
-		},
-		{
-			name: "5-element channel, n=4, step=1",
-			end:  5,
-			n:    4,
-			step: 1,
-			want: [][]int{{0, 1, 2, 3}, {1, 2, 3, 4}, {2, 3, 4, 5}},
-		},
-		{
-			name: "5-element channel, n=5, step=1",
-			end:  5,
-			n:    5,
-			step: 1,
-			want: [][]int{{0, 1, 2, 3, 4}, {1, 2, 3, 4, 5}},
-		},
-		{
-			name: "5-element channel, n=6, step=1",
-			end:  5,
-			n:    6,
-			step: 1,
-			want: [][]int{{0, 1, 2, 3, 4, 5}},
-		},
-		{
-			name: "5-element channel, n=2, step=2",
-			end:  5,
-			n:    2,
-			step: 2,
-			want: [][]int{{0, 1}, {2, 3}, {4, 5}},
-		},
-		{
-			name: "5-element channel, n=3, step=2",
-			end:  5,
-			n:    3,
-			step: 2,
-			want: [][]int{{0, 1, 2}, {2, 3, 4}},
-		},
-		{
-			name: "5-element channel, n=4, step=2",
-			end:  5,
-			n:    4,
-			step: 2,
-			want: [][]int{{0, 1, 2, 3}, {2, 3, 4, 5}},
-		},
-		{
-			name: "5-element channel, n=5, step=2",
-			end:  5,
-			n:    5,
-			step: 2,
-			want: [][]int{{0, 1, 2, 3, 4}},
-		},
-		{
-			name: "5-element channel, n=6, step=2",
-			end:  5,
-			n:    6,
-			step: 2,
-			want: [][]int{{0, 1, 2, 3, 4, 5}},
-		},
+func TestFirst(t *testing.T) {
+	if got, want := First[int](nil), 0; got != want {
+		t.Errorf("First(nil) = %v, want %v", got, want)
+	}
+	if got, want := First(ToChan([]int{1})), 1; got != want {
+		t.Errorf("First = %v, want %v", got, want)
+	}
+	if got, want := First(ToChan([]int{1, 2, 3})), 1; got != want {
+		t.Errorf("First = %v, want %v", got, want)
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := ToSlice(ChunkEvery(Range(0, tt.end), tt.n, tt.step))
-			if !cmp.Equal(got, tt.want) {
-				t.Errorf("ChunkEvery = %+v, want %+v", got, tt.want)
-			}
-		})
+	if got, want := First[string](nil), ""; got != want {
+		t.Errorf("First(nil) = %v, want %v", got, want)
+	}
+	if got, want := First(ToChan([]string{"1"})), "1"; got != want {
+		t.Errorf("First = %v, want %v", got, want)
+	}
+	if got, want := First(ToChan([]string{"1", "2", "3"})), "1"; got != want {
+		t.Errorf("First = %v, want %v", got, want)
 	}
 }
 
-func TestFlatMap_IntToString(t *testing.T) {
-	tests := []struct {
-		name   string
-		values []int
-		f      func(int) []string
-		want   []string
-	}{
-		{
-			name:   "empty int to string",
-			values: []int{},
-			want:   []string{},
-		},
-		{
-			name:   "doc example",
-			values: []int{1, 2, 3},
-			f:      func(v int) []string { s := strconv.Itoa(v); return []string{s, s} },
-			want:   []string{"1", "1", "2", "2", "3", "3"},
-		},
+func TestLength(t *testing.T) {
+	if got, want := Length[int](nil), 0; got != want {
+		t.Errorf("Length(nil) = %v, want %v", got, want)
+	}
+	if got, want := Length(ToChan([]int{1})), 1; got != want {
+		t.Errorf("Length = %v, want %v", got, want)
+	}
+	if got, want := Length(ToChan([]int{1, 2, 3})), 3; got != want {
+		t.Errorf("Length = %v, want %v", got, want)
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := FlatMap(ToChan(tt.values), tt.f)
-			if !cmp.Equal(got, tt.want) {
-				t.Errorf("FlatMap(%+v) = %+v, want %+v", tt.values, got, tt.want)
-			}
-		})
+	if got, want := Length[string](nil), 0; got != want {
+		t.Errorf("Length(nil) = %v, want %v", got, want)
+	}
+	if got, want := Length(ToChan([]string{"1"})), 1; got != want {
+		t.Errorf("Length = %v, want %v", got, want)
+	}
+	if got, want := Length(ToChan([]string{"1", "2", "3"})), 3; got != want {
+		t.Errorf("Length = %v, want %v", got, want)
 	}
 }
 
-func TestGroupBy_StringToInt(t *testing.T) {
-	tests := []struct {
-		name      string
-		values    []string
-		keyFunc   func(string) int
-		valueFunc func(string) string
-		want      map[int][]string
-	}{
-		{
-			name:   "empty int to string",
-			values: []string{},
-			want:   map[int][]string{},
-		},
-		{
-			name:      "doc example",
-			values:    []string{"ant", "buffalo", "cat", "dingo"},
-			keyFunc:   strfn.Length,
-			valueFunc: enum.Identity[string],
-			want: map[int][]string{
-				3: {"ant", "cat"}, 5: {"dingo"}, 7: {"buffalo"},
-			},
-		},
-		{
-			name:      "doc example",
-			values:    []string{"ant", "buffalo", "cat", "dingo"},
-			keyFunc:   strfn.Length,
-			valueFunc: strfn.First,
-			want: map[int][]string{
-				3: {"a", "c"}, 5: {"d"}, 7: {"b"},
-			},
-		},
+func TestTake(t *testing.T) {
+	if got, want := Take[int](nil, 5), []int(nil); !cmp.Equal(got, want) {
+		t.Errorf("Take(nil) = %v, want %v", got, want)
+	}
+	if got, want := Take(ToChan([]int{1}), 5), []int{1}; !cmp.Equal(got, want) {
+		t.Errorf("Take = %v, want %v", got, want)
+	}
+	if got, want := Take(ToChan([]int{1, 2, 3}), 2), []int{1, 2}; !cmp.Equal(got, want) {
+		t.Errorf("Take = %v, want %v", got, want)
+	}
+	if got, want := Take(ToChan([]int{1, 2, 3}), 5), []int{1, 2, 3}; !cmp.Equal(got, want) {
+		t.Errorf("Take = %v, want %v", got, want)
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := GroupBy(ToChan(tt.values), tt.keyFunc, tt.valueFunc)
-			if !cmp.Equal(got, tt.want) {
-				t.Errorf("GroupBy(%+v) = %+v, want %+v", tt.values, got, tt.want)
-			}
-		})
+	if got, want := Take[string](nil, 5), []string(nil); !cmp.Equal(got, want) {
+		t.Errorf("Take(nil) = %v, want %v", got, want)
+	}
+	if got, want := Take(ToChan([]string{"1"}), 5), []string{"1"}; !cmp.Equal(got, want) {
+		t.Errorf("Take = %v, want %v", got, want)
+	}
+	if got, want := Take(ToChan([]string{"1", "2", "3"}), 2), []string{"1", "2"}; !cmp.Equal(got, want) {
+		t.Errorf("Take = %v, want %v", got, want)
+	}
+	if got, want := Take(ToChan([]string{"1", "2", "3"}), 5), []string{"1", "2", "3"}; !cmp.Equal(got, want) {
+		t.Errorf("Take = %v, want %v", got, want)
 	}
 }
 
-func TestMap_StringToInt(t *testing.T) {
-	tests := []struct {
-		name string
-		from []string
-		f    func(string) int
-		want []int
-	}{
-		{
-			name: "empty string to int",
-			from: []string{},
-			want: []int{},
-		},
-		{
-			name: "simple decimal string to int",
-			from: []string{"1", "2", "3", "100"},
-			f:    must.Atoi,
-			want: []int{1, 2, 3, 100},
-		},
-		{
-			name: "simple binary string to int",
-			from: []string{"1", "10", "11", "10000000"},
-			f:    func(s string) int { return must.ParseInt(s, 2, 64) },
-			want: []int{1, 2, 3, 128},
-		},
+func TestSum(t *testing.T) {
+	if got, want := Sum[int](nil), 0; got != want {
+		t.Errorf("Sum(nil) = %v, want %v", got, want)
 	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := Map(ToChan(tt.from), tt.f)
-			if !cmp.Equal(got, tt.want) {
-				t.Errorf("Map(%+v) = %+v, want %+v", tt.from, got, tt.want)
-			}
-		})
+	if got, want := Sum(ToChan([]int{1})), 1; got != want {
+		t.Errorf("Sum = %v, want %v", got, want)
+	}
+	if got, want := Sum(ToChan([]int{1, 2, 3, 4})), 10; got != want {
+		t.Errorf("Sum = %v, want %v", got, want)
 	}
 }
 
-func TestRepeatedly(t *testing.T) {
-	rand.Seed(0)
-	want := []int32{2029793274, 526058514, 1408655353, 116702506, 789387515,
-		621654496, 413258767, 1407315077, 1926657288, 359390928}
-	got := Take(Repeatedly(rand.Int31), 10)
-	if !cmp.Equal(got, want) {
-		t.Errorf("Repeatedly = %+v, want %+v", got, want)
+func TestProduct(t *testing.T) {
+	if got, want := Product[int](nil), 0; got != want {
+		t.Errorf("Product(nil) = %v, want %v", got, want)
 	}
-}
-
-func TestScan(t *testing.T) {
-	want := []int{1, 3, 6, 10, 15}
-	got := ToSlice(Scan(Range(1, 5), 0, func(a, b int) int { return a + b }))
-	if !cmp.Equal(got, want) {
-		t.Errorf("Scan = %+v, want %+v", got, want)
+	if got, want := Product(ToChan([]int{1})), 1; got != want {
+		t.Errorf("Product = %v, want %v", got, want)
 	}
-}
-
-func TestUniq(t *testing.T) {
-	want := []int{1, 2, 3}
-	got := ToSlice(Uniq(ToChan([]int{1, 2, 3, 3, 2, 1})))
-	if !cmp.Equal(got, want) {
-		t.Errorf("Uniq = %+v, want %+v", got, want)
-	}
-}
-
-func TestZip2(t *testing.T) {
-	type ns struct {
-		N int
-		S string
-	}
-	want := []ns{{1, "a"}, {2, "b"}, {3, "c"}}
-	f := func(n int, s string) ns { return ns{n, s} }
-	got := ToSlice(Zip2(ToChan([]int{1, 2, 3, 4, 5, 6}), ToChan([]string{"a", "b", "c"}), f))
-	if !cmp.Equal(got, want) {
-		t.Errorf("Zip2 = %+v, want %+v", got, want)
+	if got, want := Product(ToChan([]int{1, 2, 3, 4})), 24; got != want {
+		t.Errorf("Product = %v, want %v", got, want)
 	}
 }
