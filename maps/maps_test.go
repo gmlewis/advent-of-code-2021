@@ -50,32 +50,6 @@ func TestValueLen(t *testing.T) {
 	}
 }
 
-func TestAll(t *testing.T) {
-	m := map[string]int{"a": 0, "b": 1, "c": 2}
-	f1 := func(k string, v int) bool { return v < 10 }
-	if got, want := All(m, f1), true; got != want {
-		t.Errorf("All = %v, want %v", got, want)
-	}
-
-	f2 := func(k string, v int) bool { return v < 2 }
-	if got, want := All(m, f2), false; got != want {
-		t.Errorf("All = %v, want %v", got, want)
-	}
-}
-
-func TestAny(t *testing.T) {
-	m := map[string]int{"a": 0, "b": 1, "c": 2}
-	f1 := func(k string, v int) bool { return v < 10 }
-	if got, want := Any(m, f1), true; got != want {
-		t.Errorf("Any = %v, want %v", got, want)
-	}
-
-	f2 := func(k string, v int) bool { return v < 0 }
-	if got, want := Any(m, f2), false; got != want {
-		t.Errorf("Any = %v, want %v", got, want)
-	}
-}
-
 func TestMap(t *testing.T) {
 	m := map[string]int{"a": 0, "b": 1, "c": 2}
 	f := func(k string, v int) string { return fmt.Sprintf("%v:%v", k, v) }
@@ -87,10 +61,30 @@ func TestMap(t *testing.T) {
 	}
 }
 
-func TestReduce(t *testing.T) {
-	m := map[string]int{"a": 0, "b": 1, "c": 2}
-	f := func(k string, v int, acc int) int { return acc + v }
-	if got, want := Reduce(m, 0, f), 3; got != want {
-		t.Errorf("Reduce = %v, want %v", got, want)
+func TestSumKeys(t *testing.T) {
+	m := map[int]int{7: 0, 8: 1, 9: 2}
+	if got, want := SumKeys(m), 24; got != want {
+		t.Errorf("SumKeys = %v, want %v", got, want)
+	}
+}
+
+func TestSumValues(t *testing.T) {
+	m := map[int]int{7: 0, 8: 1, 9: 2}
+	if got, want := SumValues(m), 3; got != want {
+		t.Errorf("SumValues = %v, want %v", got, want)
+	}
+}
+
+func TestProductKeys(t *testing.T) {
+	m := map[int]int{7: 0, 8: 1, 9: 2}
+	if got, want := ProductKeys(m), 504; got != want {
+		t.Errorf("ProductKeys = %v, want %v", got, want)
+	}
+}
+
+func TestProductValues(t *testing.T) {
+	m := map[int]int{7: 3, 8: 1, 9: 2}
+	if got, want := ProductValues(m), 6; got != want {
+		t.Errorf("ProductValues = %v, want %v", got, want)
 	}
 }
