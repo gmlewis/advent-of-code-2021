@@ -394,8 +394,6 @@ func TestTrimRightFunc(t *testing.T) {
 	}
 }
 
-// TrimSuffix returns s without the provided trailing suffix string.
-// If s doesn't end with suffix, s is returned unchanged.
 func TestTrimSuffix(t *testing.T) {
 	f := TrimSuffix("c")
 	if got, want := f("acd,cd,cd,"), "acd,cd,cd,"; got != want {
