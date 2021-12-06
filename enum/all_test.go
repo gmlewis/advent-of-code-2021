@@ -79,7 +79,7 @@ func TestAll_String(t *testing.T) {
 			want:  true,
 		},
 		{
-			name:  "one item does not match at start",
+			name:  "one item does not match",
 			items: []string{"yo", "ho", "and", "a", "barrel", "of", "rum"},
 			f:     func(v string) bool { return len(v) >= 2 },
 			want:  false,
