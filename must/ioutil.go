@@ -2,7 +2,6 @@ package must
 
 import (
 	"io/ioutil"
-	"log"
 	"strings"
 )
 
@@ -11,7 +10,7 @@ import (
 func ReadFile(filename string) string {
 	buf, err := ioutil.ReadFile(filename)
 	if err != nil {
-		log.Fatal(err)
+		fatal(err)
 	}
 
 	return strings.TrimSpace(string(buf))

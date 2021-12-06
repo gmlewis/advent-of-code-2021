@@ -1,7 +1,6 @@
 package must
 
 import (
-	"log"
 	"strconv"
 )
 
@@ -9,7 +8,7 @@ import (
 func Atoi(s string) int {
 	v, err := strconv.Atoi(s)
 	if err != nil {
-		log.Fatal(err)
+		fatal(err)
 	}
 	return v
 }
@@ -19,7 +18,7 @@ func Atoi(s string) int {
 func ParseBool(str string) bool {
 	v, err := strconv.ParseBool(str)
 	if err != nil {
-		log.Fatal(err)
+		fatal(err)
 	}
 	return v
 }
@@ -29,7 +28,7 @@ func ParseBool(str string) bool {
 func ParseComplex(s string, bitSize int) complex128 {
 	v, err := strconv.ParseComplex(s, bitSize)
 	if err != nil {
-		log.Fatal(err)
+		fatal(err)
 	}
 	return v
 }
@@ -39,7 +38,7 @@ func ParseComplex(s string, bitSize int) complex128 {
 func ParseFloat(s string, bitSize int) float64 {
 	v, err := strconv.ParseFloat(s, bitSize)
 	if err != nil {
-		log.Fatal(err)
+		fatal(err)
 	}
 	return v
 }
@@ -49,7 +48,7 @@ func ParseFloat(s string, bitSize int) float64 {
 func ParseInt(s string, base, bitSize int) int {
 	v, err := strconv.ParseInt(s, base, bitSize)
 	if err != nil {
-		log.Fatal(err)
+		fatal(err)
 	}
 	return int(v)
 }
@@ -59,7 +58,7 @@ func ParseInt(s string, base, bitSize int) int {
 func ParseUint(s string, base int, bitSize int) uint64 {
 	v, err := strconv.ParseUint(s, base, bitSize)
 	if err != nil {
-		log.Fatal(err)
+		fatal(err)
 	}
 	return v
 }
