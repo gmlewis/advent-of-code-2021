@@ -1,8 +1,8 @@
 package stream
 
 import (
-	"fmt"
 	"math/rand"
+	"strconv"
 	"testing"
 
 	"github.com/gmlewis/advent-of-code-2021/enum"
@@ -129,7 +129,7 @@ func TestFlatMap_IntToString(t *testing.T) {
 		{
 			name:   "doc example",
 			values: []int{1, 2, 3},
-			f:      func(v int) []string { s := fmt.Sprintf("%v", v); return []string{s, s} },
+			f:      func(v int) []string { s := strconv.Itoa(v); return []string{s, s} },
 			want:   []string{"1", "1", "2", "2", "3", "3"},
 		},
 	}

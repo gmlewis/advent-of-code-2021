@@ -4,7 +4,7 @@ package enum
 //
 // For example:
 //   FlatMap([]int{1,2,3}, func (v int) []string {
-//     s := fmt.Sprintf("%v", v)
+//     s := strconv.Itoa(v)
 //     return []string{s,s}
 //   })
 // returns:

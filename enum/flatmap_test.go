@@ -1,7 +1,7 @@
 package enum
 
 import (
-	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/gmlewis/advent-of-code-2021/must"
@@ -36,7 +36,7 @@ func TestFlatMap_IntToString(t *testing.T) {
 	}
 
 	f := func(v int) []string {
-		vs := fmt.Sprintf("%v", v)
+		vs := strconv.Itoa(v)
 		return []string{vs, vs}
 	}
 
@@ -120,7 +120,7 @@ func TestFlatMapWithIndex_Int(t *testing.T) {
 	}
 
 	f := func(i, v int) []string {
-		vs := fmt.Sprintf("%v", v)
+		vs := strconv.Itoa(v)
 		return []string{vs, vs}
 	}
 
