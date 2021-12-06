@@ -26,16 +26,6 @@ func First[T any](items []T) (ret T) {
 	return items[0]
 }
 
-// Member checks if elem exists within values.
-func Member[T comparable](values []T, elem T) bool {
-	for _, v := range values {
-		if elem == v {
-			return true
-		}
-	}
-	return false
-}
-
 // Reduce reduces a slice using an accumulator.
 func Reduce[S any, T any](values []S, acc T, f func(S, T) T) T {
 	for _, v := range values {
