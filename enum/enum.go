@@ -26,18 +26,6 @@ func First[T any](items []T) (ret T) {
 	return items[0]
 }
 
-// Dedup returns a slice where all consecutive duplicated
-// elements are collapsed to a single element.
-func Dedup[T comparable](values []T) []T {
-	result := []T{}
-	for i, v := range values {
-		if i == 0 || v != values[i-1] {
-			result = append(result, v)
-		}
-	}
-	return result
-}
-
 // Each processes each item with the provided function.
 func Each[T any](items []T, f func(item T)) {
 	for _, item := range items {
