@@ -8,7 +8,7 @@ import (
 
 // Equals returns a function that checks if a value
 // is equal to a given value.
-func Equals[T comparable](value T) func(T) bool {
+func Equals[T comparable](value T) FilterFunc[T] {
 	return func(v T) bool { return v == value }
 }
 
