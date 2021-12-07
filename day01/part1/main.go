@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gmlewis/advent-of-code-2021/enum"
+	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -16,14 +16,14 @@ var printf = fmt.Printf
 func main() {
 	flag.Parse()
 
-	enum.Each(flag.Args(), process)
+	Each(flag.Args(), process)
 }
 
 func process(filename string) {
 	log.Printf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
-	vals := enum.Map(lines, must.Atoi)
-	pairs := enum.ChunkEvery(vals, 2, 1)
-	count := enum.Count(pairs, func(pair []int) bool { return pair[1] > pair[0] })
+	vals := Map(lines, must.Atoi)
+	pairs := ChunkEvery(vals, 2, 1)
+	count := Count(pairs, func(pair []int) bool { return pair[1] > pair[0] })
 	printf("Solution: %v\n", count)
 }

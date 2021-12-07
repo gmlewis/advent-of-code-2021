@@ -8,7 +8,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/gmlewis/advent-of-code-2021/enum"
+	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/mathfn"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
@@ -18,27 +18,24 @@ var printf = fmt.Printf
 func main() {
 	flag.Parse()
 
-	enum.Each(flag.Args(), process)
+	Each(flag.Args(), process)
 }
 
 func process(filename string) {
 	log.Printf("Processing %v ...", filename)
 	buf := must.ReadFile(filename)
-	pos := enum.Map(strings.Split(buf, ","), must.Atoi)
-	max := enum.Max(pos)
-	min := enum.Min(pos)
+	pos := Map(strings.Split(buf, ","), must.Atoi)
+	max := Max(pos)
+	min := Min(pos)
 	log.Printf("min=%v, max=%v", min, max)
 
-	var bestSum int
-	for i := min; i <= max; i++ {
-		sum := enum.Reduce(pos, 0, func(x, acc int) int {
+	f := func(i int) int {
+		return Reduce(pos, 0, func(x, acc int) int {
 			return acc + mathfn.Abs(i-x)
 		})
-		// log.Printf("i=%v, sum=%v", i, sum)
-		if i == min || sum < bestSum {
-			bestSum = sum
-		}
 	}
+
+	bestSum := Min(Map(Range(min, max), f))
 
 	printf("Solution: %v\n", bestSum)
 }

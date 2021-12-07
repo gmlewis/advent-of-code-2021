@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/gmlewis/advent-of-code-2021/enum"
+	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
@@ -19,7 +19,7 @@ var printf = fmt.Printf
 func main() {
 	flag.Parse()
 
-	enum.Each(flag.Args(), process)
+	Each(flag.Args(), process)
 }
 
 func process(filename string) {
@@ -27,9 +27,9 @@ func process(filename string) {
 	buf := must.ReadFile(filename)
 	parts := strings.Split(buf, "\n\n")
 	numbers := strings.Split(parts[0], ",")
-	boards := enum.Map(parts[1:], parseBoard)
+	boards := Map(parts[1:], parseBoard)
 
-	best := enum.Reduce(boards, &tup{}, func(board *BoardT, acc *tup) *tup {
+	best := Reduce(boards, &tup{}, func(board *BoardT, acc *tup) *tup {
 		turns := board.play(numbers)
 		if acc.board == nil || turns > acc.turns {
 			acc.turns = turns
@@ -89,7 +89,7 @@ func (b *BoardT) bingo() bool {
 		return false
 	}
 	f := func(m map[string][]string) bool {
-		return enum.Any(maps.Map(m, maps.ValueLen[string, string]), enum.Equals(5))
+		return Any(maps.Map(m, maps.ValueLen[string, string]), Equals(5))
 	}
 	return f(b.row) || f(b.col)
 }

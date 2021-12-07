@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gmlewis/advent-of-code-2021/enum"
+	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
 	"github.com/gmlewis/advent-of-code-2021/strfn"
 )
@@ -17,7 +17,7 @@ var printf = fmt.Printf
 func main() {
 	flag.Parse()
 
-	enum.Each(flag.Args(), process)
+	Each(flag.Args(), process)
 }
 
 func process(filename string) {
@@ -27,14 +27,14 @@ func process(filename string) {
 	half := len(lines) / 2
 
 	sums := make([]int, numBits)
-	sums = enum.Reduce(lines, sums, func(line string, acc []int) []int {
+	sums = Reduce(lines, sums, func(line string, acc []int) []int {
 		strfn.RunesWithIndex(line, func(i int, r rune) { acc[i] += int(r - '0') })
 		return acc
 	})
 
 	var gamma int
 	var toggle int
-	enum.EachWithIndex(sums, func(i int, sum int) {
+	EachWithIndex(sums, func(i int, sum int) {
 		toggle += (1 << (numBits - i - 1))
 		if sum >= half {
 			gamma += (1 << (numBits - i - 1))

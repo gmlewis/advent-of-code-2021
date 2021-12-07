@@ -15,7 +15,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gmlewis/advent-of-code-2021/enum"
+	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -24,7 +24,7 @@ var printf = fmt.Printf
 func main() {
 	flag.Parse()
 
-	enum.Each(flag.Args(), process)
+	Each(flag.Args(), process)
 }
 
 func process(filename string) {

@@ -8,7 +8,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/gmlewis/advent-of-code-2021/enum"
+	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -17,13 +17,13 @@ var printf = fmt.Printf
 func main() {
 	flag.Parse()
 
-	enum.Each(flag.Args(), process)
+	Each(flag.Args(), process)
 }
 
 func process(filename string) {
 	log.Printf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
-	position := enum.Reduce(lines, []int{0, 0, 0}, processLine)
+	position := Reduce(lines, []int{0, 0, 0}, processLine)
 	printf("Solution: %v - product: %v\n", position, position[0]*position[1])
 }
 
