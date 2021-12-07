@@ -51,6 +51,7 @@ func TestExample(t *testing.T) {
 }
 
 var example1 = \`
+
 \`
 EOF
 )
