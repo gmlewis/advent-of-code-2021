@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/mathfn"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -31,11 +32,7 @@ func process(filename string) {
 	var bestSum int
 	for i := min; i <= max; i++ {
 		sum := enum.Reduce(pos, 0, func(x, acc int) int {
-			d := i - x
-			if d < 0 {
-				d = -d
-			}
-			return acc + d
+			return acc + mathfn.Abs(i-x)
 		})
 		// log.Printf("i=%v, sum=%v", i, sum)
 		if i == min || sum < bestSum {
