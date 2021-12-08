@@ -15,7 +15,7 @@ go version devel go1.18-deb988a286 Fri Dec 3 18:09:19 2021 +0000 linux/amd64
 Benchmarks were run on an Intel i7 laptop running Linux Mint 19.3.
 
 | Puzzle      | Benchmark          | Iters   | ns/op           |
-|-------------|--------------------|---------|-----------------|
+|-------------|--------------------|     --: |             --: |
 | day01/part1 | BenchmarkExample-4 |  176708 |      6524 ns/op |
 | day01/part1 | BenchmarkInput-4   |    8048 |    144071 ns/op |
 | day01/part2 | BenchmarkExample-4 |  183540 |      6406 ns/op |
