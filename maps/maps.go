@@ -38,6 +38,15 @@ type Number interface {
 	constraints.Integer | constraints.Unsigned | constraints.Float | constraints.Complex
 }
 
+// Swap swaps the keys and values and returns a new map.
+func Swap[K comparable, V comparable](pairs map[K]V) map[V]K {
+	ret := map[V]K{}
+	for k, v := range pairs {
+		ret[v] = k
+	}
+	return ret
+}
+
 // SumKeys sums up the keys in a map.
 func SumKeys[K Number, V any](pairs map[K]V) (ret K) {
 	for k := range pairs {

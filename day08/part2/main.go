@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"math/bits"
 	"sort"
 	"strings"
 
@@ -52,6 +53,66 @@ func solveLine(line string) int {
 	}
 	logf("digits=%+v, digBits=%+v", digits, digBits)
 
+	swapDigits := maps.Swap(digits)
+	swapDigBits := maps.Swap(digBits)
+
+	mask := byte(0x7f)
+	one := digBits[swapDigits[1]]
+	four := digBits[swapDigits[4]]
+	seven := digBits[swapDigits[7]]
+	a := one ^ seven
+	logf("mask=0x%02x, a=0x%02x, one=0x%02x, four=0x%02x, seven=0x%02x", mask, a, one, four, seven)
+	ll2 := mask &^ (four | seven)
+	e := byte(1 << bits.TrailingZeros(uint(ll2)))
+	g := ll2 ^ e
+	lm2 := one ^ four
+	b := byte(1 << bits.TrailingZeros(uint(lm2)))
+	d := lm2 ^ b
+	c := byte(1 << bits.TrailingZeros(uint(one)))
+	f := one ^ c
+
+	var nine byte
+	if _, ok := swapDigBits[four|seven|g]; !ok {
+		e, g = g, e
+	}
+	nine = four | seven | g
+	digits[swapDigBits[nine]] = 9
+	swapDigits[9] = swapDigBits[nine]
+	logf("nine=0x%02x, digits[%v]=%v", nine, swapDigits[9], digits[swapDigits[9]])
+
+	var three byte
+	if _, ok := swapDigBits[nine^b]; !ok {
+		b, d = d, b
+	}
+	three = nine ^ b
+	digits[swapDigBits[three]] = 3
+	swapDigits[3] = swapDigBits[three]
+	logf("three=0x%02x, digits[%v]=%v", three, swapDigits[3], digits[swapDigits[3]])
+
+	var five byte
+	if _, ok := swapDigBits[nine^c]; !ok {
+		c, f = f, c
+	}
+	five = nine ^ c
+	digits[swapDigBits[five]] = 5
+	swapDigits[5] = swapDigBits[five]
+	logf("five=0x%02x, digits[%v]=%v", five, swapDigits[5], digits[swapDigits[5]])
+
+	zero := a | b | c | e | f | g
+	digits[swapDigBits[zero]] = 0
+	swapDigits[0] = swapDigBits[zero]
+	logf("zero=0x%02x, digits[%v]=%v", zero, swapDigits[0], digits[swapDigits[0]])
+
+	two := a | c | d | e | g
+	digits[swapDigBits[two]] = 2
+	swapDigits[2] = swapDigBits[two]
+	logf("two=0x%02x, digits[%v]=%v", two, swapDigits[2], digits[swapDigits[2]])
+
+	six := a | b | d | e | f | g
+	digits[swapDigBits[six]] = 6
+	swapDigits[6] = swapDigBits[six]
+	logf("six=0x%02x, digits[%v]=%v", six, swapDigits[6], digits[swapDigits[6]])
+
 	return 0
 }
 
@@ -91,17 +152,4 @@ var digitSize = map[int]int{
 	4: 4,
 	3: 7,
 	7: 8,
-}
-
-var patterns = str2digit{
-	"abcefg":  0,
-	"cf":      1,
-	"acdeg":   2,
-	"acdfg":   3,
-	"bcdf":    4,
-	"abdfg":   5,
-	"abdefg":  6,
-	"acf":     7,
-	"abcdefg": 8,
-	"abcdfg":  9,
 }
