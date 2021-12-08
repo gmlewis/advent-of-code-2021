@@ -42,16 +42,12 @@ func solveLine(line string) int {
 	lhs := Map(strings.Split(parts[0], " "), sortWord)
 	rhs := Map(strings.Split(parts[1], " "), sortWord)
 	all := append(append([]string{}, lhs...), rhs...)
-	// logf("lhs=%v, rhs=%v", lhs, rhs)
 
 	digits := Reduce(all, str2digit{}, identify147)
 	digBits := Reduce(all, str2bits{}, strToBits)
 	if All(rhs, maps.HasKey(digits)) {
-		v := ReduceWithIndex(rhs, 0, calcNum(digits))
-		// logf("digits=%+v, value=%v", digits, v)
-		return v
+		return ReduceWithIndex(rhs, 0, calcNum(digits))
 	}
-	// logf("digits=%+v, digBits=%+v", digits, digBits)
 
 	swapDigits := maps.Swap(digits)
 	swapDigBits := maps.Swap(digBits)
@@ -106,9 +102,7 @@ func solveLine(line string) int {
 	digits[swapDigBits[six]] = 6
 	swapDigits[6] = swapDigBits[six]
 
-	v := ReduceWithIndex(rhs, 0, calcNum(digits))
-	// logf("digits=%+v, value=%v", digits, v)
-	return v
+	return ReduceWithIndex(rhs, 0, calcNum(digits))
 }
 
 type str2digit map[string]int

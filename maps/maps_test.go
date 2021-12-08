@@ -8,6 +8,17 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
+func TestHasKey(t *testing.T) {
+	m := map[string]int{"a": 0, "b": 1, "c": 2}
+	f := HasKey(m)
+	if !f("a") {
+		t.Error("HasKey = false, want true")
+	}
+	if f("yo") {
+		t.Error("HasKey = true, want false")
+	}
+}
+
 func TestKey(t *testing.T) {
 	if got, want := Key(0, "value"), 0; got != want {
 		t.Errorf("Key = %v, want %v", got, want)
@@ -58,6 +69,15 @@ func TestMap(t *testing.T) {
 	sort.Strings(got)
 	if !cmp.Equal(got, want) {
 		t.Errorf("Map = %v, want %v", got, want)
+	}
+}
+
+func TestSwap(t *testing.T) {
+	m := map[string]int{"a": 0, "b": 1, "c": 2}
+	got := Swap(m)
+	want := map[int]string{0: "a", 1: "b", 2: "c"}
+	if !cmp.Equal(got, want) {
+		t.Errorf("Swap = %v, want %v", got, want)
 	}
 }
 
