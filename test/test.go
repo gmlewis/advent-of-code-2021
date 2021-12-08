@@ -6,8 +6,29 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"testing"
 )
+
+type logFunc *func(string, ...interface{})
+type printFunc *func(string, ...interface{}) (int, error)
+
+// Benchmark benchmarks the provided process.
+func Benchmark(b *testing.B, filename string, process func(string), logf logFunc, printf printFunc) {
+	b.Helper()
+
+	wd, err := os.Getwd()
+	if err != nil {
+		b.Fatal(err)
+	}
+	path := filepath.Join(wd, filename)
+	*logf = silentLogf
+	*printf = silentPrintf
+
+	for n := 0; n < b.N; n++ {
+		process(path)
+	}
+}
 
 // Runner runs the provided process by placing the puzzle
 // input into a temporary file and passing the filename to
@@ -45,3 +66,7 @@ func testPrintf(format string, a ...interface{}) (int, error) {
 	got = fmt.Sprintf(format, a...)
 	return 0, nil
 }
+
+func silentLogf(format string, a ...interface{}) {}
+
+func silentPrintf(format string, a ...interface{}) (int, error) { return 0, nil }

@@ -13,6 +13,7 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
+var logf = log.Printf
 var printf = fmt.Printf
 
 func main() {
@@ -22,12 +23,12 @@ func main() {
 }
 
 func process(filename string) {
-	log.Printf("Processing %v ...", filename)
+	logf("Processing %v ...", filename)
 	buf := must.ReadFile(filename)
 	pos := Map(strings.Split(buf, ","), must.Atoi)
 	max := Max(pos)
 	min := Min(pos)
-	log.Printf("min=%v, max=%v", min, max)
+	logf("min=%v, max=%v", min, max)
 
 	f := func(i int) int {
 		return Reduce(pos, 0, func(x, acc int) int {

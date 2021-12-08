@@ -13,6 +13,7 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
+var logf = log.Printf
 var printf = fmt.Printf
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 }
 
 func process(filename string) {
-	log.Printf("Processing %v ...", filename)
+	logf("Processing %v ...", filename)
 	buf := must.ReadFile(filename)
 	fish := Map(strings.Split(strings.TrimSpace(buf), ","), must.Atoi)
 	m := Reduce(Range(1, 256), Frequencies(fish), simFish)

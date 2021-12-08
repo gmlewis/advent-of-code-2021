@@ -14,6 +14,7 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
+var logf = log.Printf
 var printf = fmt.Printf
 
 func main() {
@@ -23,7 +24,7 @@ func main() {
 }
 
 func process(filename string) {
-	log.Printf("Processing %v ...", filename)
+	logf("Processing %v ...", filename)
 	buf := must.ReadFile(filename)
 	parts := strings.Split(buf, "\n\n")
 	numbers := strings.Split(parts[0], ",")
@@ -39,7 +40,7 @@ func process(filename string) {
 	})
 
 	sum := best.board.unmarkedSum()
-	log.Printf("unmarkedSum=%v, lastNum=%v", sum, best.board.lastNum)
+	logf("unmarkedSum=%v, lastNum=%v", sum, best.board.lastNum)
 
 	printf("Solution: %v\n", sum*best.board.lastNum)
 }
@@ -106,6 +107,6 @@ func parseBoard(puz string) *BoardT {
 			b.unmarked[v] = fmt.Sprintf("%v,%v", y, x)
 		}
 	}
-	// log.Printf("board: %#v", b.unmarked)
+	// logf("board: %#v", b.unmarked)
 	return b
 }

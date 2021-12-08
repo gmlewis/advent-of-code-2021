@@ -19,6 +19,7 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
+var logf = log.Printf
 var printf = fmt.Printf
 
 func main() {
@@ -28,7 +29,7 @@ func main() {
 }
 
 func process(filename string) {
-	log.Printf("Processing %v ...", filename)
+	logf("Processing %v ...", filename)
 	buf := must.ReadFile(filename)
 
 	printf("Solution: %v\n", len(buf))
@@ -48,6 +49,14 @@ import (
 func TestExample(t *testing.T) {
 	want := "Solution: 0\n"
 	test.Runner(t, example1, want, process, &printf)
+}
+
+func BenchmarkExample(b *testing.B) {
+	test.Benchmark(b, "../example1.txt", process, &logf, &printf)
+}
+
+func BenchmarkInput(b *testing.B) {
+	test.Benchmark(b, "../input.txt", process, &logf, &printf)
 }
 
 var example1 = \`

@@ -13,6 +13,7 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
+var logf = log.Printf
 var printf = fmt.Printf
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 }
 
 func process(filename string) {
-	log.Printf("Processing %v ...", filename)
+	logf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
 	b := Reduce(lines, map[string]int{}, parseLines)
 	crossings := maps.Count(b, func(k string, v int) bool { return v >= 2 })

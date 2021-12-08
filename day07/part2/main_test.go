@@ -11,6 +11,14 @@ func TestExample(t *testing.T) {
 	test.Runner(t, example1, want, process, &printf)
 }
 
+func BenchmarkExample(b *testing.B) {
+	test.Benchmark(b, "../example1.txt", process, &logf, &printf)
+}
+
+func BenchmarkInput(b *testing.B) {
+	test.Benchmark(b, "../input.txt", process, &logf, &printf)
+}
+
 var example1 = `
 16,1,2,0,4,2,7,1,2,14
 `
