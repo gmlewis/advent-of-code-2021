@@ -25,9 +25,9 @@ func process(filename string) {
 	logf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
 
-	count := Sum(Map(lines, count1478))
+	sum := Sum(Map(lines, count1478))
 
-	printf("Solution: %v\n", count)
+	printf("Solution: %v\n", sum)
 }
 
 func count1478(line string) int {

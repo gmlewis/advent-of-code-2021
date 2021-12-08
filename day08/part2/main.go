@@ -29,9 +29,9 @@ func process(filename string) {
 	logf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
 
-	count := Sum(Map(lines, solveLine))
+	sum := Sum(Map(lines, solveLine))
 
-	printf("Solution: %v\n", count)
+	printf("Solution: %v\n", sum)
 }
 
 func solveLine(line string) int {
@@ -66,27 +66,24 @@ func solveLine(line string) int {
 	c := byte(1 << bits.TrailingZeros(uint(one)))
 	f := one ^ c
 
-	var nine byte
 	if _, ok := swapDigBits[four|seven|g]; !ok {
 		e, g = g, e
 	}
-	nine = four | seven | g
+	nine := four | seven | g
 	digits[swapDigBits[nine]] = 9
 	swapDigits[9] = swapDigBits[nine]
 
-	var three byte
 	if _, ok := swapDigBits[nine^b]; !ok {
 		b, d = d, b
 	}
-	three = nine ^ b
+	three := nine ^ b
 	digits[swapDigBits[three]] = 3
 	swapDigits[3] = swapDigBits[three]
 
-	var five byte
 	if _, ok := swapDigBits[nine^c]; !ok {
 		c, f = f, c
 	}
-	five = nine ^ c
+	five := nine ^ c
 	digits[swapDigBits[five]] = 5
 	swapDigits[5] = swapDigBits[five]
 
