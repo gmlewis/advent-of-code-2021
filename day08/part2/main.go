@@ -43,19 +43,19 @@ func solveLine(line string) int {
 	rhs := Map(strings.Split(parts[1], " "), sortWord)
 	all := append(append([]string{}, lhs...), rhs...)
 
-	digits := Reduce(all, str2digit{}, identify147)
-	digBits := Reduce(all, str2bits{}, strToBits)
+	digits := Reduce(all, str2digitT{}, identify147)
+	str2bits := Reduce(all, str2bitsT{}, strToBits)
 	if All(rhs, maps.HasKey(digits)) {
 		return ReduceWithIndex(rhs, 0, calcNum(digits))
 	}
 
-	swapDigits := maps.Swap(digits)
-	swapDigBits := maps.Swap(digBits)
+	digit2str := maps.Swap(digits)
+	bits2str := maps.Swap(str2bits)
 
 	mask := byte(0x7f)
-	one := digBits[swapDigits[1]]
-	four := digBits[swapDigits[4]]
-	seven := digBits[swapDigits[7]]
+	one := str2bits[digit2str[1]]
+	four := str2bits[digit2str[4]]
+	seven := str2bits[digit2str[7]]
 	a := one ^ seven
 	ll2 := mask &^ (four | seven)
 	e := byte(1 << bits.TrailingZeros(uint(ll2)))
@@ -66,44 +66,40 @@ func solveLine(line string) int {
 	c := byte(1 << bits.TrailingZeros(uint(one)))
 	f := one ^ c
 
-	if _, ok := swapDigBits[four|seven|g]; !ok {
+	if _, ok := bits2str[four|seven|g]; !ok {
 		e, g = g, e
 	}
 	nine := four | seven | g
-	digits[swapDigBits[nine]] = 9
-	swapDigits[9] = swapDigBits[nine]
 
-	if _, ok := swapDigBits[nine^b]; !ok {
+	save := func(bits byte, digit int) { digits[bits2str[bits]] = digit }
+	save(nine, 9)
+
+	if _, ok := bits2str[nine^b]; !ok {
 		b, d = d, b
 	}
 	three := nine ^ b
-	digits[swapDigBits[three]] = 3
-	swapDigits[3] = swapDigBits[three]
+	save(three, 3)
 
-	if _, ok := swapDigBits[nine^c]; !ok {
+	if _, ok := bits2str[nine^c]; !ok {
 		c, f = f, c
 	}
 	five := nine ^ c
-	digits[swapDigBits[five]] = 5
-	swapDigits[5] = swapDigBits[five]
+	save(five, 5)
 
 	zero := a | b | c | e | f | g
-	digits[swapDigBits[zero]] = 0
-	swapDigits[0] = swapDigBits[zero]
+	save(zero, 0)
 
 	two := a | c | d | e | g
-	digits[swapDigBits[two]] = 2
-	swapDigits[2] = swapDigBits[two]
+	save(two, 2)
 
 	six := a | b | d | e | f | g
-	digits[swapDigBits[six]] = 6
-	swapDigits[6] = swapDigBits[six]
+	save(six, 6)
 
 	return ReduceWithIndex(rhs, 0, calcNum(digits))
 }
 
-type str2digit map[string]int
-type str2bits map[string]byte
+type str2digitT map[string]int
+type str2bitsT map[string]byte
 
 func calcNum(digits map[string]int) func(index int, w string, acc int) int {
 	return func(index int, w string, acc int) int {
@@ -111,7 +107,7 @@ func calcNum(digits map[string]int) func(index int, w string, acc int) int {
 	}
 }
 
-func strToBits(w string, acc str2bits) str2bits {
+func strToBits(w string, acc str2bitsT) str2bitsT {
 	var sum byte
 	for _, r := range w {
 		sum |= (1 << (r - 'a'))
@@ -120,7 +116,7 @@ func strToBits(w string, acc str2bits) str2bits {
 	return acc
 }
 
-func identify147(w string, acc str2digit) str2digit {
+func identify147(w string, acc str2digitT) str2digitT {
 	if v, ok := digitSize[len(w)]; ok {
 		acc[w] = v
 	}
@@ -133,9 +129,4 @@ func sortWord(w string) string {
 	return string(r)
 }
 
-var digitSize = map[int]int{
-	2: 1,
-	4: 4,
-	3: 7,
-	7: 8,
-}
+var digitSize = map[int]int{2: 1, 4: 4, 3: 7, 7: 8}
