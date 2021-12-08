@@ -4,6 +4,11 @@ package maps
 
 import "constraints"
 
+// HasKey returns a function that tests if a key exists in the map.
+func HasKey[K comparable, V any](pairs map[K]V) func(k K) bool {
+	return func(k K) bool { _, ok := pairs[k]; return ok }
+}
+
 // Key returns the key of a map key/value pair.
 func Key[K comparable, V any](key K, value V) K {
 	return key

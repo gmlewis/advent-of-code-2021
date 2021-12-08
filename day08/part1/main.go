@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"strings"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
@@ -22,7 +23,28 @@ func main() {
 
 func process(filename string) {
 	logf("Processing %v ...", filename)
-	buf := must.ReadFile(filename)
+	lines := must.ReadFileLines(filename)
 
-	printf("Solution: %v\n", len(buf))
+	count := Sum(Map(lines, count1478))
+
+	printf("Solution: %v\n", count)
+}
+
+func count1478(line string) int {
+	parts := strings.Split(line, " | ")
+	if len(parts) != 2 {
+		log.Fatalf("bad line: %v", line)
+	}
+
+	return Count(strings.Split(parts[1], " "), func(w string) bool {
+		_, ok := digits[len(w)]
+		return ok
+	})
+}
+
+var digits = map[int]int{
+	2: 1,
+	4: 4,
+	3: 7,
+	7: 8,
 }
