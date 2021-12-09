@@ -38,7 +38,7 @@ func process(filename string) {
 
 type gridT map[keyT]int
 
-type keyT struct{ x, y int }
+type keyT [2]int
 
 func riskLevel(m gridT) func(k keyT, v, acc int) int {
 	d := [][]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
@@ -52,7 +52,7 @@ func riskLevel(m gridT) func(k keyT, v, acc int) int {
 
 func isLowPoint(m gridT, k keyT, v int) func(d []int) bool {
 	return func(d []int) bool {
-		dv, ok := m[keyT{x: k.x + d[0], y: k.y + d[1]}]
+		dv, ok := m[keyT{k[0] + d[0], k[1] + d[1]}]
 		return !ok || dv > v
 	}
 }
