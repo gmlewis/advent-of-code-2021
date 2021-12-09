@@ -8,6 +8,7 @@ import (
 	"log"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/must"
 	"github.com/gmlewis/advent-of-code-2021/strfn"
 )
@@ -26,28 +27,32 @@ func process(filename string) {
 	lines := must.ReadFileLines(filename)
 
 	m := ReduceWithIndex(lines, gridT{}, func(y int, line string, acc gridT) gridT {
-		strfn.RunesWithIndex(line, func(x int, r rune) { acc[key(x, y)] = int(r - '0') })
+		strfn.RunesWithIndex(line, func(x int, r rune) { acc[keyT{x, y}] = int(r - '0') })
 		return acc
 	})
-	log.Printf("m=%+v", m)
 
 	risk := maps.Reduce(m, 0, riskLevel(m))
 
 	printf("Solution: %v\n", risk)
 }
 
-type gridT map[string]int
+type gridT map[keyT]int
 
-func key(x, y int) string { return fmt.Sprintf("%v,%v", y, x) }
+type keyT struct{ x, y int }
 
-func riskLevel(m gridT) func(k, v) int {
-	return func(k, v) int {
-		const d = [][]int{{-1,0},{1,0},{0,-1},{0,1}}
-		if !All(d, isLowPoint(m, k, v)) { return 0 }
-		return v + 1
+func riskLevel(m gridT) func(k keyT, v, acc int) int {
+	d := [][]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+	return func(k keyT, v, acc int) int {
+		if !All(d, isLowPoint(m, k, v)) {
+			return acc
+		}
+		return acc + v + 1
 	}
 }
 
-func isLowPoint(m gridT, k string, v int) bool {
-	p := strings.
+func isLowPoint(m gridT, k keyT, v int) func(d []int) bool {
+	return func(d []int) bool {
+		dv, ok := m[keyT{x: k.x + d[0], y: k.y + d[1]}]
+		return !ok || dv > v
+	}
 }

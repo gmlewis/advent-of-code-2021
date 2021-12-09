@@ -8,7 +8,9 @@ import (
 	"log"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/must"
+	"github.com/gmlewis/advent-of-code-2021/strfn"
 )
 
 var logf = log.Printf
@@ -22,7 +24,35 @@ func main() {
 
 func process(filename string) {
 	logf("Processing %v ...", filename)
-	buf := must.ReadFile(filename)
+	lines := must.ReadFileLines(filename)
 
-	printf("Solution: %v\n", len(buf))
+	m := ReduceWithIndex(lines, gridT{}, func(y int, line string, acc gridT) gridT {
+		strfn.RunesWithIndex(line, func(x int, r rune) { acc[keyT{x, y}] = int(r - '0') })
+		return acc
+	})
+
+	risk := maps.Reduce(m, 0, riskLevel(m))
+
+	printf("Solution: %v\n", risk)
+}
+
+type gridT map[keyT]int
+
+type keyT struct{ x, y int }
+
+func riskLevel(m gridT) func(k keyT, v, acc int) int {
+	d := [][]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
+	return func(k keyT, v, acc int) int {
+		if !All(d, isLowPoint(m, k, v)) {
+			return acc
+		}
+		return acc + v + 1
+	}
+}
+
+func isLowPoint(m gridT, k keyT, v int) func(d []int) bool {
+	return func(d []int) bool {
+		dv, ok := m[keyT{x: k.x + d[0], y: k.y + d[1]}]
+		return !ok || dv > v
+	}
 }
