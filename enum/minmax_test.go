@@ -169,3 +169,113 @@ func TestMin_String(t *testing.T) {
 		})
 	}
 }
+
+func TestMaxFunc_Key(t *testing.T) {
+	type keyT [2]int
+	tests := []struct {
+		name  string
+		items []keyT
+		want  keyT
+	}{
+		{
+			name: "no items",
+			want: keyT{},
+		},
+		{
+			name:  "one item",
+			items: []keyT{{-1, -2}},
+			want:  keyT{-1, -2},
+		},
+		{
+			name:  "max at start",
+			items: []keyT{{2, 10}, {-1, -2}, {10, 1}, {1, 10}},
+			want:  keyT{2, 10},
+		},
+		{
+			name:  "max at end",
+			items: []keyT{{-1, -2}, {10, 1}, {1, 10}, {2, 10}},
+			want:  keyT{2, 10},
+		},
+		{
+			name:  "max at middle",
+			items: []keyT{{-1, -2}, {3, 4}, {2, 10}, {10, 1}, {1, 10}},
+			want:  keyT{2, 10},
+		},
+		{
+			name:  "multiple max",
+			items: []keyT{{2, 10}, {-1, -2}, {10, 1}, {2, 10}, {1, 10}, {2, 10}},
+			want:  keyT{2, 10},
+		},
+	}
+
+	lessFunc := func(a, b keyT) bool {
+		if a[1] == b[1] {
+			return a[0] < b[0]
+		}
+		return a[1] < b[1]
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := MaxFunc(tt.items, lessFunc)
+			if got != tt.want {
+				t.Errorf("MaxFunc = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMinFunc_Key(t *testing.T) {
+	type keyT [2]int
+	tests := []struct {
+		name  string
+		items []keyT
+		want  keyT
+	}{
+		{
+			name: "no items",
+			want: keyT{},
+		},
+		{
+			name:  "one item",
+			items: []keyT{{-1, -2}},
+			want:  keyT{-1, -2},
+		},
+		{
+			name:  "min at start",
+			items: []keyT{{-2, -10}, {-1, -2}, {10, 1}, {-1, -10}},
+			want:  keyT{-2, -10},
+		},
+		{
+			name:  "min at end",
+			items: []keyT{{-1, -2}, {10, 1}, {-1, -10}, {-2, -10}},
+			want:  keyT{-2, -10},
+		},
+		{
+			name:  "min at middle",
+			items: []keyT{{-1, -2}, {3, 4}, {-2, -10}, {10, 1}, {-1, -10}},
+			want:  keyT{-2, -10},
+		},
+		{
+			name:  "multiple min",
+			items: []keyT{{-2, -10}, {-1, -2}, {10, 1}, {-2, -10}, {-1, -10}, {-2, -10}},
+			want:  keyT{-2, -10},
+		},
+	}
+
+	lessFunc := func(a, b keyT) bool {
+		if a[1] == b[1] {
+			return a[0] < b[0]
+		}
+		return a[1] < b[1]
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := MinFunc(tt.items, lessFunc)
+			if got != tt.want {
+				t.Errorf("MinFunc = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
