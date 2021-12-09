@@ -34,6 +34,9 @@ func process(filename string) {
 	})
 
 	lowPts := maps.Reduce(m, []keyT{}, findLowPoints(m))
+	if len(lowPts) > 4 { // optimization - only return '0' low points.
+		lowPts = Filter(lowPts, func(k keyT) bool { return m[k] == 0 })
+	}
 	logf("%v lowPts", len(lowPts))
 	allBasins := Map(lowPts, calcBasinSize(m))
 	sort.Sort(sort.Reverse(sort.IntSlice(allBasins)))
