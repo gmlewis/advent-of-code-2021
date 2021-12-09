@@ -19,6 +19,15 @@ func Value[K any, V any](key K, value V) V {
 	return value
 }
 
+// Keys returns the keys of a map.
+func Keys[K comparable, V any](pairs map[K]V) []K {
+	keys := make([]K, 0, len(pairs))
+	for k := range pairs {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
 // ValueLen returns the length of the slice value of a map.
 func ValueLen[K any, T any](key K, value []T) int {
 	return len(value)
