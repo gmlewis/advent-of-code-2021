@@ -109,9 +109,6 @@ func prettyPrint(debug gridT) {
 }
 
 func checkNeighbors(m gridT, k keyT, visited map[keyT]bool, debug gridT) int {
-	if visited[k] {
-		return 0
-	}
 	visited[k] = true
 	if m[k] == 9 {
 		return 0
