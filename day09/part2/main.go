@@ -50,13 +50,13 @@ func process(filename string) {
 
 type gridT map[keyT]int
 
-type keyT struct{ x, y int }
+type keyT [2]int
 
 func less(k1, k2 keyT) bool {
-	if k1.y == k2.y {
-		return k1.x < k2.x
+	if k1[1] == k2[1] {
+		return k1[0] < k2[0]
 	}
-	return k1.y < k2.y
+	return k1[1] < k2[1]
 }
 
 func calcBasinSize(m gridT) func(k keyT) int {
@@ -75,21 +75,21 @@ func calcBasinSize(m gridT) func(k keyT) int {
 func prettyPrint(debug gridT) {
 	keys := maps.Keys(debug)
 	minX := ReduceWithIndex(keys, 0, func(i int, k keyT, acc int) int {
-		if i == 0 || k.x < acc {
-			return k.x
+		if i == 0 || k[0] < acc {
+			return k[0]
 		}
 		return acc
 	})
 	maxX := ReduceWithIndex(keys, 0, func(i int, k keyT, acc int) int {
-		if i == 0 || k.x > acc {
-			return k.x
+		if i == 0 || k[0] > acc {
+			return k[0]
 		}
 		return acc
 	})
 	minKey := MinFunc(keys, less)
-	minY := minKey.y
+	minY := minKey[1]
 	maxKey := MaxFunc(keys, less)
-	maxY := maxKey.y
+	maxY := maxKey[1]
 
 	sort.Slice(keys, func(a, b int) bool { return less(keys[a], keys[b]) })
 	printf("keys=%v, min=(%v,%v), max=(%v,%v)\n", len(keys), minX, minY, maxX, maxY)
@@ -110,10 +110,10 @@ func prettyPrint(debug gridT) {
 
 func checkNeighbors(m gridT, k keyT, visited map[keyT]bool, debug gridT) int {
 	visited[k] = true
-	debug[k] = m[k]
 	if m[k] == 9 {
 		return 0
 	}
+	debug[k] = m[k]
 	acc := 1
 	if p := right(k); !visited[p] && m[p] == 1+m[k] {
 		acc += checkNeighbors(m, p, visited, debug)
@@ -130,24 +130,24 @@ func checkNeighbors(m gridT, k keyT, visited map[keyT]bool, debug gridT) int {
 	return acc
 }
 
-func right(k keyT) keyT { return keyT{x: k.x + 1, y: k.y} }
-func left(k keyT) keyT  { return keyT{x: k.x - 1, y: k.y} }
-func up(k keyT) keyT    { return keyT{x: k.x, y: k.y - 1} }
-func down(k keyT) keyT  { return keyT{x: k.x, y: k.y + 1} }
+func right(k keyT) keyT { return keyT{k[0] + 1, k[1]} }
+func left(k keyT) keyT  { return keyT{k[0] - 1, k[1]} }
+func up(k keyT) keyT    { return keyT{k[0], k[1] - 1} }
+func down(k keyT) keyT  { return keyT{k[0], k[1] + 1} }
 
 func findLowPoints(m gridT) func(k keyT, v int, acc []keyT) []keyT {
-	d := [][]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
 	return func(k keyT, v int, acc []keyT) []keyT {
-		if !All(d, isLowPoint(m, k, v)) {
+		p := []keyT{up(k), down(k), left(k), right(k)}
+		if !All(p, isLowPoint(m, v)) {
 			return acc
 		}
 		return append(acc, k)
 	}
 }
 
-func isLowPoint(m gridT, k keyT, v int) func(d []int) bool {
-	return func(d []int) bool {
-		dv, ok := m[keyT{x: k.x + d[0], y: k.y + d[1]}]
+func isLowPoint(m gridT, v int) func(p keyT) bool {
+	return func(p keyT) bool {
+		dv, ok := m[p]
 		return !ok || dv > v
 	}
 }
