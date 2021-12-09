@@ -110,10 +110,10 @@ func prettyPrint(debug gridT) {
 
 func checkNeighbors(m gridT, k keyT, visited map[keyT]bool, debug gridT) int {
 	visited[k] = true
+	debug[k] = m[k]
 	if m[k] == 9 {
 		return 0
 	}
-	debug[k] = m[k]
 	acc := 1
 	if p := right(k); !visited[p] && m[p] == 1+m[k] {
 		acc += checkNeighbors(m, p, visited, debug)

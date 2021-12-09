@@ -7,7 +7,7 @@ import (
 )
 
 func TestExample(t *testing.T) {
-	want := "Solution: 0\n"
+	want := "Solution: 1134\n"
 	test.Runner(t, example1, want, process, &printf)
 }
 
@@ -20,5 +20,9 @@ func BenchmarkInput(b *testing.B) {
 }
 
 var example1 = `
-
+2199943210
+3987894921
+9856789892
+8767896789
+9899965678
 `
