@@ -22,7 +22,75 @@ func main() {
 
 func process(filename string) {
 	logf("Processing %v ...", filename)
-	buf := must.ReadFile(filename)
+	lines := must.ReadFileLines(filename)
 
-	printf("Solution: %v\n", len(buf))
+	ls := Map(lines, identify)
+	corrupt := Filter(ls, func(line *lineT) bool { return line.lineType == corrupt })
+	logf("%v corrupt lines", len(corrupt))
+
+	score := Reduce(corrupt, 0, func(line *lineT, acc int) int {
+		return acc + line.score
+	})
+
+	printf("Solution: %v\n", score)
+}
+
+type lineTypeT int
+
+const (
+	valid lineTypeT = iota
+	incomplete
+	corrupt
+)
+
+type lineT struct {
+	line     string
+	lineType lineTypeT
+	illegal  rune
+	score    int
+}
+
+func identify(line string) *lineT {
+	lt := &lineT{line: line}
+	var stack []rune
+	for _, r := range line {
+		if c, ok := open2close[r]; ok {
+			stack = append(stack, c)
+			continue
+		}
+		if len(stack) == 0 || r != stack[len(stack)-1] {
+			lt.lineType = corrupt
+			lt.illegal = r
+			lt.score = score[r]
+			break
+		}
+		stack = stack[:len(stack)-1]
+	}
+
+	if lt.lineType == valid && len(stack) != 0 {
+		lt.lineType = incomplete
+	}
+
+	return lt
+}
+
+var open2close = map[rune]rune{
+	'[': ']',
+	'(': ')',
+	'{': '}',
+	'<': '>',
+}
+
+var close2open = map[rune]rune{
+	']': '[',
+	')': '(',
+	'}': '{',
+	'>': '<',
+}
+
+var score = map[rune]int{
+	')': 3,
+	']': 57,
+	'}': 1197,
+	'>': 25137,
 }

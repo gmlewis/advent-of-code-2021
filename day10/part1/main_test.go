@@ -7,7 +7,7 @@ import (
 )
 
 func TestExample(t *testing.T) {
-	want := "Solution: 0\n"
+	want := "Solution: 26397\n"
 	test.Runner(t, example1, want, process, &printf)
 }
 
@@ -19,16 +19,15 @@ func BenchmarkInput(b *testing.B) {
 	test.Benchmark(b, "../input.txt", process, &logf, &printf)
 }
 
-var example1 = `Syntax error in navigation subsystem on line: <span title="Some days, that's just how it is.">all of them</span>
-
-[({(&lt;(())[]&gt;[[{[]{&lt;()&lt;&gt;&gt;
-[(()[&lt;&gt;])]({[&lt;{&lt;&lt;[]&gt;&gt;(
-{([(&lt;{}[&lt;&gt;[]}&gt;{[]{[(&lt;()&gt;
-(((({&lt;&gt;}&lt;{&lt;{&lt;&gt;}{[]{[]{}
-[[&lt;[([]))&lt;([[{}[[()]]]
+var example1 = `
+[({(<(())[]>[[{[]{<()<>>
+[(()[<>])]({[<{<<[]>>(
+{([(<{}[<>[]}>{[]{[(<()>
+(((({<>}<{<{<>}{[]{[]{}
+[[<[([]))<([[{}[[()]]]
 [{[{({}]{}}([{[{{{}}([]
-{&lt;[[]]&gt;}&lt;{[{[{[]{()[[[]
-[&lt;(&lt;(&lt;(&lt;{}))&gt;&lt;([]([]()
-&lt;{([([[(&lt;&gt;()){}]&gt;(&lt;&lt;{{
-&lt;{([{{}}[&lt;[[[&lt;&gt;{}]]]&gt;[]]
+{<[[]]>}<{[{[{[]{()[[[]
+[<(<(<(<{}))><([]([]()
+<{([([[(<>()){}]>(<<{{
+<{([{{}}[<[[[<>{}]]]>[]]
 `
