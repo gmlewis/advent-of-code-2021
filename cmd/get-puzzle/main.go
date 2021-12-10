@@ -56,11 +56,11 @@ func process(dayStr string) {
 	cookies := parseCookies(cookiesStr)
 
 	url := fmt.Sprintf(urlFmt, year, day)
-	getFile(url, filepath.Join(dayStr, "example1.txt"), cookies, findPreCode)
-	getFile(url+"/input", filepath.Join(dayStr, "input.txt"), cookies, nil)
+	getFile(url, dayStr, "example1.txt", cookies, findPreCode)
+	getFile(url+"/input", dayStr, "input.txt", cookies, nil)
 }
 
-func getFile(url, filename string, cookies []*http.Cookie, findPreCode func(string) string) {
+func getFile(url, dayStr, outFile string, cookies []*http.Cookie, findPreCode func(string) string) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -80,8 +80,31 @@ func getFile(url, filename string, cookies []*http.Cookie, findPreCode func(stri
 
 	if findPreCode != nil {
 		b = []byte(findPreCode(string(b)))
+		if len(b) == 0 {
+			log.Fatal("no puzzle found")
+		}
+
+		src := fmt.Sprintf("%v`%s`\n", mainTestSource, b)
+		fn := filepath.Join(dayStr, "part1", "main_test.go")
+		if err := ioutil.WriteFile(fn, []byte(src), 0644); err != nil {
+			log.Fatal(err)
+		}
+		fn = filepath.Join(dayStr, "part2", "main_test.go")
+		if err := ioutil.WriteFile(fn, []byte(src), 0644); err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		fn := filepath.Join(dayStr, "part1", "main.go")
+		if err := ioutil.WriteFile(fn, []byte(mainSource), 0644); err != nil {
+			log.Fatal(err)
+		}
+		fn = filepath.Join(dayStr, "part2", "main.go")
+		if err := ioutil.WriteFile(fn, []byte(mainSource), 0644); err != nil {
+			log.Fatal(err)
+		}
 	}
 
+	filename := filepath.Join(dayStr, outFile)
 	if err := ioutil.WriteFile(filename, b, 0644); err != nil {
 		log.Fatal(err)
 	}
@@ -103,3 +126,56 @@ func parseCookies(cookies string) (ret []*http.Cookie) {
 		return append(acc, &http.Cookie{Name: p[0], Value: p[1]})
 	})
 }
+
+var mainSource = `// -*- compile-command: "go run main.go ../example1.txt ../input.txt"; -*-
+
+package main
+
+import (
+	"flag"
+	"fmt"
+	"log"
+
+	. "github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/must"
+)
+
+var logf = log.Printf
+var printf = fmt.Printf
+
+func main() {
+	flag.Parse()
+
+	Each(flag.Args(), process)
+}
+
+func process(filename string) {
+	logf("Processing %v ...", filename)
+	buf := must.ReadFile(filename)
+
+	printf("Solution: %v\n", len(buf))
+}
+`
+
+var mainTestSource = `package main
+
+import (
+	"testing"
+
+	"github.com/gmlewis/advent-of-code-2021/test"
+)
+
+func TestExample(t *testing.T) {
+	want := "Solution: 0\n"
+	test.Runner(t, example1, want, process, &printf)
+}
+
+func BenchmarkExample(b *testing.B) {
+	test.Benchmark(b, "../example1.txt", process, &logf, &printf)
+}
+
+func BenchmarkInput(b *testing.B) {
+	test.Benchmark(b, "../input.txt", process, &logf, &printf)
+}
+
+var example1 = `
