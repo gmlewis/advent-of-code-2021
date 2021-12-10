@@ -14,6 +14,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -58,6 +59,21 @@ func process(dayStr string) {
 	url := fmt.Sprintf(urlFmt, year, day)
 	getFile(url, dayStr, "example1.txt", cookies, findPreCode)
 	getFile(url+"/input", dayStr, "input.txt", cookies, nil)
+
+	buf, err := exec.Command("git", "add", dayStr).CombinedOutput()
+	if err != nil {
+		log.Printf("%s", buf)
+		log.Fatal(err)
+	}
+	log.Printf("%s", buf)
+
+	msg := fmt.Sprintf("Initial commit for %v", dayStr)
+	buf, err = exec.Command("git", "commit", "-am", msg).CombinedOutput()
+	if err != nil {
+		log.Printf("%s", buf)
+		log.Fatal(err)
+	}
+	log.Printf("%s", buf)
 }
 
 func getFile(url, dayStr, outFile string, cookies []*http.Cookie, findPreCode func(string) string) {
@@ -85,21 +101,35 @@ func getFile(url, dayStr, outFile string, cookies []*http.Cookie, findPreCode fu
 		}
 
 		src := fmt.Sprintf("%v`%s`\n", mainTestSource, b)
-		fn := filepath.Join(dayStr, "part1", "main_test.go")
-		if err := ioutil.WriteFile(fn, []byte(src), 0644); err != nil {
+		fn1 := filepath.Join(dayStr, "part1", "main_test.go")
+		fn2 := filepath.Join(dayStr, "part2", "main_test.go")
+		if _, err := os.Stat(fn1); err == nil {
+			log.Fatalf("%v already exists; aborting", fn1)
+		}
+		if _, err := os.Stat(fn2); err == nil {
+			log.Fatalf("%v already exists; aborting", fn2)
+		}
+
+		if err := ioutil.WriteFile(fn1, []byte(src), 0644); err != nil {
 			log.Fatal(err)
 		}
-		fn = filepath.Join(dayStr, "part2", "main_test.go")
-		if err := ioutil.WriteFile(fn, []byte(src), 0644); err != nil {
+		if err := ioutil.WriteFile(fn2, []byte(src), 0644); err != nil {
 			log.Fatal(err)
 		}
 	} else {
-		fn := filepath.Join(dayStr, "part1", "main.go")
-		if err := ioutil.WriteFile(fn, []byte(mainSource), 0644); err != nil {
+		fn1 := filepath.Join(dayStr, "part1", "main.go")
+		fn2 := filepath.Join(dayStr, "part2", "main.go")
+		if _, err := os.Stat(fn1); err == nil {
+			log.Fatalf("%v already exists; aborting", fn1)
+		}
+		if _, err := os.Stat(fn2); err == nil {
+			log.Fatalf("%v already exists; aborting", fn2)
+		}
+
+		if err := ioutil.WriteFile(fn1, []byte(mainSource), 0644); err != nil {
 			log.Fatal(err)
 		}
-		fn = filepath.Join(dayStr, "part2", "main.go")
-		if err := ioutil.WriteFile(fn, []byte(mainSource), 0644); err != nil {
+		if err := ioutil.WriteFile(fn2, []byte(mainSource), 0644); err != nil {
 			log.Fatal(err)
 		}
 	}
