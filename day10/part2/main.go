@@ -86,13 +86,6 @@ var open2close = map[rune]rune{
 	'<': '>',
 }
 
-var close2open = map[rune]rune{
-	']': '[',
-	')': '(',
-	'}': '{',
-	'>': '<',
-}
-
 var score = map[rune]int{
 	')': 1,
 	']': 2,

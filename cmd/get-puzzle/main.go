@@ -24,6 +24,10 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
+var (
+	puzzleOnly = flag.Bool("p", false, "Download puzzle input.txt only")
+)
+
 const (
 	aocCookies = "AOC_COOKIES"
 	urlFmt     = "https://adventofcode.com/%v/day/%v"
@@ -57,23 +61,27 @@ func process(dayStr string) {
 	cookies := parseCookies(cookiesStr)
 
 	url := fmt.Sprintf(urlFmt, year, day)
-	getFile(url, dayStr, "example1.txt", cookies, findPreCode)
+	if !*puzzleOnly {
+		getFile(url, dayStr, "example1.txt", cookies, findPreCode)
+	}
 	getFile(url+"/input", dayStr, "input.txt", cookies, nil)
 
-	buf, err := exec.Command("git", "add", dayStr).CombinedOutput()
-	if err != nil {
+	if !*puzzleOnly {
+		buf, err := exec.Command("git", "add", dayStr).CombinedOutput()
+		if err != nil {
+			log.Printf("%s", buf)
+			log.Fatal(err)
+		}
 		log.Printf("%s", buf)
-		log.Fatal(err)
-	}
-	log.Printf("%s", buf)
 
-	msg := fmt.Sprintf("Initial commit for %v", dayStr)
-	buf, err = exec.Command("git", "commit", "-am", msg).CombinedOutput()
-	if err != nil {
+		msg := fmt.Sprintf("Initial commit for %v", dayStr)
+		buf, err = exec.Command("git", "commit", "-am", msg).CombinedOutput()
+		if err != nil {
+			log.Printf("%s", buf)
+			log.Fatal(err)
+		}
 		log.Printf("%s", buf)
-		log.Fatal(err)
 	}
-	log.Printf("%s", buf)
 }
 
 func getFile(url, dayStr, outFile string, cookies []*http.Cookie, findPreCode func(string) string) {
@@ -116,7 +124,7 @@ func getFile(url, dayStr, outFile string, cookies []*http.Cookie, findPreCode fu
 		if err := ioutil.WriteFile(fn2, []byte(src), 0644); err != nil {
 			log.Fatal(err)
 		}
-	} else {
+	} else if !*puzzleOnly {
 		fn1 := filepath.Join(dayStr, "part1", "main.go")
 		fn2 := filepath.Join(dayStr, "part2", "main.go")
 		if _, err := os.Stat(fn1); err == nil {
