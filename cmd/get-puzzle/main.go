@@ -109,7 +109,7 @@ func getFile(url, dayStr, outFile string, cookies []*http.Cookie, findPreCode fu
 			log.Fatal("no puzzle found")
 		}
 
-		src := fmt.Sprintf("%v`%s`\n", mainTestSource, b)
+		src := fmt.Sprintf("%v`\n%s\n`\n", mainTestSource, b)
 		fn1 := filepath.Join(dayStr, "part1", "main_test.go")
 		fn2 := filepath.Join(dayStr, "part2", "main_test.go")
 		if _, err := os.Stat(fn1); err == nil {
