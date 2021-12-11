@@ -70,7 +70,6 @@ func simStep(step int, acc *accT) (*accT, bool) {
 		}
 	}
 
-	// prettyPrint(step, acc)
 	return acc, numFlashes == 100
 }
 
@@ -81,15 +80,4 @@ type keyT [2]int
 type accT struct {
 	b       gridT
 	flashes int
-}
-
-func prettyPrint(step int, acc *accT) {
-	logf("\n\nAfter step %v: flashes=%v", step, acc.flashes)
-	for y := 0; y < 10; y++ {
-		var line string
-		for x := 0; x < 10; x++ {
-			line += fmt.Sprintf("%v", acc.b[keyT{x, y}])
-		}
-		logf("%v", line)
-	}
 }
