@@ -10,6 +10,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -153,6 +154,7 @@ var preCodeRE = regexp.MustCompile(`^(?ms).*?<pre><code>`)
 func findPreCode(s string) string {
 	s = strings.ReplaceAll(s, "<em>", "")
 	s = strings.ReplaceAll(s, "</em>", "")
+	s = html.UnescapeString(s)
 	parts := strings.Split(s, "</code></pre>")
 	parts = Map(parts[:len(parts)-1], func(p string) string { return preCodeRE.ReplaceAllString(p, "") })
 	return strings.Join(parts, "\n\n")

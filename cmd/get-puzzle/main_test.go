@@ -6,13 +6,14 @@ import (
 )
 
 func TestFindPreCode(t *testing.T) {
-	got := strings.TrimSpace(findPreCode(html))
+	got := strings.TrimSpace(findPreCode(htmlExample))
 	if got != strings.TrimSpace(want) {
 		t.Errorf("findPreCode:\n%v\nwant:\n%v", got, want)
 	}
 }
 
 var want = `
+less than: < greater than: >
   0:      1:      2:      3:      4:
  aaaa    ....    aaaa    aaaa    ....
 b    c  .    c  .    c  .    c  b    c
@@ -69,11 +70,12 @@ g    b
  cccc
 `
 
-var html = `<!DOCTYPE html>
+var htmlExample = `<!DOCTYPE html>
 <html lang="en-us">
 ...
 <p>Each digit of a seven-segment display is rendered by turning on or off any of seven segments named <code>a</code> through <code>g</code>:</p>
-<pre><code>  0:      1:      2:      3:      4:
+<pre><code>less than: &lt; greater than: &gt;
+  0:      1:      2:      3:      4:
  <em>aaaa</em>    ....    <em>aaaa    aaaa</em>    ....
 <em>b    c</em>  .    <em>c</em>  .    <em>c</em>  .    <em>c  b    c</em>
 <em>b    c</em>  .    <em>c</em>  .    <em>c</em>  .    <em>c  b    c</em>
