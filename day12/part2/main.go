@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
-	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -45,22 +44,24 @@ func process(filename string) {
 type mapT map[string][]string
 
 type pathT struct {
-	visited map[string]int
+	visited   map[string]bool
+	usedTwice bool
 }
 
 func findPaths(root string, acc []*pathT, edges mapT) []*pathT {
 	for _, node := range edges[root] {
-		p := &pathT{visited: map[string]int{}}
+		p := &pathT{visited: map[string]bool{root: true}}
 		acc = append(acc, p.completeAllPaths(node, edges)...)
 	}
 	return acc
 }
 
 func (p *pathT) completeAllPaths(node string, edges mapT) []*pathT {
-	if node[0] >= 'a' && p.visited[node] >= 1 {
-		if maps.Any(p.visited, func(k string, v int) bool { return k[0] >= 'a' && v >= 2 }) {
+	if node[0] >= 'a' && p.visited[node] {
+		if p.usedTwice {
 			return nil
 		}
+		p.usedTwice = true
 	}
 	if node == "end" {
 		return []*pathT{p}
@@ -68,11 +69,11 @@ func (p *pathT) completeAllPaths(node string, edges mapT) []*pathT {
 
 	var ret []*pathT
 	for _, n := range edges[node] {
-		visited := map[string]int{node: 1}
-		for k, v := range p.visited {
-			visited[k] += v
+		visited := map[string]bool{node: true}
+		for k := range p.visited {
+			visited[k] = true
 		}
-		p2 := &pathT{visited: visited}
+		p2 := &pathT{visited: visited, usedTwice: p.usedTwice}
 		ret = append(ret, p2.completeAllPaths(n, edges)...)
 	}
 	return ret
