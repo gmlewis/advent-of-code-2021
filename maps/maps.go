@@ -89,3 +89,13 @@ func ProductValues[K comparable, V Number](pairs map[K]V) (ret V) {
 	}
 	return ret
 }
+
+// ShallowCopy makes a shallow copy (top key/value pairs only) of
+// the given map.
+func ShallowCopy[K comparable, V any](pairs map[K]V) map[K]V {
+	ret := map[K]V{}
+	for k, v := range pairs {
+		ret[k] = v
+	}
+	return ret
+}
