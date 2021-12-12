@@ -120,3 +120,14 @@ func TestProductValues(t *testing.T) {
 		t.Errorf("ProductValues = %v, want %v", got, want)
 	}
 }
+
+func TestShallowCopy(t *testing.T) {
+	m := map[int]int{7: 3, 8: 1, 9: 2}
+	got := ShallowCopy(m)
+	if &m == &got {
+		t.Errorf("ShallowCopy: m == got, want new map")
+	}
+	if !cmp.Equal(got, m) {
+		t.Errorf("ShallowCopy = %+v, want %+v", got, m)
+	}
+}
