@@ -53,13 +53,7 @@ func fold(cmd string, paper paperT) paperT {
 }
 
 func doFoldY(paper paperT, y int) paperT {
-	var maxy int
-	for k := range paper {
-		if k[1] > maxy {
-			maxy = k[1]
-		}
-	}
-
+	maxy := 2 * y
 	ret := paperT{}
 	for k := range paper {
 		if k[1] > y {
@@ -72,13 +66,7 @@ func doFoldY(paper paperT, y int) paperT {
 }
 
 func doFoldX(paper paperT, x int) paperT {
-	var maxx int
-	for k := range paper {
-		if k[0] > maxx {
-			maxx = k[0]
-		}
-	}
-
+	maxx := 2 * x
 	ret := paperT{}
 	for k := range paper {
 		if k[0] > x {
