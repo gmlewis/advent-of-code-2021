@@ -96,9 +96,9 @@ func prettyPrint(paper paperT) {
 		var line string
 		for x := 0; x <= maxx; x++ {
 			if paper[keyT{x, y}] {
-				line += "#"
+				line += "█"
 			} else {
-				line += "."
+				line += " "
 			}
 		}
 		lines = append(lines, line)
