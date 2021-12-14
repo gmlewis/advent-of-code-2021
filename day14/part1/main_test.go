@@ -7,7 +7,7 @@ import (
 )
 
 func TestExample(t *testing.T) {
-	want := "Solution: 0\n"
+	want := "Solution: 1588\n"
 	test.Runner(t, example1, want, process, &printf)
 }
 
@@ -38,12 +38,4 @@ BB -> N
 BC -> B
 CC -> N
 CN -> C
-
-
-Template:     NNCB
-After step 1: NCNBCHB
-After step 2: NBCCNBBBCBHCB
-After step 3: NBBBCNCCNBBNBNBBCHBHHBCHB
-After step 4: NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB
-
 `
