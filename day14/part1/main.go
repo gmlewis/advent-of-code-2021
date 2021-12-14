@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -34,22 +35,15 @@ func process(filename string) {
 	})
 
 	final := Reduce(Range(1, 10), start, func(step int, acc string) string {
-		arr := ChunkEvery([]rune(acc), 2, 1)
-		next := Map(arr, func(in []rune) string {
+		next := Map(ChunkEvery([]rune(acc), 2, 1), func(in []rune) string {
 			v := string(in)
-			out := []rune{in[0], rune(rules[v][0])}
-			return string(out)
+			return v[0:1] + rules[v]
 		})
-		next = append(next, acc[len(acc)-1:])
-		ret := strings.Join(next, "")
-		return ret
+		return strings.Join(next, "") + acc[len(acc)-1:]
 	})
 
 	histo := Frequencies([]rune(final))
-	values := make([]int, 0, len(histo))
-	for _, v := range histo {
-		values = append(values, v)
-	}
+	values := maps.Values(histo)
 	sort.Ints(values)
 
 	printf("Solution: %v\n", values[len(values)-1]-values[0])

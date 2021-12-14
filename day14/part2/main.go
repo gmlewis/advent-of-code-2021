@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -38,28 +39,21 @@ func process(filename string) {
 		return acc
 	})
 
-	for i := 1; i <= 40; i++ {
-		nh := countT{}
-		for k, v := range h {
+	h = Reduce(Range(1, 40), h, func(step int, acc countT) countT {
+		return maps.Reduce(acc, countT{}, func(k string, v int, acc2 countT) countT {
 			c := rules[k]
-			el1 := k[0:1] + c
-			el2 := c + k[1:2]
-			nh[el1] += v
-			nh[el2] += v
-		}
-		h = nh
-	}
+			acc2[k[0:1]+c] += v
+			acc2[c+k[1:2]] += v
+			return acc2
+		})
+	})
 
-	histo := countT{}
+	histo := countT{start[len(start)-1:]: 1}
 	for k, v := range h {
 		histo[k[0:1]] += v
 	}
-	histo[start[len(start)-1:]]++
 
-	values := make([]int, 0, len(histo))
-	for _, v := range histo {
-		values = append(values, v)
-	}
+	values := maps.Values(histo)
 	sort.Ints(values)
 
 	printf("Solution: %v\n", values[len(values)-1]-values[0])

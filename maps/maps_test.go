@@ -55,6 +55,18 @@ func TestKeys(t *testing.T) {
 	}
 }
 
+func TestValues(t *testing.T) {
+	m := map[string]int{"a": 0, "b": 1, "c": 2}
+	got := Values(m)
+	sort.Ints(got)
+	if want := []int{0, 1, 2}; !cmp.Equal(got, want) {
+		t.Errorf("Values = %v, want %v", got, want)
+	}
+	if got, want := Values(map[int]string{}), []string{}; !cmp.Equal(got, want) {
+		t.Errorf("Values = %v, want %v", got, want)
+	}
+}
+
 func TestValueLen(t *testing.T) {
 	if got, want := ValueLen(0, []int{1, 2, 3}), 3; got != want {
 		t.Errorf("ValueLen = %v, want %v", got, want)
