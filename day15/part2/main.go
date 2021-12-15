@@ -3,11 +3,11 @@
 package main
 
 import (
+	"container/heap"
 	"flag"
 	"fmt"
 	"log"
 	"math"
-	"sort"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
@@ -42,10 +42,67 @@ func process(filename string) {
 	printf("Solution: %v\n", risk)
 }
 
+// func aStar(b gridT, source, stepSize, goal keyT) int {
+// 	cameFrom := map[keyT]keyT{}
+// 	gScore := map[keyT]int{source: 0}
+// 	openSet := &priorityQueue{gScore: gScore}
+// 	heap.Push(openSet, &item{key: source})
+// 	hScore := map[keyT]int{source: h(source)}
+//
+// 	for openSet.Len() > 0 {
+// 		item := heap.Pop(openSet).(*item)
+// 	}
+//
+// 	return 0
+// }
+
+type priorityQueue struct {
+	dist  gridT
+	index gridT
+	items []keyT
+}
+
+func (pq *priorityQueue) Len() int { return len(pq.items) }
+
+func (pq *priorityQueue) Less(a, b int) bool {
+	va, okA := pq.dist[pq.items[a]]
+	vb, okB := pq.dist[pq.items[b]]
+	switch {
+	case okA && okB:
+		return va < vb
+	case okA:
+		return true
+	default:
+		return false
+	}
+}
+
+func (pq *priorityQueue) Swap(a, b int) {
+	pq.items[a], pq.items[b] = pq.items[b], pq.items[a]
+	pq.index[pq.items[a]] = a
+	pq.index[pq.items[b]] = b
+}
+
+func (pq *priorityQueue) Push(x interface{}) {
+	n := len(pq.items)
+	item := x.(keyT)
+	pq.index[item] = n
+	pq.items = append(pq.items, item)
+}
+
+func (pq *priorityQueue) Pop() interface{} {
+	old := pq.items
+	n := len(old)
+	item := old[n-1]
+	delete(pq.index, item)
+	pq.items = old[0 : n-1]
+	return item
+}
+
 func dijkstra(b gridT, source, stepSize, target keyT) int {
-	var q []keyT
 	inQ := map[keyT]bool{}
 	dist := gridT{}
+	q := &priorityQueue{dist: dist, index: gridT{}}
 	prev := map[keyT]keyT{}
 
 	for y := 0; y < 5; y++ {
@@ -53,12 +110,13 @@ func dijkstra(b gridT, source, stepSize, target keyT) int {
 			for oldK := range b {
 				k := keyT{oldK[0] + x*stepSize[0], oldK[1] + y*stepSize[1]}
 				dist[k] = math.MaxInt
-				q = append(q, k)
+				heap.Push(q, k)
 				inQ[k] = true
 			}
 		}
 	}
 	dist[source] = 0
+	heap.Fix(q, q.index[source])
 
 	valueOf := func(v keyT) int {
 		x := v[0] % stepSize[0]
@@ -78,14 +136,13 @@ func dijkstra(b gridT, source, stepSize, target keyT) int {
 		if alt < dist[v] {
 			dist[v] = alt
 			prev[v] = u
+			heap.Fix(q, q.index[v])
 		}
-		// logf("f(%v,%v): alt=%v, dist[%v]=%v, prev[%v]=%v", u, v, alt, v, alt, v, u)
+		// logf("f(%v,%v): dist[u=%v]=%v, alt=%v, dist[v=%v]=%v, prev[v=%v]=%v", u, v, u, dist[u], alt, v, alt, v, u)
 	}
 
-	for len(q) > 0 {
-		sort.Slice(q, func(a, b int) bool { return dist[q[a]] < dist[q[b]] })
-		u := q[0]
-		q = q[1:]
+	for q.Len() > 0 {
+		u := heap.Pop(q).(keyT)
 		delete(inQ, u)
 
 		if u == target {
@@ -109,37 +166,6 @@ func dijkstra(b gridT, source, stepSize, target keyT) int {
 	// logf("dist=%+v, prev=%+v", dist, prev)
 	return dist[target]
 }
-
-// func lowestRisk(pos, goal keyT, b gridT, visited visitedT, risk, bestRisk int) int {
-// 	if pos == goal {
-// 		return risk
-// 	}
-// 	// visited[pos] = true
-//
-// 	if p, ok := moveR(pos, goal); ok && !visited[p] && risk+b[p] < bestRisk {
-// 		r := lowestRisk(p, goal, b, visited, risk+b[p], bestRisk)
-// 		if r < bestRisk {
-// 			bestRisk = r
-// 		}
-// 	}
-//
-// 	if p, ok := moveD(pos, goal); ok && !visited[p] && risk+b[p] < bestRisk {
-// 		r := lowestRisk(p, goal, b, visited, risk+b[p], bestRisk)
-// 		if r < bestRisk {
-// 			bestRisk = r
-// 		}
-// 	}
-//
-// 	return bestRisk
-// }
-//
-// func copyV(v visitedT) visitedT {
-// 	ret := visitedT{}
-// 	for k, v := range v {
-// 		ret[k] = v
-// 	}
-// 	return ret
-// }
 
 type gridT map[keyT]int
 
