@@ -35,26 +35,11 @@ func process(filename string) {
 	xsize := len(lines[0])
 	ysize := len(lines)
 	logf("xsize=%v, ysize=%v", xsize, ysize)
-	// risk := lowestRisk(keyT{0, 0}, keyT{xmax, ymax}, b, visitedT{}, 0, math.MaxInt)
 
 	risk := dijkstra(b, keyT{0, 0}, keyT{xsize, ysize}, keyT{5*xsize - 1, 5*ysize - 1})
 
 	printf("Solution: %v\n", risk)
 }
-
-// func aStar(b gridT, source, stepSize, goal keyT) int {
-// 	cameFrom := map[keyT]keyT{}
-// 	gScore := map[keyT]int{source: 0}
-// 	openSet := &priorityQueue{gScore: gScore}
-// 	heap.Push(openSet, &item{key: source})
-// 	hScore := map[keyT]int{source: h(source)}
-//
-// 	for openSet.Len() > 0 {
-// 		item := heap.Pop(openSet).(*item)
-// 	}
-//
-// 	return 0
-// }
 
 type priorityQueue struct {
 	dist  gridT
@@ -124,10 +109,8 @@ func dijkstra(b gridT, source, stepSize, target keyT) int {
 		d := v[0]/stepSize[0] + v[1]/stepSize[1]
 		nv := b[keyT{x, y}] + d
 		if nv > 9 {
-			// logf("B:valueOf(%v) = %v", v, nv%10+1)
 			return nv%10 + 1
 		}
-		// logf("A:valueOf(%v) = %v", v, nv)
 		return nv
 	}
 
@@ -138,7 +121,6 @@ func dijkstra(b gridT, source, stepSize, target keyT) int {
 			prev[v] = u
 			heap.Fix(q, q.index[v])
 		}
-		// logf("f(%v,%v): dist[u=%v]=%v, alt=%v, dist[v=%v]=%v, prev[v=%v]=%v", u, v, u, dist[u], alt, v, alt, v, u)
 	}
 
 	for q.Len() > 0 {
@@ -163,15 +145,12 @@ func dijkstra(b gridT, source, stepSize, target keyT) int {
 		}
 	}
 
-	// logf("dist=%+v, prev=%+v", dist, prev)
 	return dist[target]
 }
 
 type gridT map[keyT]int
 
 type keyT [2]int
-
-type visitedT map[keyT]bool
 
 func moveR(key, goal keyT) (keyT, bool) {
 	return keyT{key[0] + 1, key[1]}, key[0]+1 <= goal[0]

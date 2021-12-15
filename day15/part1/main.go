@@ -3,11 +3,11 @@
 package main
 
 import (
+	"container/heap"
 	"flag"
 	"fmt"
 	"log"
 	"math"
-	"sort"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
@@ -39,31 +39,74 @@ func process(filename string) {
 	printf("Solution: %v\n", risk)
 }
 
+type priorityQueue struct {
+	dist  gridT
+	index gridT
+	items []keyT
+}
+
+func (pq *priorityQueue) Len() int { return len(pq.items) }
+
+func (pq *priorityQueue) Less(a, b int) bool {
+	va, okA := pq.dist[pq.items[a]]
+	vb, okB := pq.dist[pq.items[b]]
+	switch {
+	case okA && okB:
+		return va < vb
+	case okA:
+		return true
+	default:
+		return false
+	}
+}
+
+func (pq *priorityQueue) Swap(a, b int) {
+	pq.items[a], pq.items[b] = pq.items[b], pq.items[a]
+	pq.index[pq.items[a]] = a
+	pq.index[pq.items[b]] = b
+}
+
+func (pq *priorityQueue) Push(x interface{}) {
+	n := len(pq.items)
+	item := x.(keyT)
+	pq.index[item] = n
+	pq.items = append(pq.items, item)
+}
+
+func (pq *priorityQueue) Pop() interface{} {
+	old := pq.items
+	n := len(old)
+	item := old[n-1]
+	delete(pq.index, item)
+	pq.items = old[0 : n-1]
+	return item
+}
+
 func dijkstra(b gridT, source, target keyT) int {
-	var q []keyT
 	inQ := map[keyT]bool{}
 	dist := gridT{}
+	q := &priorityQueue{dist: dist, index: gridT{}}
 	prev := map[keyT]keyT{}
 
 	for k := range b {
 		dist[k] = math.MaxInt
-		q = append(q, k)
+		heap.Push(q, k)
 		inQ[k] = true
 	}
 	dist[source] = 0
+	heap.Fix(q, q.index[source])
 
 	f := func(u, v keyT) {
 		alt := dist[u] + b[v]
 		if alt < dist[v] {
 			dist[v] = alt
 			prev[v] = u
+			heap.Fix(q, q.index[v])
 		}
 	}
 
-	for len(q) > 0 {
-		sort.Slice(q, func(a, b int) bool { return dist[q[a]] < dist[q[b]] })
-		u := q[0]
-		q = q[1:]
+	for q.Len() > 0 {
+		u := heap.Pop(q).(keyT)
 		delete(inQ, u)
 
 		if u == target {
@@ -90,8 +133,6 @@ func dijkstra(b gridT, source, target keyT) int {
 type gridT map[keyT]int
 
 type keyT [2]int
-
-type visitedT map[keyT]bool
 
 func moveR(key, goal keyT) (keyT, bool) {
 	return keyT{key[0] + 1, key[1]}, key[0]+1 <= goal[0]
