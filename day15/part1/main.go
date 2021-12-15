@@ -34,9 +34,6 @@ func process(filename string) {
 
 	xmax := len(lines[0]) - 1
 	ymax := len(lines) - 1
-	logf("xmax=%v, ymax=%v", xmax, ymax)
-	// risk := lowestRisk(keyT{0, 0}, keyT{xmax, ymax}, b, visitedT{}, 0, math.MaxInt)
-
 	risk := dijkstra(b, keyT{0, 0}, keyT{xmax, ymax})
 
 	printf("Solution: %v\n", risk)
@@ -61,7 +58,6 @@ func dijkstra(b gridT, source, target keyT) int {
 			dist[v] = alt
 			prev[v] = u
 		}
-		// logf("f(%v,%v): alt=%v, dist[%v]=%v, prev[%v]=%v", u, v, alt, v, alt, v, u)
 	}
 
 	for len(q) > 0 {
@@ -88,40 +84,8 @@ func dijkstra(b gridT, source, target keyT) int {
 		}
 	}
 
-	// logf("dist=%+v, prev=%+v", dist, prev)
 	return dist[target]
 }
-
-// func lowestRisk(pos, goal keyT, b gridT, visited visitedT, risk, bestRisk int) int {
-// 	if pos == goal {
-// 		return risk
-// 	}
-// 	// visited[pos] = true
-//
-// 	if p, ok := moveR(pos, goal); ok && !visited[p] && risk+b[p] < bestRisk {
-// 		r := lowestRisk(p, goal, b, visited, risk+b[p], bestRisk)
-// 		if r < bestRisk {
-// 			bestRisk = r
-// 		}
-// 	}
-//
-// 	if p, ok := moveD(pos, goal); ok && !visited[p] && risk+b[p] < bestRisk {
-// 		r := lowestRisk(p, goal, b, visited, risk+b[p], bestRisk)
-// 		if r < bestRisk {
-// 			bestRisk = r
-// 		}
-// 	}
-//
-// 	return bestRisk
-// }
-//
-// func copyV(v visitedT) visitedT {
-// 	ret := visitedT{}
-// 	for k, v := range v {
-// 		ret[k] = v
-// 	}
-// 	return ret
-// }
 
 type gridT map[keyT]int
 
