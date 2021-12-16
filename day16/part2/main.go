@@ -25,7 +25,6 @@ func process(filename string) {
 	logf("Processing %v ...", filename)
 	buf := must.ReadFile(filename)
 	bits := strings.Join(Map([]rune(buf), func(r rune) string { return hex2dec[r] }), "")
-	logf("hex %v: bits: %v", buf, bits)
 
 	insts := processBits(bits)
 	v := insts[0].eval()
@@ -68,26 +67,23 @@ func processLiteral(bits string, insts []*instT, inst *instT) (string, []*instT)
 		bits = bits[5:]
 	}
 	inst.literal = must.ParseInt(value, 2, 64)
-	logf("literal: inst=%#v", *inst)
 	return bits, append(insts, inst)
 }
 
 func processOpLenType0(bits string, insts []*instT, inst *instT) (string, []*instT) {
-	inst.totalBitLen = must.ParseInt(bits[0:15], 2, 64)
+	totalBitLen := must.ParseInt(bits[0:15], 2, 64)
 	bits = bits[15:]
-	inst.subPackets = processBits(bits[0:inst.totalBitLen])
-	logf("opType0: inst=%#v", *inst)
-	return bits[inst.totalBitLen:], append(insts, inst)
+	inst.subPackets = processBits(bits[0:totalBitLen])
+	return bits[totalBitLen:], append(insts, inst)
 }
 
 func processOpLenType1(bits string, insts []*instT, inst *instT) (string, []*instT) {
-	inst.numSubPackets = must.ParseInt(bits[0:11], 2, 64)
+	n := must.ParseInt(bits[0:11], 2, 64)
 	bits = bits[11:]
 
-	for i := 0; i < inst.numSubPackets; i++ {
+	for i := 0; i < n; i++ {
 		bits, inst.subPackets = processNext(bits, inst.subPackets)
 	}
-	logf("opType1: inst=%#v", *inst)
 	return bits, append(insts, inst)
 }
 
@@ -98,71 +94,68 @@ type instT struct {
 	// id=4
 	literal int
 
-	// id!=4
-	lenTypeID int
-
-	// lenTypeID=0
-	totalBitLen int // (15 bits)
-
-	// lenTypeID=1
-	numSubPackets int // (11 bits)
-
 	subPackets []*instT
-}
-
-func (in *instT) sumVersions() int {
-	sum := in.version
-	for _, sub := range in.subPackets {
-		sum += sub.sumVersions()
-	}
-	return sum
 }
 
 func (in *instT) eval() int {
 	switch in.id {
 	case 0: // sum
-		return Reduce(in.subPackets, 0, func(in *instT, acc int) int { return acc + in.eval() })
+		v := Reduce(in.subPackets, 0, func(in *instT, acc int) int { return acc + in.eval() })
+		in.id, in.literal = 4, v
+		return v
 	case 1: // product
-		return Reduce(in.subPackets, 1, func(in *instT, acc int) int { return acc * in.eval() })
+		v := Reduce(in.subPackets, 1, func(in *instT, acc int) int { return acc * in.eval() })
+		in.id, in.literal = 4, v
+		return v
 	case 2: // minimum
-		return ReduceWithIndex(in.subPackets, 0, func(index int, in *instT, acc int) int {
+		v := ReduceWithIndex(in.subPackets, 0, func(index int, in *instT, acc int) int {
 			v := in.eval()
 			if index == 0 || v < acc {
 				acc = v
 			}
 			return acc
 		})
+		in.id, in.literal = 4, v
+		return v
 	case 3: // maximum
-		return ReduceWithIndex(in.subPackets, 0, func(index int, in *instT, acc int) int {
+		v := ReduceWithIndex(in.subPackets, 0, func(index int, in *instT, acc int) int {
 			v := in.eval()
 			if index == 0 || v > acc {
 				acc = v
 			}
 			return acc
 		})
+		in.id, in.literal = 4, v
+		return v
 	case 4:
 		return in.literal
 	case 5: // greater than
 		a := in.subPackets[0].eval()
 		b := in.subPackets[1].eval()
+		v := 0
 		if a > b {
-			return 1
+			v = 1
 		}
-		return 0
+		in.id, in.literal = 4, v
+		return v
 	case 6: // less than
 		a := in.subPackets[0].eval()
 		b := in.subPackets[1].eval()
+		v := 0
 		if a < b {
-			return 1
+			v = 1
 		}
-		return 0
+		in.id, in.literal = 4, v
+		return v
 	case 7: // equal to
 		a := in.subPackets[0].eval()
 		b := in.subPackets[1].eval()
+		v := 0
 		if a == b {
-			return 1
+			v = 1
 		}
-		return 0
+		in.id, in.literal = 4, v
+		return v
 	}
 
 	log.Fatalf("bad packet id=%v", in.id)

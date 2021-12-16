@@ -25,7 +25,6 @@ func process(filename string) {
 	logf("Processing %v ...", filename)
 	buf := must.ReadFile(filename)
 	bits := strings.Join(Map([]rune(buf), func(r rune) string { return hex2dec[r] }), "")
-	logf("hex %v: bits: %v", buf, bits)
 
 	insts := processBits(bits)
 
@@ -69,26 +68,23 @@ func processLiteral(bits string, insts []*instT, inst *instT) (string, []*instT)
 		bits = bits[5:]
 	}
 	inst.literal = must.ParseInt(value, 2, 64)
-	logf("literal: inst=%#v", *inst)
 	return bits, append(insts, inst)
 }
 
 func processOpLenType0(bits string, insts []*instT, inst *instT) (string, []*instT) {
-	inst.totalBitLen = must.ParseInt(bits[0:15], 2, 64)
+	totalBitLen := must.ParseInt(bits[0:15], 2, 64)
 	bits = bits[15:]
-	inst.subPackets = processBits(bits[0:inst.totalBitLen])
-	logf("opType0: inst=%#v", *inst)
-	return bits[inst.totalBitLen:], append(insts, inst)
+	inst.subPackets = processBits(bits[0:totalBitLen])
+	return bits[totalBitLen:], append(insts, inst)
 }
 
 func processOpLenType1(bits string, insts []*instT, inst *instT) (string, []*instT) {
-	inst.numSubPackets = must.ParseInt(bits[0:11], 2, 64)
+	n := must.ParseInt(bits[0:11], 2, 64)
 	bits = bits[11:]
 
-	for i := 0; i < inst.numSubPackets; i++ {
+	for i := 0; i < n; i++ {
 		bits, inst.subPackets = processNext(bits, inst.subPackets)
 	}
-	logf("opType1: inst=%#v", *inst)
 	return bits, append(insts, inst)
 }
 
@@ -98,15 +94,6 @@ type instT struct {
 
 	// id=4
 	literal int
-
-	// id!=4
-	lenTypeID int
-
-	// lenTypeID=0
-	totalBitLen int // (15 bits)
-
-	// lenTypeID=1
-	numSubPackets int // (11 bits)
 
 	subPackets []*instT
 }

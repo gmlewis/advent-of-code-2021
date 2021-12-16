@@ -7,46 +7,55 @@ import (
 )
 
 func TestExample(t *testing.T) {
-	want := "Solution: 0\n"
-	test.Runner(t, example1, want, process, &printf)
-}
+	tests := []struct {
+		name string
+		hex  string
+		want string
+	}{
+		{
+			name: "example1",
+			hex:  "D2FE28",
+			want: "Solution: 6\n",
+		},
+		{
+			name: "example2",
+			hex:  "38006F45291200",
+			want: "Solution: 9\n",
+		},
+		{
+			name: "example3",
+			hex:  "EE00D40C823060",
+			want: "Solution: 14\n",
+		},
+		{
+			name: "example4",
+			hex:  "8A004A801A8002F478",
+			want: "Solution: 16\n",
+		},
+		{
+			name: "example5",
+			hex:  "620080001611562C8802118E34",
+			want: "Solution: 12\n",
+		},
+		{
+			name: "example6",
+			hex:  "C0015000016115A2E0802F182340",
+			want: "Solution: 23\n",
+		},
+		{
+			name: "example7",
+			hex:  "A0016C880162017C3686B18A3D4780",
+			want: "Solution: 31\n",
+		},
+	}
 
-func BenchmarkExample(b *testing.B) {
-	test.Benchmark(b, "../example1.txt", process, &logf, &printf)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			test.Runner(t, tt.hex, tt.want, process, &printf)
+		})
+	}
 }
 
 func BenchmarkInput(b *testing.B) {
 	test.Benchmark(b, "../input.txt", process, &logf, &printf)
 }
-
-var example1 = `
-0 = 0000
-1 = 0001
-2 = 0010
-3 = 0011
-4 = 0100
-5 = 0101
-6 = 0110
-7 = 0111
-8 = 1000
-9 = 1001
-A = 1010
-B = 1011
-C = 1100
-D = 1101
-E = 1110
-F = 1111
-
-
-110100101111111000101000
-VVVTTTAAAAABBBBBCCCCC
-
-
-00111000000000000110111101000101001010010001001000000000
-VVVTTTILLLLLLLLLLLLLLLAAAAAAAAAAABBBBBBBBBBBBBBBB
-
-
-11101110000000001101010000001100100000100011000001100000
-VVVTTTILLLLLLLLLLLAAAAAAAAAAABBBBBBBBBBBCCCCCCCCCCC
-
-`
