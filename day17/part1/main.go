@@ -32,7 +32,6 @@ func process(filename string) {
 	xmax := must.Atoi(xp[1])
 	ymin := must.Atoi(yp[0])
 	ymax := must.Atoi(yp[1])
-	logf("target area: x=%v..%v, y=%v..%v", xmin, xmax, ymin, ymax)
 
 	visited := map[keyT]bool{}
 	maxHeight := math.MinInt
@@ -41,9 +40,7 @@ func process(filename string) {
 		if !ok {
 			continue
 		}
-		// logf("steps=%v, height=%v", steps, height)
 		if height < maxHeight {
-			// logf("breaking at steps=%v", steps)
 			break
 		}
 		maxHeight = height
@@ -85,7 +82,6 @@ func calcHeight(steps, xmin, xmax, ymin, ymax int, visited map[keyT]bool) (int, 
 
 	maxHeight := math.MinInt
 	var foundOne bool
-	// var bestXV, bestYV int
 	for yv := yv1; yv <= yv2; yv++ {
 		for xv := xv1; xv <= xv2; xv++ {
 			k := keyT{xv, yv}
@@ -100,13 +96,9 @@ func calcHeight(steps, xmin, xmax, ymin, ymax int, visited map[keyT]bool) (int, 
 			foundOne = true
 			if height > maxHeight {
 				maxHeight = height
-				// bestXV, bestYV = xv, yv
 			}
 		}
 	}
-	// if foundOne {
-	// 	logf("calcHeight(steps=%v): best initial velocity: (%v,%v) with height %v", steps, bestXV, bestYV, maxHeight)
-	// }
 
 	return maxHeight, foundOne
 }
@@ -117,7 +109,6 @@ func calcHeight(steps, xmin, xmax, ymin, ymax int, visited map[keyT]bool) (int, 
 // Due to drag, the probe's x velocity changes by 1 toward the value 0; that is, it decreases by 1 if it is greater than 0, increases by 1 if it is less than 0, or does not change if it is already 0.
 // Due to gravity, the probe's y velocity decreases by 1.
 func simulate(xv, yv, xmin, xmax, ymin, ymax int) (int, bool) {
-	// initXV, initYV := xv, yv
 	xp, yp := 0, 0
 	maxHeight := 0 // starting height
 	var steps int
@@ -132,10 +123,8 @@ func simulate(xv, yv, xmin, xmax, ymin, ymax int) (int, bool) {
 			maxHeight = yp
 		}
 		steps++
-		// logf("after step #%v: pos=(%v,%v), vel=(%v,%v)", steps, xp, yp, xv, yv)
 
 		if xp >= xmin && xp <= xmax && yp >= ymin && yp <= ymax {
-			// logf("simulate found solution after %v steps with initial velocity (%v,%v)", steps, initXV, initYV)
 			return maxHeight, true
 		}
 	}
