@@ -100,13 +100,27 @@ func TestExplode(t *testing.T) {
 	}
 }
 
-/*
 func TestSplit(t *testing.T) {
 	tests := []struct {
 		name string
 		in   string
 		want string
 	}{
+		{
+			name: "simple example 1",
+			in:   "10",
+			want: "[5,5]",
+		},
+		{
+			name: "simple example 2",
+			in:   "11",
+			want: "[5,6]",
+		},
+		{
+			name: "simple example 3",
+			in:   "12",
+			want: "[6,6]",
+		},
 		{
 			name: "first example",
 			in:   "[[[[0,7],4],[15,[0,13]]],[1,1]]",
@@ -122,7 +136,11 @@ func TestSplit(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			n, _ := parse(tt.in)
-			got := n.split().prettyPrint()
+			out, ok := n.split()
+			if !ok {
+				t.Error("split = false, want true")
+			}
+			got := out.prettyPrint()
 			if got != tt.want {
 				t.Errorf("split = %q, want %q", got, tt.want)
 			}
@@ -130,6 +148,7 @@ func TestSplit(t *testing.T) {
 	}
 }
 
+/*
 func TestReduce(t *testing.T) {
 	tests := []struct {
 		name string

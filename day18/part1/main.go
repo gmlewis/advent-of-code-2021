@@ -35,14 +35,32 @@ type nodeT struct {
 	literal int
 }
 
+func (n *nodeT) split() (*nodeT, bool) {
+	if n.left != nil {
+		left, ok := n.left.split()
+		if ok {
+			n.left = left
+			return n, true
+		}
+		right, ok := n.right.split()
+		if ok {
+			n.right = right
+			return n, true
+		}
+	}
+	if n.literal >= 10 {
+		left := &nodeT{literal: n.literal / 2}
+		right := &nodeT{literal: (n.literal + 1) / 2}
+		return &nodeT{left: left, right: right}, true
+	}
+	return n, false
+}
+
 func (n *nodeT) explode(depth int) (result, addLeft, addRight *nodeT) {
-	logf("explode(%v): %v", depth, n.prettyPrint())
 	if depth == 3 && n.left != nil {
 		if n.left.left != nil { // left node explodes
-			logf("left node explodes: %v", n.prettyPrint())
 			return &nodeT{left: &nodeT{literal: 0}, right: &nodeT{literal: n.left.right.literal + n.right.literal}}, n.left.left, nil
 		} else if n.right.left != nil { // right node explodes
-			logf("right node explodes: %v", n.prettyPrint())
 			return &nodeT{left: &nodeT{literal: n.left.literal + n.right.left.literal}, right: &nodeT{literal: 0}}, nil, n.right.right
 		}
 	}
@@ -56,7 +74,6 @@ func (n *nodeT) explode(depth int) (result, addLeft, addRight *nodeT) {
 			n.left = left
 			if addRight.literal != 0 {
 				n.right = n.right.addToRight(addRight.literal)
-				logf("parent: left exploded, addRight=%v, this.right=%v", addRight.prettyPrint(), n.right.prettyPrint())
 			}
 			return n, nil, &nodeT{literal: 0} // made change, no further changes allowed
 		}
@@ -65,7 +82,6 @@ func (n *nodeT) explode(depth int) (result, addLeft, addRight *nodeT) {
 			n.right = right
 			if addLeft.literal != 0 {
 				n.left = n.left.addToLeft(addLeft.literal)
-				logf("parent: right exploded, addLeft=%v, this.left=%v", addLeft.prettyPrint(), n.left.prettyPrint())
 			}
 			return n, &nodeT{literal: 0}, nil // made change, no further changes allowed
 		}
@@ -101,6 +117,9 @@ func (n *nodeT) add(plus *nodeT) *nodeT {
 
 func parse(s string) (*nodeT, string) {
 	if s[0] >= '0' && s[0] <= '9' {
+		if len(s) > 1 && s[1] >= '0' && s[1] <= '9' {
+			return &nodeT{literal: 10*int(s[0]-'0') + int(s[1]-'0')}, s[2:]
+		}
 		return &nodeT{literal: int(s[0] - '0')}, s[1:]
 	}
 	if s[0] != '[' {
