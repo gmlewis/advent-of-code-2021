@@ -2,8 +2,6 @@ package main
 
 import (
 	"testing"
-
-	"github.com/gmlewis/advent-of-code-2021/test"
 )
 
 func TestAdd(t *testing.T) {
@@ -29,8 +27,9 @@ func TestAdd(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			n := parse(tt.in)
-			got := n.add(parse(tt.plus)).prettyPrint()
+			n, _ := parse(tt.in)
+			plus, _ := parse(tt.plus)
+			got := n.add(plus).prettyPrint()
 			if got != tt.want {
 				t.Errorf("add = %q, want %q", got, tt.want)
 			}
@@ -88,8 +87,12 @@ func TestExplode(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			n := parse(tt.in)
-			got := n.explode().prettyPrint()
+			n, _ := parse(tt.in)
+			out, addLeft, addRight := n.explode(0)
+			if addLeft == nil && addRight == nil {
+				t.Error("explode = nil, nil, want left or right explosion")
+			}
+			got := out.prettyPrint()
 			if got != tt.want {
 				t.Errorf("explode = %q, want %q", got, tt.want)
 			}
@@ -97,6 +100,7 @@ func TestExplode(t *testing.T) {
 	}
 }
 
+/*
 func TestSplit(t *testing.T) {
 	tests := []struct {
 		name string
@@ -117,7 +121,7 @@ func TestSplit(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			n := parse(tt.in)
+			n, _ := parse(tt.in)
 			got := n.split().prettyPrint()
 			if got != tt.want {
 				t.Errorf("split = %q, want %q", got, tt.want)
@@ -146,7 +150,7 @@ func TestReduce(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			n := parse(tt.in)
+			n, _ := parse(tt.in)
 			got := n.reduce().prettyPrint()
 			if got != tt.want {
 				t.Errorf("reduce = %q, want %q", got, tt.want)
@@ -284,7 +288,7 @@ func TestSum(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			n := parse(tt.in)
+			n, _ := parse(tt.in)
 			got := n.sum().prettyPrint()
 			if got != tt.want {
 				t.Errorf("sum = %q, want %q", got, tt.want)
@@ -387,3 +391,4 @@ var example1 = `
 [[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]
 [[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]
 `
+*/
