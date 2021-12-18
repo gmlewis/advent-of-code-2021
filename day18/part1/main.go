@@ -26,7 +26,7 @@ func process(filename string) {
 	nums := Map(lines, func(line string) *nodeT { n, _ := parse(line); return n })
 	final := sum(nums)
 
-	printf("Solution: %v\n", final)
+	printf("Solution: %v\n", final.magnitude())
 }
 
 type nodeT struct {
@@ -37,7 +37,12 @@ type nodeT struct {
 }
 
 func (n *nodeT) magnitude() int {
-	return 0
+	if n.left != nil {
+		left := n.left.magnitude()
+		right := n.right.magnitude()
+		return 3*left + 2*right
+	}
+	return n.literal
 }
 
 func sum(nodes []*nodeT) *nodeT {
