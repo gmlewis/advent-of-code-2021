@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	. "github.com/gmlewis/advent-of-code-2021/enum"
 )
 
 func TestAdd(t *testing.T) {
@@ -29,7 +31,7 @@ func TestAdd(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			n, _ := parse(tt.in)
 			plus, _ := parse(tt.plus)
-			got := n.add(plus).prettyPrint()
+			got := n.add(plus).String()
 			if got != tt.want {
 				t.Errorf("add = %q, want %q", got, tt.want)
 			}
@@ -83,6 +85,16 @@ func TestExplode(t *testing.T) {
 			in:   "[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]",
 			want: "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]",
 		},
+		{
+			name: "found broken example part 1",
+			in:   "[[[[[1,1],[2,2]],[3,3]],[4,4]],[5,5]]",
+			want: "[[[[0,[3,2]],[3,3]],[4,4]],[5,5]]",
+		},
+		{
+			name: "found broken example part 2",
+			in:   "[[[[0,[3,2]],[3,3]],[4,4]],[5,5]]",
+			want: "[[[[3,0],[5,3]],[4,4]],[5,5]]",
+		},
 	}
 
 	for _, tt := range tests {
@@ -92,7 +104,7 @@ func TestExplode(t *testing.T) {
 			if addLeft == nil && addRight == nil {
 				t.Error("explode = nil, nil, want left or right explosion")
 			}
-			got := out.prettyPrint()
+			got := out.String()
 			if got != tt.want {
 				t.Errorf("explode = %q, want %q", got, tt.want)
 			}
@@ -140,7 +152,7 @@ func TestSplit(t *testing.T) {
 			if !ok {
 				t.Error("split = false, want true")
 			}
-			got := out.prettyPrint()
+			got := out.String()
 			if got != tt.want {
 				t.Errorf("split = %q, want %q", got, tt.want)
 			}
@@ -148,7 +160,6 @@ func TestSplit(t *testing.T) {
 	}
 }
 
-/*
 func TestReduce(t *testing.T) {
 	tests := []struct {
 		name string
@@ -161,16 +172,16 @@ func TestReduce(t *testing.T) {
 			want: "[[[[0,7],4],[[7,8],[6,0]]],[8,1]]",
 		},
 		{
-			name: "second example",
-			in:   "[[[[0,7],4],[[7,8],[0,13]]],[1,1]]",
-			want: "[[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]",
+			name: "found broken example",
+			in:   "[[[[[1,1],[2,2]],[3,3]],[4,4]],[5,5]]",
+			want: "[[[[3,0],[5,3]],[4,4]],[5,5]]",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			n, _ := parse(tt.in)
-			got := n.reduce().prettyPrint()
+			got := n.reduce().String()
 			if got != tt.want {
 				t.Errorf("reduce = %q, want %q", got, tt.want)
 			}
@@ -307,8 +318,8 @@ func TestSum(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			n, _ := parse(tt.in)
-			got := n.sum().prettyPrint()
+			nums := Map(tt.in, func(line string) *nodeT { n, _ := parse(line); return n })
+			got := sum(nums).String()
 			if got != tt.want {
 				t.Errorf("sum = %q, want %q", got, tt.want)
 			}
@@ -316,6 +327,7 @@ func TestSum(t *testing.T) {
 	}
 }
 
+/*
 func TestMagnitude(t *testing.T) {
 	tests := []struct {
 		name string
