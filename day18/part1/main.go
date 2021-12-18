@@ -36,13 +36,15 @@ type nodeT struct {
 	literal int
 }
 
+func (n *nodeT) magnitude() int {
+	return 0
+}
+
 func sum(nodes []*nodeT) *nodeT {
 	result := nodes[0]
-	for i, node := range nodes[1:] {
+	for _, node := range nodes[1:] {
 		v := result.add(node)
-		logf("after sum #%v: %v", i+1, v)
 		result = v.reduce()
-		logf("after sum+reduce #%v: %v", i+1, result)
 	}
 	return result
 }
@@ -51,12 +53,10 @@ func (n *nodeT) reduce() *nodeT {
 	for {
 		if r, addLeft, addRight := n.explode(0); addLeft != nil || addRight != nil {
 			n = r
-			logf("after explode: %v", n)
 			continue
 		}
 		if r, ok := n.split(); ok {
 			n = r
-			logf("after split: %v", n)
 			continue
 		}
 		break
@@ -88,13 +88,11 @@ func (n *nodeT) split() (*nodeT, bool) {
 func (n *nodeT) explode(depth int) (result, addLeft, addRight *nodeT) {
 	if depth == 3 && n.left != nil {
 		if n.left.left != nil { // left node explodes
-			logf("left node explodes: %v, n.left=%v, n.right.left=%v, n.left.right=%v", n, n.left, n.right.left, n.left.right)
 			if n.right.left != nil {
 				return &nodeT{left: &nodeT{literal: 0}, right: &nodeT{left: &nodeT{literal: n.right.left.literal + n.left.right.literal}, right: n.right.right}}, n.left.left, nil
 			}
 			return &nodeT{left: &nodeT{literal: 0}, right: &nodeT{literal: n.left.right.literal + n.right.literal}}, n.left.left, nil
 		} else if n.right.left != nil { // right node explodes
-			logf("left right explodes: %v", n)
 			return &nodeT{left: &nodeT{literal: n.left.literal + n.right.left.literal}, right: &nodeT{literal: 0}}, nil, n.right.right
 		}
 	}
@@ -102,14 +100,12 @@ func (n *nodeT) explode(depth int) (result, addLeft, addRight *nodeT) {
 		left, addLeft, addRight := n.left.explode(depth + 1)
 		if addLeft != nil {
 			n.left = left
-			logf("NOOP parent: left exploded, addLeft=%v, this.left=%v, addRight=%v", addLeft, n.left, addRight)
 			return n, addLeft, nil
 		}
 		if addRight != nil {
 			n.left = left
 			if addRight.literal != 0 {
 				n.right = n.right.addToRight(addRight.literal)
-				logf("parent: left exploded, addRight=%v, this.right=%v", addRight, n.right)
 			}
 			return n, nil, &nodeT{literal: 0} // made change, no further changes allowed
 		}
@@ -118,13 +114,11 @@ func (n *nodeT) explode(depth int) (result, addLeft, addRight *nodeT) {
 			n.right = right
 			if addLeft.literal != 0 {
 				n.left = n.left.addToLeft(addLeft.literal)
-				logf("parent: right exploded, addLeft=%v, this.left=%v, addRight=%v", addLeft, n.left, addRight)
 			}
 			return n, &nodeT{literal: 0}, nil // made change, no further changes allowed
 		}
 		if addRight != nil {
 			n.right = right
-			logf("NOOP parent: right exploded, addRight=%v, this.right=%v", addRight, n.right)
 			return n, nil, addRight
 		}
 	}

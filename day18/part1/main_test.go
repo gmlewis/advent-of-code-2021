@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/test"
 )
 
 func TestAdd(t *testing.T) {
@@ -327,7 +328,6 @@ func TestSum(t *testing.T) {
 	}
 }
 
-/*
 func TestMagnitude(t *testing.T) {
 	tests := []struct {
 		name string
@@ -388,10 +388,10 @@ func TestMagnitude(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			n := parse(tt.in)
-			got := n.magnitude().prettyPrint()
+			n, _ := parse(tt.in)
+			got := n.magnitude()
 			if got != tt.want {
-				t.Errorf("magnitude = %q, want %q", got, tt.want)
+				t.Errorf("magnitude = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -422,4 +422,3 @@ var example1 = `
 [[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]
 [[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]
 `
-*/
