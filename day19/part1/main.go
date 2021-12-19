@@ -26,17 +26,26 @@ func process(filename string) {
 	logf("Processing %v ...", filename)
 	buf := must.ReadFile(filename)
 	scanners := Map(strings.Split(buf, "\n\n"), parseScanner)
+	scanners[0].identified = true // scanners[0] is defined to be the origin.
 
-	// for i := range scanners {
-	// logf("scanners[%v]=%+v", i, scanner)
-	// logf("values[%v] (%v) =%+v", i, len(values[i]), values[i])
-	// if i > 0 {
-	// 	last := values[i-1]
-	// 	diff := MapWithIndex(values[i], func(index, v int) int { return mathfn.Abs(v - last[index]) })
-	// 	sort.Ints(diff)
-	// 	logf("diff[%v-%v]=%+v", i, i-1, diff)
-	// }
-	// }
+	for i, base := range scanners {
+		if !base.identified {
+			continue
+		}
+		for j, other := range scanners {
+			if i == j || other.identified {
+				continue
+			}
+			logf("Comparing %v against %v", base.name, other.name)
+			fromBase, fromOther := findCommonBeacons(base, other)
+			if len(fromBase) == 0 {
+				continue
+			}
+			logf("\nfromBase=%+v,\nfromOther=%+v", fromBase, fromOther)
+			// other.identified = true
+			other.calcPosition(fromBase, fromOther)
+		}
+	}
 
 	printf("Solution: %v\n", len(scanners))
 }
@@ -44,7 +53,67 @@ func process(filename string) {
 type keyT [3]int
 type beaconMapT map[keyT]map[int][]keyT
 type scannerT struct {
-	beacons beaconMapT
+	name       string
+	identified bool
+	pos        keyT
+	beacons    beaconMapT
+}
+
+func (s *scannerT) calcPosition(fromBase, fromOther []keyT) {
+	delta := MapWithIndex(fromBase, func(i int, base keyT) keyT {
+		other := fromOther[i]
+		return keyT{base[0] - other[0], base[1] - other[1], base[2] - other[2]}
+	})
+	sameCount := Reduce(delta, keyT{}, func(k, acc keyT) keyT {
+		if k[0] == delta[0][0] {
+			acc[0]++
+		}
+		if k[1] == delta[0][1] {
+			acc[1]++
+		}
+		if k[2] == delta[0][2] {
+			acc[2]++
+		}
+		return acc
+	})
+	logf("delta: %+v", delta)
+	if sameCount[0] == len(delta) {
+		s.pos[0] = delta[0][0]
+		logf("calcPosition: same X delta value: %v", s.pos[0])
+	}
+	if sameCount[1] == len(delta) {
+		s.pos[1] = delta[0][1]
+		logf("calcPosition: same Y delta value: %v", s.pos[1])
+	}
+	if sameCount[2] == len(delta) {
+		s.pos[2] = delta[0][2]
+		logf("calcPosition: same Z delta value: %v", s.pos[2])
+	}
+}
+
+func findCommonBeacons(base, other *scannerT) (fromBase, fromOther []keyT) {
+	identified := map[keyT]bool{}
+	for kb, vb := range base.beacons {
+		for ko, vo := range other.beacons {
+			if identified[ko] {
+				continue
+			}
+			var common int
+			for k := range vb {
+				if _, ok := vo[k]; ok {
+					common++
+				}
+			}
+			if common >= 11 { // the beacon itself is the 12th commonality
+				logf("found a match between beacon %v and %v: common=%v", kb, ko, common)
+				fromBase = append(fromBase, kb)
+				fromOther = append(fromOther, ko)
+				identified[ko] = true
+				break
+			}
+		}
+	}
+	return fromBase, fromOther
 }
 
 func parseScanner(buf string) *scannerT {
@@ -66,9 +135,9 @@ func parseScanner(buf string) *scannerT {
 			dist := mathfn.Abs(j[0]-k[0]) + mathfn.Abs(j[1]-k[1]) + mathfn.Abs(j[2]-k[2])
 			beacons[k][dist] = append(beacons[k][dist], j)
 		}
-		logf("\n\n%v: beacon%v: %+v", lines[0], k, beacons[k])
+		// logf("\n\n%v: beacon%v: %+v", lines[0], k, beacons[k])
 	}
-	return &scannerT{beacons: beacons}
+	return &scannerT{name: lines[0], beacons: beacons}
 }
 
 // first beacon:
