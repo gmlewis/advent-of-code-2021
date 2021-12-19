@@ -28,6 +28,11 @@ func process(filename string) {
 	scanners := Map(strings.Split(buf, "\n\n"), parseScanner)
 	scanners[0].identified = true // scanners[0] is defined to be the origin.
 
+	allBeacons := map[keyT]bool{}
+	for k := range scanners[0].beacons {
+		allBeacons[k] = true
+	}
+
 	for i, base := range scanners {
 		if !base.identified {
 			continue
@@ -41,13 +46,19 @@ func process(filename string) {
 			if len(fromBase) == 0 {
 				continue
 			}
-			logf("\nfromBase=%+v,\nfromOther=%+v", fromBase, fromOther)
-			// other.identified = true
+			// logf("\nfromBase=%+v,\nfromOther=%+v", fromBase, fromOther)
 			other.calcPosition(fromBase, fromOther)
+
+			for k := range other.beacons {
+				nk := other.xform.multKeyT(k)
+				ws := keyT{nk[0] + other.pos[0], nk[1] + other.pos[1], nk[2] + other.pos[2]}
+				// logf("transformed beacon %+v to worldspace %+v", k, ws)
+				allBeacons[ws] = true
+			}
 		}
 	}
 
-	printf("Solution: %v\n", len(scanners))
+	printf("Solution: %v\n", len(allBeacons))
 }
 
 type keyT [3]int
@@ -57,38 +68,25 @@ type scannerT struct {
 	identified bool
 	pos        keyT
 	beacons    beaconMapT
+
+	xform M3
 }
 
 func (s *scannerT) calcPosition(fromBase, fromOther []keyT) {
-	delta := MapWithIndex(fromBase, func(i int, base keyT) keyT {
-		other := fromOther[i]
-		return keyT{base[0] - other[0], base[1] - other[1], base[2] - other[2]}
-	})
-	sameCount := Reduce(delta, keyT{}, func(k, acc keyT) keyT {
-		if k[0] == delta[0][0] {
-			acc[0]++
+	for _, xform := range allXForms {
+		delta := MapWithIndex(fromBase, func(i int, base keyT) keyT {
+			k := xform.multKeyT(fromOther[i])
+			return keyT{base[0] - k[0], base[1] - k[1], base[2] - k[2]}
+		})
+		if All(delta[1:], func(k keyT) bool { return k == delta[0] }) {
+			s.pos = delta[0]
+			s.identified = true
+			s.xform = xform
+			logf("%v is located at %+v with xform: %+v", s.name, s.pos, s.xform)
+			return
 		}
-		if k[1] == delta[0][1] {
-			acc[1]++
-		}
-		if k[2] == delta[0][2] {
-			acc[2]++
-		}
-		return acc
-	})
-	logf("delta: %+v", delta)
-	if sameCount[0] == len(delta) {
-		s.pos[0] = delta[0][0]
-		logf("calcPosition: same X delta value: %v", s.pos[0])
 	}
-	if sameCount[1] == len(delta) {
-		s.pos[1] = delta[0][1]
-		logf("calcPosition: same Y delta value: %v", s.pos[1])
-	}
-	if sameCount[2] == len(delta) {
-		s.pos[2] = delta[0][2]
-		logf("calcPosition: same Z delta value: %v", s.pos[2])
-	}
+	log.Fatalf("unable to calculate xform!")
 }
 
 func findCommonBeacons(base, other *scannerT) (fromBase, fromOther []keyT) {
@@ -105,7 +103,7 @@ func findCommonBeacons(base, other *scannerT) (fromBase, fromOther []keyT) {
 				}
 			}
 			if common >= 11 { // the beacon itself is the 12th commonality
-				logf("found a match between beacon %v and %v: common=%v", kb, ko, common)
+				// logf("found a match between beacon %v and %v: common=%v", kb, ko, common)
 				fromBase = append(fromBase, kb)
 				fromOther = append(fromOther, ko)
 				identified[ko] = true
@@ -140,7 +138,58 @@ func parseScanner(buf string) *scannerT {
 	return &scannerT{name: lines[0], beacons: beacons}
 }
 
-// first beacon:
-// --- scanner 0 ---: beacon[-618 -824 -621]: map[97:[[-661 -816 -575]] 245:[[-537 -823 -458]] 1329:[[390 -675 -793]] 1538:[[404 -588 -901]] 1568:[[-485 -357 347]] 1605:[[-447 -329 318]] 1628:[[544 -627 -890]] 1788:[[-345 -311 381]] 1790:[[-584 868 -557]] 1831:[[-689 845 -530]] 1965:[[-789 900 -551]] 1966:[[7 -33 -71]] 2216:[[459 -707 401]] 2219:[[423 -701 434]] 2357:[[528 -643 409]] 2394:[[553 345 -567]] 2542:[[564 392 -477]] 2633:[[630 319 -379]] 2927:[[-892 524 684]] 2990:[[-838 591 734]] 3115:[[-876 649 763]] 3748:[[443 580 662]] 3784:[[474 580 667]] 3975:[[455 729 728]]]
-// matches second beacon:
-// --- scanner 1 ---: beacon[686 422 578]: map[97:[[729 430 532]] 245:[[605 423 415]] 863:[[669 -402 600]] 978:[[586 -435 557]] 1051:[[567 -361 727]] 1329:[[-322 571 750]] 1431:[[95 138 22]] 1538:[[-336 658 858]] 1568:[[553 889 -390]] 1605:[[515 917 -361]] 1628:[[-476 619 847]] 1788:[[413 935 -424]] 2037:[[703 -491 -529]] 2042:[[755 -354 -619]] 2133:[[-429 -592 574]] 2179:[[-328 -685 520]] 2216:[[-391 539 -444]] 2219:[[-355 545 -477]] 2331:[[807 -499 -711]] 2357:[[-460 603 -452]] 2413:[[-500 -761 534]] 3441:[[-340 -569 -846]] 3629:[[-466 -666 -811]] 3706:[[-364 -763 -893]]]
+type M3 [3]keyT
+
+var xformsPass1 = []M3{
+	{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}},   // identity, +X
+	{{0, -1, 0}, {1, 0, 0}, {0, 0, 1}},  // (Z rot 90) = +Y
+	{{-1, 0, 0}, {0, -1, 0}, {0, 0, 1}}, // (Z rot 180) = -X
+	{{0, 1, 0}, {-1, 0, 0}, {0, 0, 1}},  // (Z rot 270) = -Y
+	{{0, 0, 1}, {0, 1, 0}, {-1, 0, 0}},  // (Y rot 90) = +Z
+	{{0, 0, -1}, {0, 1, 0}, {1, 0, 0}},  // (Y rot 2700) = -Z
+}
+
+var xformsPass2 = []M3{
+	{{1, 0, 0}, {0, 1, 0}, {0, 0, 1}},   // identity, (X rot 0)
+	{{1, 0, 0}, {0, 0, -1}, {0, 1, 0}},  // identity, (X rot 90)
+	{{1, 0, 0}, {0, -1, 0}, {0, 0, -1}}, // identity, (X rot 180)
+	{{1, 0, 0}, {0, 0, 1}, {0, -1, 0}},  // identity, (X rot 270)
+}
+
+var allXForms []M3
+
+func init() {
+	for _, m1 := range xformsPass1 {
+		for _, m2 := range xformsPass2 {
+			m := m2.mult(m1)
+			allXForms = append(allXForms, m)
+		}
+	}
+}
+
+// mult multiplies two M3 matrices. Order is important.
+func (m M3) mult(other M3) M3 {
+	oc := M3{other.column(0), other.column(1), other.column(2)}
+	return M3{
+		{m[0].dot(oc[0]), m[0].dot(oc[1]), m[0].dot(oc[2])},
+		{m[1].dot(oc[0]), m[1].dot(oc[1]), m[1].dot(oc[2])},
+		{m[2].dot(oc[0]), m[2].dot(oc[1]), m[2].dot(oc[2])},
+	}
+}
+
+// column returns a column of the matrix.
+func (m M3) column(col int) keyT { return keyT{m[0][col], m[1][col], m[2][col]} }
+
+// dot computes the dot product (aka "scalar product" or "inner product")
+// of two vectors (keyTs). The dot product is the cosine of the angle
+// between two unit vectors.
+func (t keyT) dot(other keyT) int { return t[0]*other[0] + t[1]*other[1] + t[2]*other[2] }
+
+// multKeyT multiples a M3 matrix by a keyT.
+func (m M3) multKeyT(other keyT) keyT {
+	return keyT{
+		m[0].dot(other),
+		m[1].dot(other),
+		m[2].dot(other),
+	}
+}
