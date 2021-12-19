@@ -76,7 +76,7 @@ func (s *scannerT) calcPosition(fromBase, fromOther []keyT) {
 	for _, xform := range allXForms {
 		delta := MapWithIndex(fromBase, func(i int, base keyT) keyT {
 			k := xform.multKeyT(fromOther[i])
-			return keyT{base[0] - k[0], base[1] - k[1], base[2] - k[2]}
+			return base.sub(k)
 		})
 		if All(delta[1:], func(k keyT) bool { return k == delta[0] }) {
 			s.pos = delta[0]
@@ -192,4 +192,9 @@ func (m M3) multKeyT(other keyT) keyT {
 		m[1].dot(other),
 		m[2].dot(other),
 	}
+}
+
+// sub subtracts one keyT from another.
+func (k keyT) sub(other keyT) keyT {
+	return keyT{k[0] - other[0], k[1] - other[1], k[2] - other[2]}
 }
