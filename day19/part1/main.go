@@ -6,11 +6,9 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"sort"
 	"strings"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
-	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/mathfn"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
@@ -28,34 +26,52 @@ func process(filename string) {
 	logf("Processing %v ...", filename)
 	buf := must.ReadFile(filename)
 	scanners := Map(strings.Split(buf, "\n\n"), parseScanner)
-	values := Map(scanners, func(s scannerT) []int { v := maps.Values(s); sort.Ints(v); return v })
-	values = Map(values, func(arr []int) []int {
-		return MapWithIndex(arr, func(i, v int) int { return v - arr[0] })
-	})
 
-	for i := range scanners {
-		// logf("scanners[%v]=%+v", i, scanner)
-		logf("values[%v] (%v) =%+v", i, len(values[i]), values[i])
-		// if i > 0 {
-		// 	last := values[i-1]
-		// 	diff := MapWithIndex(values[i], func(index, v int) int { return mathfn.Abs(v - last[index]) })
-		// 	sort.Ints(diff)
-		// 	logf("diff[%v-%v]=%+v", i, i-1, diff)
-		// }
-	}
+	// for i := range scanners {
+	// logf("scanners[%v]=%+v", i, scanner)
+	// logf("values[%v] (%v) =%+v", i, len(values[i]), values[i])
+	// if i > 0 {
+	// 	last := values[i-1]
+	// 	diff := MapWithIndex(values[i], func(index, v int) int { return mathfn.Abs(v - last[index]) })
+	// 	sort.Ints(diff)
+	// 	logf("diff[%v-%v]=%+v", i, i-1, diff)
+	// }
+	// }
 
 	printf("Solution: %v\n", len(scanners))
 }
 
-type scannerT map[[3]int]int
+type keyT [3]int
+type beaconMapT map[keyT]map[int][]keyT
+type scannerT struct {
+	beacons beaconMapT
+}
 
-func parseScanner(buf string) scannerT {
-	return Reduce(strings.Split(buf, "\n")[1:], scannerT{}, func(line string, acc scannerT) scannerT {
+func parseScanner(buf string) *scannerT {
+	lines := strings.Split(buf, "\n")
+	beacons := Reduce(lines[1:], beaconMapT{}, func(line string, acc beaconMapT) beaconMapT {
 		p := strings.Split(line, ",")
 		x := must.Atoi(p[0])
 		y := must.Atoi(p[1])
 		z := must.Atoi(p[2])
-		acc[[3]int{x, y, z}] = mathfn.Abs(x) + mathfn.Abs(y) + mathfn.Abs(z)
+		acc[keyT{x, y, z}] = map[int][]keyT{}
 		return acc
 	})
+	// Find the manhattan distances from each beacon to every other beacon.
+	for k := range beacons {
+		for j := range beacons {
+			if j == k {
+				continue
+			}
+			dist := mathfn.Abs(j[0]-k[0]) + mathfn.Abs(j[1]-k[1]) + mathfn.Abs(j[2]-k[2])
+			beacons[k][dist] = append(beacons[k][dist], j)
+		}
+		logf("\n\n%v: beacon%v: %+v", lines[0], k, beacons[k])
+	}
+	return &scannerT{beacons: beacons}
 }
+
+// first beacon:
+// --- scanner 0 ---: beacon[-618 -824 -621]: map[97:[[-661 -816 -575]] 245:[[-537 -823 -458]] 1329:[[390 -675 -793]] 1538:[[404 -588 -901]] 1568:[[-485 -357 347]] 1605:[[-447 -329 318]] 1628:[[544 -627 -890]] 1788:[[-345 -311 381]] 1790:[[-584 868 -557]] 1831:[[-689 845 -530]] 1965:[[-789 900 -551]] 1966:[[7 -33 -71]] 2216:[[459 -707 401]] 2219:[[423 -701 434]] 2357:[[528 -643 409]] 2394:[[553 345 -567]] 2542:[[564 392 -477]] 2633:[[630 319 -379]] 2927:[[-892 524 684]] 2990:[[-838 591 734]] 3115:[[-876 649 763]] 3748:[[443 580 662]] 3784:[[474 580 667]] 3975:[[455 729 728]]]
+// matches second beacon:
+// --- scanner 1 ---: beacon[686 422 578]: map[97:[[729 430 532]] 245:[[605 423 415]] 863:[[669 -402 600]] 978:[[586 -435 557]] 1051:[[567 -361 727]] 1329:[[-322 571 750]] 1431:[[95 138 22]] 1538:[[-336 658 858]] 1568:[[553 889 -390]] 1605:[[515 917 -361]] 1628:[[-476 619 847]] 1788:[[413 935 -424]] 2037:[[703 -491 -529]] 2042:[[755 -354 -619]] 2133:[[-429 -592 574]] 2179:[[-328 -685 520]] 2216:[[-391 539 -444]] 2219:[[-355 545 -477]] 2331:[[807 -499 -711]] 2357:[[-460 603 -452]] 2413:[[-500 -761 534]] 3441:[[-340 -569 -846]] 3629:[[-466 -666 -811]] 3706:[[-364 -763 -893]]]
