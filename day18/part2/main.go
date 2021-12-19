@@ -6,9 +6,11 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"sync"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
+	"github.com/gmlewis/advent-of-code-2021/stream"
 )
 
 var logf = log.Printf
@@ -25,18 +27,25 @@ func process(filename string) {
 	lines := must.ReadFileLines(filename)
 	nums := Map(lines, func(line string) *nodeT { n, _ := parse(line); return n })
 
-	var max int
+	ch := make(chan int, 1000)
+	var wg sync.WaitGroup
 	for i := 0; i < len(nums); i++ {
 		for j := 0; j < len(nums); j++ {
 			if i == j {
 				continue
 			}
-			n := sum([]*nodeT{nums[i], nums[j]}).magnitude()
-			if n > max {
-				max = n
-			}
+			wg.Add(1)
+			go func(i, j int) {
+				ch <- sum([]*nodeT{nums[i], nums[j]}).magnitude()
+				wg.Done()
+			}(i, j)
 		}
 	}
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+	max := stream.Max(ch)
 
 	printf("Solution: %v\n", max)
 }
