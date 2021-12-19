@@ -78,3 +78,38 @@ func TestMap_StringToInt(t *testing.T) {
 		})
 	}
 }
+
+func TestMapWithIndex_IntToString(t *testing.T) {
+	tests := []struct {
+		name  string
+		items []int
+		f     func(int, int) string
+		want  []string
+	}{
+		{
+			name: "empty int to string",
+			want: []string{},
+		},
+		{
+			name:  "simple decimal int to string",
+			items: []int{1, 2, 3, 100},
+			f:     func(index, v int) string { return fmt.Sprintf("%v:%v", index, v) },
+			want:  []string{"0:1", "1:2", "2:3", "3:100"},
+		},
+		{
+			name:  "simple decimal int to hex string",
+			items: []int{1, 2, 3, 128},
+			f:     func(index, v int) string { return fmt.Sprintf("%v:0x%02x", index, v) },
+			want:  []string{"0:0x01", "1:0x02", "2:0x03", "3:0x80"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := MapWithIndex(tt.items, tt.f)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("MapWithIndex(%+v) = %+v, want %+v", tt.items, got, tt.want)
+			}
+		})
+	}
+}
