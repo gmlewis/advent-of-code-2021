@@ -9,3 +9,16 @@ func Map[S any, T any](ch <-chan T, f func(a T) S) []S {
 	}
 	return ret
 }
+
+// MapStream maps a channel of values from one type to another
+// using the provided func f.
+func MapStream[S any, T any](ch <-chan T, f func(a T) S) <-chan S {
+	out := make(chan S, defaultBufSize)
+	go func() {
+	for v := range ch {
+		out <- f(v)
+	}
+		close(out)
+	}()
+	return out
+}
