@@ -29,7 +29,7 @@ func process(filename string) {
 	scanners[0].identified = true // scanners[0] is defined to be the origin.
 
 	allBeacons := map[keyT]bool{}
-	for k := range scanners[0].beacons {
+	for k := range scanners[0].wsBeacons {
 		allBeacons[k] = true
 	}
 
@@ -49,7 +49,7 @@ func process(filename string) {
 			// logf("\nfromBase=%+v,\nfromOther=%+v", fromBase, fromOther)
 			other.calcPosition(base, fromBase, fromOther)
 
-			for k := range other.beacons {
+			for k := range other.lsBeacons {
 				nk := other.xform.multKeyT(k)
 				ws := keyT{nk[0] + other.pos[0], nk[1] + other.pos[1], nk[2] + other.pos[2]}
 				// logf("transformed beacon %+v to worldspace %+v", k, ws)
@@ -67,7 +67,8 @@ type scannerT struct {
 	name       string
 	identified bool
 	pos        keyT
-	beacons    beaconMapT
+	lsBeacons  beaconMapT
+	wsBeacons  beaconMapT
 
 	xform M3
 }
@@ -94,8 +95,8 @@ func (s *scannerT) calcPosition(base *scannerT, fromBase, fromOther []keyT) {
 
 func findCommonBeacons(base, other *scannerT) (fromBase, fromOther []keyT) {
 	identified := map[keyT]bool{}
-	for kb, vb := range base.beacons {
-		for ko, vo := range other.beacons {
+	for kb, vb := range base.wsBeacons {
+		for ko, vo := range other.lsBeacons {
 			if identified[ko] {
 				continue
 			}
@@ -119,26 +120,29 @@ func findCommonBeacons(base, other *scannerT) (fromBase, fromOther []keyT) {
 
 func parseScanner(buf string) *scannerT {
 	lines := strings.Split(buf, "\n")
-	beacons := Reduce(lines[1:], beaconMapT{}, func(line string, acc beaconMapT) beaconMapT {
+	wsBeacons, lsBeacons := beaconMapT{}, beaconMapT{}
+	Each(lines[1:], func(line string) {
 		p := strings.Split(line, ",")
 		x := must.Atoi(p[0])
 		y := must.Atoi(p[1])
 		z := must.Atoi(p[2])
-		acc[keyT{x, y, z}] = map[int][]keyT{}
-		return acc
+		k := keyT{x, y, z}
+		lsBeacons[k] = map[int][]keyT{}
+		wsBeacons[k] = map[int][]keyT{}
 	})
 	// Find the manhattan distances from each beacon to every other beacon.
-	for k := range beacons {
-		for j := range beacons {
+	for k := range lsBeacons {
+		for j := range lsBeacons {
 			if j == k {
 				continue
 			}
 			dist := mathfn.Abs(j[0]-k[0]) + mathfn.Abs(j[1]-k[1]) + mathfn.Abs(j[2]-k[2])
-			beacons[k][dist] = append(beacons[k][dist], j)
+			lsBeacons[k][dist] = append(lsBeacons[k][dist], j)
+			wsBeacons[k][dist] = append(wsBeacons[k][dist], j)
 		}
 		// logf("\n\n%v: beacon%v: %+v", lines[0], k, beacons[k])
 	}
-	return &scannerT{name: lines[0], beacons: beacons}
+	return &scannerT{name: lines[0], lsBeacons: lsBeacons, wsBeacons: wsBeacons}
 }
 
 type M3 [3]keyT
