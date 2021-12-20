@@ -46,7 +46,7 @@ func process(filename string) {
 			if len(fromBase) == 0 {
 				continue
 			}
-			// logf("\nfromBase=%+v,\nfromOther=%+v", fromBase, fromOther)
+			logf("\nfromBase=%+v,\nfromOther=%+v", fromBase, fromOther)
 			other.calcPosition(base, fromBase, fromOther)
 
 			for k := range other.lsBeacons {
@@ -61,8 +61,10 @@ func process(filename string) {
 	printf("Solution: %v\n", len(allBeacons))
 }
 
+// type fingerPrintT map[int][]keyT
 type keyT [3]int
-type beaconMapT map[keyT]map[int][]keyT
+type fingerPrintT map[int]struct{}
+type beaconMapT map[keyT]fingerPrintT
 type scannerT struct {
 	name       string
 	identified bool
@@ -80,6 +82,9 @@ func (s *scannerT) calcPosition(base *scannerT, fromBase, fromOther []keyT) {
 			return base.sub(k)
 		})
 		if All(delta[1:], func(k keyT) bool { return k == delta[0] }) {
+			for k := range s.wsBeacons {
+				s.wsBeacons[k] = fingerPrintT{}
+			}
 			logf("%v has delta: %+v", s.name, delta)
 			logf("base.pos=%+v", base.pos)
 			s.pos = delta[0].sub(base.pos)
@@ -87,6 +92,11 @@ func (s *scannerT) calcPosition(base *scannerT, fromBase, fromOther []keyT) {
 			s.identified = true
 			s.xform = xform
 			logf("%v is located at %+v with xform: %+v", s.name, s.pos, s.xform)
+			for k, v := range s.lsBeacons {
+				wsk := xform.multKeyT(k).add(s.pos)
+				s.wsBeacons[wsk] = v
+			}
+			// logf("s.wsBeacons=%+v", s.wsBeacons)
 			return
 		}
 	}
@@ -123,12 +133,9 @@ func parseScanner(buf string) *scannerT {
 	wsBeacons, lsBeacons := beaconMapT{}, beaconMapT{}
 	Each(lines[1:], func(line string) {
 		p := strings.Split(line, ",")
-		x := must.Atoi(p[0])
-		y := must.Atoi(p[1])
-		z := must.Atoi(p[2])
-		k := keyT{x, y, z}
-		lsBeacons[k] = map[int][]keyT{}
-		wsBeacons[k] = map[int][]keyT{}
+		k := keyT{must.Atoi(p[0]), must.Atoi(p[1]), must.Atoi(p[2])}
+		lsBeacons[k] = fingerPrintT{}
+		wsBeacons[k] = fingerPrintT{}
 	})
 	// Find the manhattan distances from each beacon to every other beacon.
 	for k := range lsBeacons {
@@ -137,8 +144,10 @@ func parseScanner(buf string) *scannerT {
 				continue
 			}
 			dist := mathfn.Abs(j[0]-k[0]) + mathfn.Abs(j[1]-k[1]) + mathfn.Abs(j[2]-k[2])
-			lsBeacons[k][dist] = append(lsBeacons[k][dist], j)
-			wsBeacons[k][dist] = append(wsBeacons[k][dist], j)
+			// lsBeacons[k][dist] = append(lsBeacons[k][dist], j)
+			// wsBeacons[k][dist] = append(wsBeacons[k][dist], j)
+			lsBeacons[k][dist] = struct{}{}
+			wsBeacons[k][dist] = struct{}{}
 		}
 		// logf("\n\n%v: beacon%v: %+v", lines[0], k, beacons[k])
 	}
