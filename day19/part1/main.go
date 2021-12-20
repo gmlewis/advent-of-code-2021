@@ -33,27 +33,31 @@ func process(filename string) {
 		allBeacons[k] = true
 	}
 
-	for i, base := range scanners {
-		if !base.identified {
-			continue
-		}
-		for j, other := range scanners {
-			if i == j || other.identified {
+	foundScanners := map[int]bool{0: true}
+	for len(foundScanners) != len(scanners) {
+		for i, base := range scanners {
+			if !base.identified {
 				continue
 			}
-			logf("Comparing %v against %v", base.name, other.name)
-			fromBase, fromOther := findCommonBeacons(base, other)
-			if len(fromBase) == 0 {
-				continue
-			}
-			logf("\nfromBase=%+v,\nfromOther=%+v", fromBase, fromOther)
-			other.calcPosition(base, fromBase, fromOther)
+			for j, other := range scanners {
+				if i == j || other.identified {
+					continue
+				}
+				logf("Comparing %v against %v", base.name, other.name)
+				fromBase, fromOther := findCommonBeacons(base, other)
+				if len(fromBase) == 0 {
+					continue
+				}
+				logf("\nfromBase=%+v,\nfromOther=%+v", fromBase, fromOther)
+				foundScanners[j] = true
+				other.calcPosition(base, fromBase, fromOther)
 
-			for k := range other.lsBeacons {
-				nk := other.xform.multKeyT(k)
-				ws := keyT{nk[0] + other.pos[0], nk[1] + other.pos[1], nk[2] + other.pos[2]}
-				// logf("transformed beacon %+v to worldspace %+v", k, ws)
-				allBeacons[ws] = true
+				for k := range other.lsBeacons {
+					nk := other.xform.multKeyT(k)
+					ws := keyT{nk[0] + other.pos[0], nk[1] + other.pos[1], nk[2] + other.pos[2]}
+					// logf("transformed beacon %+v to worldspace %+v", k, ws)
+					allBeacons[ws] = true
+				}
 			}
 		}
 	}
@@ -82,12 +86,9 @@ func (s *scannerT) calcPosition(base *scannerT, fromBase, fromOther []keyT) {
 			return base.sub(k)
 		})
 		if All(delta[1:], func(k keyT) bool { return k == delta[0] }) {
-			for k := range s.wsBeacons {
-				s.wsBeacons[k] = fingerPrintT{}
-			}
+			s.wsBeacons = beaconMapT{}
 			logf("%v has delta: %+v", s.name, delta)
-			logf("base.pos=%+v", base.pos)
-			s.pos = delta[0].sub(base.pos)
+			s.pos = delta[0]
 			logf("s.pos=%+v", s.pos)
 			s.identified = true
 			s.xform = xform
