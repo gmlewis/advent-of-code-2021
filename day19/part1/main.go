@@ -47,7 +47,7 @@ func process(filename string) {
 				continue
 			}
 			// logf("\nfromBase=%+v,\nfromOther=%+v", fromBase, fromOther)
-			other.calcPosition(fromBase, fromOther)
+			other.calcPosition(base, fromBase, fromOther)
 
 			for k := range other.beacons {
 				nk := other.xform.multKeyT(k)
@@ -72,14 +72,17 @@ type scannerT struct {
 	xform M3
 }
 
-func (s *scannerT) calcPosition(fromBase, fromOther []keyT) {
+func (s *scannerT) calcPosition(base *scannerT, fromBase, fromOther []keyT) {
 	for _, xform := range allXForms {
 		delta := MapWithIndex(fromBase, func(i int, base keyT) keyT {
 			k := xform.multKeyT(fromOther[i])
 			return base.sub(k)
 		})
 		if All(delta[1:], func(k keyT) bool { return k == delta[0] }) {
-			s.pos = delta[0]
+			logf("%v has delta: %+v", s.name, delta)
+			logf("base.pos=%+v", base.pos)
+			s.pos = delta[0].sub(base.pos)
+			logf("s.pos=%+v", s.pos)
 			s.identified = true
 			s.xform = xform
 			logf("%v is located at %+v with xform: %+v", s.name, s.pos, s.xform)
@@ -192,6 +195,11 @@ func (m M3) multKeyT(other keyT) keyT {
 		m[1].dot(other),
 		m[2].dot(other),
 	}
+}
+
+// add adds one keyT to another.
+func (k keyT) add(other keyT) keyT {
+	return keyT{k[0] + other[0], k[1] + other[1], k[2] + other[2]}
 }
 
 // sub subtracts one keyT from another.
