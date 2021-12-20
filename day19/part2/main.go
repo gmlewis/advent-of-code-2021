@@ -43,29 +43,36 @@ func process(filename string) {
 				if i == j || other.identified {
 					continue
 				}
-				logf("Comparing %v against %v", base.name, other.name)
 				fromBase, fromOther := findCommonBeacons(base, other)
 				if len(fromBase) == 0 {
 					continue
 				}
-				logf("\nfromBase=%+v,\nfromOther=%+v", fromBase, fromOther)
 				foundScanners[j] = true
 				other.calcPosition(base, fromBase, fromOther)
 
 				for k := range other.lsBeacons {
 					nk := other.xform.multKeyT(k)
 					ws := keyT{nk[0] + other.pos[0], nk[1] + other.pos[1], nk[2] + other.pos[2]}
-					// logf("transformed beacon %+v to worldspace %+v", k, ws)
 					allBeacons[ws] = true
 				}
 			}
 		}
 	}
 
-	printf("Solution: %v\n", len(allBeacons))
+	var maxDist int
+	for i, a := range scanners {
+		for j := i + 1; j < len(scanners); j++ {
+			b := scanners[j]
+			dist := mathfn.Abs(a.pos[0]-b.pos[0]) + mathfn.Abs(a.pos[1]-b.pos[1]) + mathfn.Abs(a.pos[2]-b.pos[2])
+			if dist > maxDist {
+				maxDist = dist
+			}
+		}
+	}
+
+	printf("Solution: %v\n", maxDist)
 }
 
-// type fingerPrintT map[int][]keyT
 type keyT [3]int
 type fingerPrintT map[int]struct{}
 type beaconMapT map[keyT]fingerPrintT
@@ -87,17 +94,13 @@ func (s *scannerT) calcPosition(base *scannerT, fromBase, fromOther []keyT) {
 		})
 		if All(delta[1:], func(k keyT) bool { return k == delta[0] }) {
 			s.wsBeacons = beaconMapT{}
-			logf("%v has delta: %+v", s.name, delta)
 			s.pos = delta[0]
-			logf("s.pos=%+v", s.pos)
 			s.identified = true
 			s.xform = xform
-			logf("%v is located at %+v with xform: %+v", s.name, s.pos, s.xform)
 			for k, v := range s.lsBeacons {
 				wsk := xform.multKeyT(k).add(s.pos)
 				s.wsBeacons[wsk] = v
 			}
-			// logf("s.wsBeacons=%+v", s.wsBeacons)
 			return
 		}
 	}
@@ -118,7 +121,6 @@ func findCommonBeacons(base, other *scannerT) (fromBase, fromOther []keyT) {
 				}
 			}
 			if common >= 11 { // the beacon itself is the 12th commonality
-				// logf("found a match between beacon %v and %v: common=%v", kb, ko, common)
 				fromBase = append(fromBase, kb)
 				fromOther = append(fromOther, ko)
 				identified[ko] = true
@@ -145,12 +147,9 @@ func parseScanner(buf string) *scannerT {
 				continue
 			}
 			dist := mathfn.Abs(j[0]-k[0]) + mathfn.Abs(j[1]-k[1]) + mathfn.Abs(j[2]-k[2])
-			// lsBeacons[k][dist] = append(lsBeacons[k][dist], j)
-			// wsBeacons[k][dist] = append(wsBeacons[k][dist], j)
 			lsBeacons[k][dist] = struct{}{}
 			wsBeacons[k][dist] = struct{}{}
 		}
-		// logf("\n\n%v: beacon%v: %+v", lines[0], k, beacons[k])
 	}
 	return &scannerT{name: lines[0], lsBeacons: lsBeacons, wsBeacons: wsBeacons}
 }
