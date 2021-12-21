@@ -42,11 +42,10 @@ func process(filename string) {
 	}
 	logf("fromTo=%+v", fromTo)
 
-	p1Wins, p1Losses := reach21In4(p1Start, nil, nil, fromTo)
-	p2Wins, p2Losses := reach21In4(p2Start, nil, nil, fromTo)
-	logf("p1Wins=%v, p1Losses=%v, p2Wins=%v, p2Losses=%v", p1Wins, p1Losses, p2Wins, p2Losses)
+	p1wins, p2wins := player1(p1Start, 0, 1, p2Start, 0, 1, fromTo)
+	logf("p1wins=%v, p2wins=%v", p1wins, p2wins)
 
-	printf("Solution: %v\n", p1Wins*p2Losses-p1Losses*p2Wins)
+	printf("Solution: %v %v\n", p1wins, p2wins)
 }
 
 func roll(r1, r2, r3, oldPos int) (pos int) {
@@ -54,22 +53,34 @@ func roll(r1, r2, r3, oldPos int) (pos int) {
 	return pos
 }
 
-func reach21In4(pos int, ways, positions []int64, fromTo map[int]map[int]int) (wins, losses int64) {
-	if len(positions) == 4 {
-		score := positions[0] + positions[1] + positions[2] + positions[3]
-		if score >= 21 {
-			return ways[0] * ways[1] * ways[2] * ways[3], 0
-		}
-		return 0, ways[0] * ways[1] * ways[2] * ways[3]
-	}
+func player1(p1pos, p1score int, p1ways int64,
+	p2pos, p2score int, p2ways int64,
+	fromTo map[int]map[int]int) (p1wins, p2wins int64) {
 
-	var totalWins, totalLosses int64
-	for k, v := range fromTo[pos] {
-		w := append([]int64{int64(v)}, ways...)
-		p := append([]int64{int64(k)}, positions...)
-		wins, losses := reach21In4(k, w, p, fromTo)
-		totalWins += wins
-		totalLosses += losses
+	for k, v := range fromTo[p1pos] {
+		if p1score+k >= 21 {
+			return p1ways * 27, p2ways
+		}
+
+		p1, p2 := player2(k, p1score+k, p1ways*int64(v), p2pos, p2score, p2ways, fromTo)
+		p1wins += p1
+		p2wins += p2
 	}
-	return totalWins, totalLosses
+	return p1wins, p2wins
+}
+
+func player2(p1pos, p1score int, p1ways int64,
+	p2pos, p2score int, p2ways int64,
+	fromTo map[int]map[int]int) (p1wins, p2wins int64) {
+
+	for k, v := range fromTo[p2pos] {
+		if p2score+k >= 21 {
+			return p1ways, p2ways * 27
+		}
+
+		p1, p2 := player1(p1pos, p1score, p1ways, k, p2score+k, p2ways*int64(v), fromTo)
+		p1wins += p1
+		p2wins += p2
+	}
+	return p1wins, p2wins
 }
