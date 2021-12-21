@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/must"
 	"github.com/gmlewis/advent-of-code-2021/stream"
 )
@@ -28,14 +29,16 @@ func process(filename string) {
 	filter := ReduceWithIndex([]rune(lines[0]), filterT{}, func(i int, r rune, acc filterT) filterT {
 		if r == '#' {
 			acc[i] = 1
+		} else {
+			acc[i] = 0
 		}
 		return acc
 	})
 	img := parse(lines[2:])
 
-	after2 := img.enhance(filter).enhance(filter)
+	after2 := img.enhance(filter, 0).enhance(filter, filter[0])
 
-	printf("Solution: %v\n", len(after2.p))
+	printf("Solution: %v\n", after2.lit())
 }
 
 type filterT map[int]int
@@ -50,7 +53,11 @@ type imageT struct {
 }
 type pixelT [3]int // x, y, value
 
-func (i *imageT) enhance(filter filterT) *imageT {
+func (i *imageT) lit() int {
+	return maps.Count(i.p, func(k keyT, v int) bool { return v == 1 })
+}
+
+func (i *imageT) enhance(filter filterT, background int) *imageT {
 	ch := make(chan keyT, 1000)
 
 	go func() {
@@ -62,23 +69,29 @@ func (i *imageT) enhance(filter filterT) *imageT {
 		close(ch)
 	}()
 
+	f := func(k keyT) int {
+		if v, ok := i.p[k]; ok {
+			return v
+		}
+		return background
+	}
+
 	result := &imageT{p: pixelsT{}, xmin: i.xmin - 1, xmax: i.xmax + 1, ymin: i.ymin - 1, ymax: i.ymax + 1}
-	pixelCh := stream.MapStream(ch, func(p keyT) (pixelT, bool) {
-		bits := i.p[keyT{p[0] - 1, p[1] - 1}]<<8 |
-			i.p[keyT{p[0], p[1] - 1}]<<7 |
-			i.p[keyT{p[0] + 1, p[1] - 1}]<<6 |
-			i.p[keyT{p[0] - 1, p[1]}]<<5 |
-			i.p[keyT{p[0], p[1]}]<<4 |
-			i.p[keyT{p[0] + 1, p[1]}]<<3 |
-			i.p[keyT{p[0] - 1, p[1] + 1}]<<2 |
-			i.p[keyT{p[0], p[1] + 1}]<<1 |
-			i.p[keyT{p[0] + 1, p[1] + 1}]
-		v := filter[bits]
-		return pixelT{p[0], p[1], v}, v == 1
+	pixelCh := stream.MapStream(ch, func(p keyT) pixelT {
+		bits := f(keyT{p[0] - 1, p[1] - 1})<<8 |
+			f(keyT{p[0], p[1] - 1})<<7 |
+			f(keyT{p[0] + 1, p[1] - 1})<<6 |
+			f(keyT{p[0] - 1, p[1]})<<5 |
+			f(keyT{p[0], p[1]})<<4 |
+			f(keyT{p[0] + 1, p[1]})<<3 |
+			f(keyT{p[0] - 1, p[1] + 1})<<2 |
+			f(keyT{p[0], p[1] + 1})<<1 |
+			f(keyT{p[0] + 1, p[1] + 1})
+		return pixelT{p[0], p[1], filter[bits]}
 	})
 
 	for p := range pixelCh {
-		result.p[keyT{p[0], p[1]}] = 1
+		result.p[keyT{p[0], p[1]}] = p[2]
 	}
 
 	return result
@@ -101,18 +114,12 @@ func (i *imageT) String() string {
 }
 
 func parse(lines []string) *imageT {
-	img := &imageT{p: pixelsT{}}
+	img := &imageT{p: pixelsT{}, ymax: len(lines) - 1, xmax: len(lines[0])}
 	for y, line := range lines {
 		for x, r := range line {
 			if r == '#' {
 				img.p[keyT{x, y}] = 1
-				if x > img.xmax {
-					img.xmax = x
-				}
 			}
-		}
-		if y > img.ymax {
-			img.ymax = y
 		}
 	}
 	return img

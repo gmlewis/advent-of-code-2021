@@ -37,7 +37,7 @@ func TestEnhance(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			img := parse(strings.Split(tt.in, "\n"))
-			got := img.enhance(filter).String()
+			got := img.enhance(filter, 0).String()
 			if got != tt.want {
 				t.Errorf("enhance=\n%v\n, want:\n%v", got, tt.want)
 			}
@@ -77,23 +77,23 @@ var enhance1 = `
 `
 
 var enhance2 = `
-.##.##.
-#..#.#.
-##.#..#
-####..#
-.#..##.
-..##..#
-...#.#.
+.##.##..
+#..#.#..
+##.#..#.
+####..#.
+.#..##..
+..##..#.
+...#.#..
 `
 
 var enhance3 = `
-.......#.
-.#..#.#..
-#.#...###
-#...##.#.
-#.....#.#
-.#.#####.
-..#.#####
-...##.##.
-....###..
+.......#...
+.#..#.#....
+#.#...###..
+#...##.#...
+#.....#.#..
+.#.#####...
+..#.#####..
+...##.##...
+....###....
 `

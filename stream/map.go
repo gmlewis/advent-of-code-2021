@@ -11,15 +11,12 @@ func Map[S any, T any](ch <-chan T, f func(v T) S) []S {
 }
 
 // MapStream maps a channel of values from one type to another
-// using the provided func f. If f's bool is false, no S value
-// is sent.
-func MapStream[S any, T any](ch <-chan T, f func(v T) (S, bool)) <-chan S {
+// using the provided func f.
+func MapStream[S any, T any](ch <-chan T, f func(v T) S) <-chan S {
 	out := make(chan S, defaultBufSize)
 	go func() {
 		for v := range ch {
-			if nv, ok := f(v); ok {
-				out <- nv
-			}
+			out <- f(v)
 		}
 		close(out)
 	}()
