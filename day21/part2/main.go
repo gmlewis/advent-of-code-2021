@@ -59,10 +59,10 @@ func player1(p1pos, p1score int, p1ways int64,
 
 	for k, v := range fromTo[p1pos] {
 		if p1score+k >= 21 {
-			return p1ways * 27, p2ways
+			return p1ways * int64(v), 0
 		}
 
-		p1, p2 := player2(k, p1score+k, p1ways*int64(v), p2pos, p2score, p2ways, fromTo)
+		p1, p2 := player2(k, p1score+k, p1ways*int64(v), p2pos, p2score, p2ways*int64(v), fromTo)
 		p1wins += p1
 		p2wins += p2
 	}
@@ -75,10 +75,10 @@ func player2(p1pos, p1score int, p1ways int64,
 
 	for k, v := range fromTo[p2pos] {
 		if p2score+k >= 21 {
-			return p1ways, p2ways * 27
+			return 0, p2ways * int64(v)
 		}
 
-		p1, p2 := player1(p1pos, p1score, p1ways, k, p2score+k, p2ways*int64(v), fromTo)
+		p1, p2 := player1(p1pos, p1score, p1ways*int64(v), k, p2score+k, p2ways*int64(v), fromTo)
 		p1wins += p1
 		p2wins += p2
 	}
