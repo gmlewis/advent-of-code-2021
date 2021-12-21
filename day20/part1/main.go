@@ -84,6 +84,11 @@ func (i *imageT) enhance(filter filterT) *imageT {
 	return result
 }
 
+func (i *imageT) String() string {
+	// var lines []string
+	return ""
+}
+
 func parse(lines []string) *imageT {
 	img := &imageT{p: pixelsT{}}
 	for y, line := range lines {

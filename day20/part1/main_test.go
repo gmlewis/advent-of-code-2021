@@ -1,10 +1,49 @@
 package main
 
 import (
+	"strings"
 	"testing"
 
+	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/test"
 )
+
+func TestEnhance(t *testing.T) {
+	lines := strings.Split(example1, "\n")
+	filter := ReduceWithIndex([]rune(lines[0]), filterT{}, func(i int, r rune, acc filterT) filterT {
+		if r == '#' {
+			acc[i] = 1
+		}
+		return acc
+	})
+
+	tests := []struct {
+		name string
+		in   string
+		want string
+	}{
+		{
+			name: "enhance - 1st step",
+			in:   enhance1,
+			want: enhance2,
+		},
+		{
+			name: "enhance - 2nd step",
+			in:   enhance2,
+			want: enhance3,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			img := parse(strings.Split(tt.in, "\n"))
+			got := img.enhance(filter).String()
+			if got != want {
+				t.Errorf("enhance=\n%v\n, want:\n%v", got, want)
+			}
+		})
+	}
+}
 
 func TestExample(t *testing.T) {
 	want := "Solution: 0\n"
