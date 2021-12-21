@@ -42,11 +42,11 @@ func process(filename string) {
 	}
 	logf("fromTo=%+v", fromTo)
 
-	p1 := reach21In4(p1Start, nil, nil, fromTo)
-	p2 := reach21In4(p2Start, nil, nil, fromTo)
-	logf("p1=%v, p2=%v", p1, p2)
+	p1Wins, p1Losses := reach21In4(p1Start, nil, nil, fromTo)
+	p2Wins, p2Losses := reach21In4(p2Start, nil, nil, fromTo)
+	logf("p1Wins=%v, p1Losses=%v, p2Wins=%v, p2Losses=%v", p1Wins, p1Losses, p2Wins, p2Losses)
 
-	printf("Solution: %v\n", 0)
+	printf("Solution: %v\n", p1Wins*p2Losses-p1Losses*p2Wins)
 }
 
 func roll(r1, r2, r3, oldPos int) (pos int) {
@@ -54,20 +54,22 @@ func roll(r1, r2, r3, oldPos int) (pos int) {
 	return pos
 }
 
-func reach21In4(pos int, ways, positions []int64, fromTo map[int]map[int]int) int64 {
+func reach21In4(pos int, ways, positions []int64, fromTo map[int]map[int]int) (wins, losses int64) {
 	if len(positions) == 4 {
 		score := positions[0] + positions[1] + positions[2] + positions[3]
 		if score >= 21 {
-			return ways[0] * ways[1] * ways[2] * ways[3]
+			return ways[0] * ways[1] * ways[2] * ways[3], 0
 		}
-		return 0
+		return 0, ways[0] * ways[1] * ways[2] * ways[3]
 	}
 
-	var total int64
+	var totalWins, totalLosses int64
 	for k, v := range fromTo[pos] {
 		w := append([]int64{int64(v)}, ways...)
 		p := append([]int64{int64(k)}, positions...)
-		total += reach21In4(k, w, p, fromTo)
+		wins, losses := reach21In4(k, w, p, fromTo)
+		totalWins += wins
+		totalLosses += losses
 	}
-	return total
+	return totalWins, totalLosses
 }
