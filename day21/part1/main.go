@@ -42,9 +42,6 @@ func process(filename string) {
 	}()
 
 	for game := range ch {
-		if game.rolls <= 24 {
-			logf("game=%#v", game)
-		}
 		if game.score1 >= 1000 {
 			printf("Solution: %v\n", game.score2*game.rolls)
 			break

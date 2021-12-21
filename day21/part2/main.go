@@ -28,7 +28,6 @@ func process(filename string) {
 	lines := must.ReadFileLines(filename)
 	p1Start := must.Atoi(strings.TrimSpace(lines[0][len(lines[0])-2:]))
 	p2Start := must.Atoi(strings.TrimSpace(lines[1][len(lines[1])-2:]))
-	// logf("p1Start: %v, p2Start: %v", p1Start, p2Start)
 
 	fromTo := map[int]map[int]int{}
 	for from := 1; from <= 10; from++ {
@@ -42,10 +41,8 @@ func process(filename string) {
 			}
 		}
 	}
-	logf("fromTo=%+v", fromTo)
 
 	p1wins, p2wins := player1(p1Start, 0, 1, p2Start, 0, 1, fromTo)
-	logf("p1wins=%v, p2wins=%v", p1wins, p2wins)
 
 	winner := p1wins
 	if p2wins > winner {

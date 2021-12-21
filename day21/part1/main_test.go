@@ -7,7 +7,7 @@ import (
 )
 
 func TestExample(t *testing.T) {
-	want := "Solution: 0\n"
+	want := "Solution: 739785\n"
 	test.Runner(t, example1, want, process, &printf)
 }
 
