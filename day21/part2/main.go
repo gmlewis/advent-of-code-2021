@@ -12,6 +12,8 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
+const winningScore = 21
+
 var logf = log.Printf
 var printf = fmt.Printf
 
@@ -45,7 +47,12 @@ func process(filename string) {
 	p1wins, p2wins := player1(p1Start, 0, 1, p2Start, 0, 1, fromTo)
 	logf("p1wins=%v, p2wins=%v", p1wins, p2wins)
 
-	printf("Solution: %v %v\n", p1wins, p2wins)
+	winner := p1wins
+	if p2wins > winner {
+		winner = p2wins
+	}
+
+	printf("Solution: %v\n", winner)
 }
 
 func roll(r1, r2, r3, oldPos int) (pos int) {
@@ -58,8 +65,9 @@ func player1(p1pos, p1score int, p1ways int64,
 	fromTo map[int]map[int]int) (p1wins, p2wins int64) {
 
 	for k, v := range fromTo[p1pos] {
-		if p1score+k >= 21 {
-			return p1ways * int64(v), 0
+		if p1score+k >= winningScore {
+			p1wins += p1ways * int64(v)
+			continue
 		}
 
 		p1, p2 := player2(k, p1score+k, p1ways*int64(v), p2pos, p2score, p2ways*int64(v), fromTo)
@@ -74,8 +82,9 @@ func player2(p1pos, p1score int, p1ways int64,
 	fromTo map[int]map[int]int) (p1wins, p2wins int64) {
 
 	for k, v := range fromTo[p2pos] {
-		if p2score+k >= 21 {
-			return 0, p2ways * int64(v)
+		if p2score+k >= winningScore {
+			p2wins += p2ways * int64(v)
+			continue
 		}
 
 		p1, p2 := player1(p1pos, p1score, p1ways*int64(v), k, p2score+k, p2ways*int64(v), fromTo)
