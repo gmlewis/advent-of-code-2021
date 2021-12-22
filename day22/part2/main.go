@@ -75,10 +75,17 @@ func process(filename string) {
 						c, ok := space[k] // DEBUG ONLY
 						if !ok {
 							space[k] = &cmdT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2}
+							logf("ADD: space%+v=%+v, size=%v...", k, space[k], space[k].size())
 							continue
 						}
 
-						logf("REPLACE: space%+v=%+v, size=%v...", k, c, c.size())
+						var debug bool
+						if x1 < c.x1 || x2 > c.x2 ||
+							y1 < c.y1 || y2 > c.y2 ||
+							z1 < c.z1 || z2 > c.z2 {
+							logf("REPLACE: space%+v=%+v, size=%v...", k, c, c.size())
+							debug = true
+						}
 						if x1 < c.x1 {
 							c.x1 = x1
 						}
@@ -97,7 +104,9 @@ func process(filename string) {
 						if z2 > c.z2 {
 							c.z2 = z2
 						}
-						logf("WITH: space%+v=%+v, size=%v", k, c, c.size())
+						if debug {
+							logf("WITH: space%+v=%+v, size=%v", k, c, c.size())
+						}
 						continue
 					}
 
