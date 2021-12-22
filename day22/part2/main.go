@@ -72,11 +72,14 @@ func process(filename string) {
 					z1, z2 := extents(zVals, zi, zi2, cmd.z2)
 					c, ok := space[k]
 					if cmd.on {
-						space[k] = &cmdT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2}
 						if !ok {
+							space[k] = &cmdT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2}
 							continue
 						}
-						space[k].add(c)
+						if x1 >= c.x1 && x2 <= c.x2 && y1 >= c.y1 && y2 <= c.y2 && z1 >= c.z1 && z2 <= c.z2 {
+							continue
+						}
+						space[k] = c.add(&cmdT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2})
 						continue
 					}
 
@@ -132,6 +135,9 @@ func (c *cmdT) size() int64 { // inclusive
 }
 
 func (c *cmdT) add(o *cmdT) *cmdT {
+	logf(`start: "on: %v",  // %v`, c, c.size())
+	logf(`add: "on: %v",  // %v`, o, o.size())
+	before := c.size()
 	var debug bool
 	if o.x1 < c.x1 || o.x2 > c.x2 ||
 		o.y1 < c.y1 || o.y2 > c.y2 ||
@@ -159,6 +165,10 @@ func (c *cmdT) add(o *cmdT) *cmdT {
 	}
 	if debug {
 		logf("WITH: space=%+v, size=%v", c, c.size())
+	}
+	logf("want: %q, // %v", c, c.size())
+	if c.size() <= before {
+		log.Fatalf("add: before=%v, after=%v", before, c.size())
 	}
 	return c
 }
