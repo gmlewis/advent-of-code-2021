@@ -8,6 +8,7 @@ import (
 	"log"
 	"regexp"
 	"sort"
+	"strings"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/maps"
@@ -61,7 +62,7 @@ func process(filename string) {
 		xi2 := xIndices[cmd.x2]
 		yi2 := yIndices[cmd.y2]
 		zi2 := zIndices[cmd.z2]
-		logf("cmd=%+v", *cmd)
+		logf("cmd=%v", cmd)
 		logf("on=%v: xi=%v..%v, yi=%v..%v, zi=%v..%v", cmd.on, xi1, xi2, yi1, yi2, zi1, zi2)
 		for zi := zi1; zi <= zi2; zi++ {
 			for yi := yi1; yi <= yi2; yi++ {
@@ -73,13 +74,13 @@ func process(filename string) {
 					c, ok := space[k]
 					if cmd.on {
 						if !ok {
-							space[k] = &cmdT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2}
+							space[k] = newCuboid(x1, x2, y1, y2, z1, z2)
 							continue
 						}
 						if x1 >= c.x1 && x2 <= c.x2 && y1 >= c.y1 && y2 <= c.y2 && z1 >= c.z1 && z2 <= c.z2 {
 							continue
 						}
-						space[k] = c.add(&cmdT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2})
+						space[k] = c.add(newCuboid(x1, x2, y1, y2, z1, z2))
 						continue
 					}
 
@@ -89,11 +90,11 @@ func process(filename string) {
 					if x1 <= c.x1 && x2 >= c.x2 &&
 						y1 <= c.y1 && y2 >= c.y2 &&
 						z1 <= c.z1 && z2 >= c.z2 {
-						logf("deleting space%+v: %+v, size=%v", k, *c, c.size())
+						logf("deleting space%+v: %v, size=%v", k, c, c.size())
 						delete(space, k)
 						continue
 					}
-					space[k].subtract(&cmdT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2})
+					space[k].subtract(newCuboid(x1, x2, y1, y2, z1, z2))
 				}
 			}
 		}
@@ -103,7 +104,7 @@ func process(filename string) {
 
 	space := Reduce(cmds, spaceT{}, f)
 	// var debug []string
-	cubesOn := maps.Reduce(space, int64(0), func(k keyT, c *cmdT, acc int64) int64 {
+	cubesOn := maps.Reduce(space, int64(0), func(k keyT, c *cuboidT, acc int64) int64 {
 		// debug = append(debug, fmt.Sprintf("SUM: space%+v x=%v..%v,y=%v..%v,z=%v..%v = %v", k, c.x1, c.x2, c.y1, c.y2, c.z1, c.z2, c.size()))
 		return acc + c.size()
 	})
@@ -115,7 +116,7 @@ func process(filename string) {
 
 type lookupT map[int]int
 type keyT [3]int
-type spaceT map[keyT]*cmdT
+type spaceT map[keyT]*cuboidT
 type cmdT struct {
 	on bool
 	x1 int
@@ -125,16 +126,112 @@ type cmdT struct {
 	z1 int
 	z2 int
 }
+type cuboidT struct {
+	x1       int
+	x2       int
+	y1       int
+	y2       int
+	z1       int
+	z2       int
+	features featuresT
+}
+type featuresT int
 
-func (c *cmdT) String() string {
-	return fmt.Sprintf("x=%v..%v,y=%v..%v,z=%v..%v", c.x1, c.x2, c.y1, c.y2, c.z1, c.z2)
+const (
+	singleDot featuresT = 1 << iota
+	xAxis
+	yAxis
+	zAxis
+	xyPlane
+	yzPlane
+	xzPlane
+	cubeBody
+)
+
+const totallyFilled = singleDot | xAxis | yAxis | zAxis | xyPlane | yzPlane | xzPlane | cubeBody
+
+func (t featuresT) String() string {
+	if t&totallyFilled == totallyFilled {
+		return "totallyFilled"
+	}
+	var features []string
+	if t&singleDot == singleDot {
+		features = append(features, "singleDot")
+	}
+	if t&xAxis == xAxis {
+		features = append(features, "xAxis")
+	}
+	if t&yAxis == yAxis {
+		features = append(features, "yAxis")
+	}
+	if t&zAxis == zAxis {
+		features = append(features, "zAxis")
+	}
+	if t&xyPlane == xyPlane {
+		features = append(features, "xyPlane")
+	}
+	if t&yzPlane == yzPlane {
+		features = append(features, "yzPlane")
+	}
+	if t&xzPlane == xzPlane {
+		features = append(features, "xzPlane")
+	}
+	if t&cubeBody == cubeBody {
+		features = append(features, "cubeBody")
+	}
+	return strings.Join(features, "|")
 }
 
-func (c *cmdT) size() int64 { // inclusive
+func newCuboid(x1, x2, y1, y2, z1, z2 int) *cuboidT {
+	c := &cuboidT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2}
+	switch {
+	case x1 == x2 && y1 == y2 && z1 == z2:
+		c.features = singleDot
+		return c
+	case x1 < x2 && y1 < y2 && z1 < z2:
+		c.features = totallyFilled
+		return c
+	case x1 < x2 && y1 == y2 && z1 == z2:
+		c.features = xAxis
+		return c
+	case x1 == x2 && y1 < y2 && z1 == z2:
+		c.features = yAxis
+		return c
+	case x1 == x2 && y1 == y2 && z1 < z2:
+		c.features = zAxis
+		return c
+	case x1 < x2 && y1 < y2 && z1 == z2:
+		c.features = xyPlane
+		return c
+	case x1 == x2 && y1 < y2 && z1 < z2:
+		c.features = yzPlane
+		return c
+	case x1 < x2 && y1 == y2 && z1 < z2:
+		c.features = xzPlane
+		return c
+	default:
+		log.Fatalf("bad cuboidT: %#v", c)
+	}
+	return nil
+}
+
+func (c *cmdT) String() string {
+	state := "off"
+	if c.on {
+		state = "on"
+	}
+	return fmt.Sprintf("%v: x=%v..%v,y=%v..%v,z=%v..%v", state, c.x1, c.x2, c.y1, c.y2, c.z1, c.z2)
+}
+
+func (c *cuboidT) String() string {
+	return fmt.Sprintf("x=%v..%v,y=%v..%v,z=%v..%v; features=%v", c.x1, c.x2, c.y1, c.y2, c.z1, c.z2, c.features)
+}
+
+func (c *cuboidT) size() int64 { // inclusive
 	return int64(c.x2-c.x1+1) * int64(c.y2-c.y1+1) * int64(c.z2-c.z1+1)
 }
 
-func (c *cmdT) add(o *cmdT) *cmdT {
+func (c *cuboidT) add(o *cuboidT) *cuboidT {
 	logf(`start: "on: %v",  // %v`, c, c.size())
 	logf(`add: "on: %v",  // %v`, o, o.size())
 	before := c.size()
@@ -173,7 +270,7 @@ func (c *cmdT) add(o *cmdT) *cmdT {
 	return c
 }
 
-func (c *cmdT) subtract(o *cmdT) *cmdT {
+func (c *cuboidT) subtract(o *cuboidT) *cuboidT {
 	logf(`start: "on: %v",  // %v`, c, c.size())
 	logf(`sub: "off: %v",  // %v`, o, o.size())
 	before := c.size()
@@ -182,7 +279,7 @@ func (c *cmdT) subtract(o *cmdT) *cmdT {
 		c.x1 = o.x2 + 1
 		// logf("trimming X line space%+v AFTER: %+v", k, *c)
 		if c.x1 > c.x2 {
-			log.Fatalf("c.x1 > c.x2: %+v", *c)
+			log.Fatalf("c.x1 > c.x2: %v", c)
 		}
 	}
 	if c.y1 != c.y2 && c.y1 <= o.y2 {
@@ -190,7 +287,7 @@ func (c *cmdT) subtract(o *cmdT) *cmdT {
 		c.y1 = o.y2 + 1
 		// logf("trimming Y line space%+v AFTER: %+v", k, *c)
 		if c.y1 > c.y2 {
-			log.Fatalf("c.y1 > c.y2: %+v", *c)
+			log.Fatalf("c.y1 > c.y2: %v", c)
 		}
 	}
 	if c.z1 != c.z2 && c.z1 <= o.z2 {
@@ -198,7 +295,7 @@ func (c *cmdT) subtract(o *cmdT) *cmdT {
 		c.z1 = o.z2 + 1
 		// logf("trimming Z line space%+v AFTER: %+v", k, *c)
 		if c.z1 > c.z2 {
-			log.Fatalf("c.z1 > c.z2: %+v", *c)
+			log.Fatalf("c.z1 > c.z2: %v", c)
 		}
 	}
 	logf("want: %q, // %v", c, c.size())
