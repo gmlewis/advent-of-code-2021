@@ -38,6 +38,56 @@ on x=-41..9,y=-7..43,z=-33..15
 	test.Runner(t, subset, want, process, &printf)
 }
 
+func TestSubsets(t *testing.T) {
+	tests := []struct {
+		name   string
+		subset string
+		want   string
+	}{
+		{
+			name:   "one line",
+			subset: "on x=-5..47,y=-31..22,z=-19..33",
+			want:   "Solution: 0\n",
+		},
+		// 		{
+		// 			name: "two lines",
+		// 			subset: `on x=-5..47,y=-31..22,z=-19..33
+		// on x=-44..5,y=-27..21,z=-14..35`,
+		// 			want: "Solution: 0\n",
+		// 		},
+		// 		{
+		// 			name: "three lines",
+		// 			subset: `on x=-5..47,y=-31..22,z=-19..33
+		// on x=-44..5,y=-27..21,z=-14..35
+		// on x=-49..-1,y=-11..42,z=-10..38`,
+		// 			want: "Solution: 0\n",
+		// 		},
+		// 		{
+		// 			name: "four lines",
+		// 			subset: `on x=-5..47,y=-31..22,z=-19..33
+		// on x=-44..5,y=-27..21,z=-14..35
+		// on x=-49..-1,y=-11..42,z=-10..38
+		// on x=-20..34,y=-40..6,z=-44..1`,
+		// 			want: "Solution: 0\n",
+		// 		},
+		// 		{
+		// 			name: "five lines",
+		// 			subset: `on x=-5..47,y=-31..22,z=-19..33
+		// on x=-44..5,y=-27..21,z=-14..35
+		// on x=-49..-1,y=-11..42,z=-10..38
+		// on x=-20..34,y=-40..6,z=-44..1
+		// off x=26..39,y=40..50,z=-2..11`,
+		// 			want: "Solution: 0\n",
+		// 		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			test.Runner(t, tt.subset, tt.want, process, &printf)
+		})
+	}
+}
+
 func TestExample3Subset(t *testing.T) {
 	subset := `
 on x=-5..47,y=-31..22,z=-19..33
