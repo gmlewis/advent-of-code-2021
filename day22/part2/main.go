@@ -174,6 +174,9 @@ func (c *cmdT) add(o *cmdT) *cmdT {
 }
 
 func (c *cmdT) subtract(o *cmdT) *cmdT {
+	logf(`start: "on: %v",  // %v`, c, c.size())
+	logf(`sub: "off: %v",  // %v`, o, o.size())
+	before := c.size()
 	if c.x1 != c.x2 && c.x1 <= o.x2 {
 		// logf("trimming X line space%+v BEFORE: %+v", k, *c)
 		c.x1 = o.x2 + 1
@@ -197,6 +200,10 @@ func (c *cmdT) subtract(o *cmdT) *cmdT {
 		if c.z1 > c.z2 {
 			log.Fatalf("c.z1 > c.z2: %+v", *c)
 		}
+	}
+	logf("want: %q, // %v", c, c.size())
+	if c.size() >= before {
+		log.Fatalf("subtract: before=%v, after=%v", before, c.size())
 	}
 	return c
 }

@@ -65,6 +65,33 @@ func TestAdd(t *testing.T) {
 	}
 }
 
+func TestSubtract(t *testing.T) {
+	tests := []struct {
+		name  string
+		start string
+		sub   string
+		want  string
+	}{
+		{
+			name:  "simple 2x2x2",
+			start: "on x=0..1,y=0..1,z=0..1",
+			sub:   "off x=1..1,y=1..1,z=1..1",
+			want:  "x=0..0,y=0..0,z=0..0",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := processLine(tt.start, nil)[0]
+			o := processLine(tt.sub, nil)[0]
+			got := s.subtract(o).String()
+			if got != tt.want {
+				t.Errorf("subtract = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestExample3Subset(t *testing.T) {
 	subset := `
 on x=-5..47,y=-31..22,z=-19..33
