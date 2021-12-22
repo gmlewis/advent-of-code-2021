@@ -70,82 +70,27 @@ func process(filename string) {
 					x1, x2 := extents(xVals, xi, xi2, cmd.x2)
 					y1, y2 := extents(yVals, yi, yi2, cmd.y2)
 					z1, z2 := extents(zVals, zi, zi2, cmd.z2)
+					c, ok := space[k]
 					if cmd.on {
-						c, ok := space[k] // DEBUG ONLY
+						space[k] = &cmdT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2}
 						if !ok {
-							space[k] = &cmdT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2}
-							logf("ADD: space%+v=%+v, size=%v...", k, space[k], space[k].size())
 							continue
 						}
-
-						var debug bool
-						if x1 < c.x1 || x2 > c.x2 ||
-							y1 < c.y1 || y2 > c.y2 ||
-							z1 < c.z1 || z2 > c.z2 {
-							logf("REPLACE: space%+v=%+v, size=%v...", k, c, c.size())
-							debug = true
-						}
-						if x1 < c.x1 {
-							c.x1 = x1
-						}
-						if x2 > c.x2 {
-							c.x2 = x2
-						}
-						if y1 < c.y1 {
-							c.y1 = y1
-						}
-						if y2 > c.y2 {
-							c.y2 = y2
-						}
-						if z1 < c.z1 {
-							c.z1 = z1
-						}
-						if z2 > c.z2 {
-							c.z2 = z2
-						}
-						if debug {
-							logf("WITH: space%+v=%+v, size=%v", k, c, c.size())
-						}
+						space[k].add(c)
 						continue
 					}
 
-					// logf("REMOVE: space%+v", k)
-					c, ok := space[k]
 					if !ok {
-						// logf("nothing to delete at space%+v", k)
 						continue
 					}
-					if (cmd.x1 <= c.x1 && cmd.x2 >= c.x2) ||
-						(cmd.y1 <= c.y1 && cmd.y2 >= c.y2) ||
-						(cmd.z1 <= c.z1 && cmd.z2 >= c.z2) {
-						// logf("deleting space%+v: %+v, size=%v", k, *c, c.size())
+					if x1 <= c.x1 && x2 >= c.x2 &&
+						y1 <= c.y1 && y2 >= c.y2 &&
+						z1 <= c.z1 && z2 >= c.z2 {
+						logf("deleting space%+v: %+v, size=%v", k, *c, c.size())
 						delete(space, k)
 						continue
 					}
-					if c.x1 != c.x2 && c.x1 <= cmd.x2 {
-						// logf("trimming X line space%+v BEFORE: %+v", k, *c)
-						c.x1 = cmd.x2 + 1
-						// logf("trimming X line space%+v AFTER: %+v", k, *c)
-						if c.x1 > c.x2 {
-							log.Fatalf("c.x1 > c.x2: %+v", *c)
-						}
-					}
-					if c.y1 != c.y2 && c.y1 <= cmd.y2 {
-						// logf("trimming Y line space%+v BEFORE: %+v", k, *c)
-						c.y1 = cmd.y2 + 1
-						// logf("trimming Y line space%+v AFTER: %+v", k, *c)
-						if c.y1 > c.y2 {
-							log.Fatalf("c.y1 > c.y2: %+v", *c)
-						}
-					}
-					if c.z1 != c.z2 && c.z1 <= cmd.z2 {
-						// logf("trimming Z line space%+v BEFORE: %+v", k, *c)
-						c.z1 = cmd.z2 + 1
-						// logf("trimming Z line space%+v AFTER: %+v", k, *c)
-						if c.z1 > c.z2 {
-							log.Fatalf("c.z1 > c.z2: %+v", *c)
-						}
-					}
+					space[k].subtract(&cmdT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2})
 				}
 			}
 		}
@@ -178,8 +123,72 @@ type cmdT struct {
 	z2 int
 }
 
+func (c *cmdT) String() string {
+	return fmt.Sprintf("x=%v..%v,y=%v..%v,z=%v..%v", c.x1, c.x2, c.y1, c.y2, c.z1, c.z2)
+}
+
 func (c *cmdT) size() int64 { // inclusive
 	return int64(c.x2-c.x1+1) * int64(c.y2-c.y1+1) * int64(c.z2-c.z1+1)
+}
+
+func (c *cmdT) add(o *cmdT) *cmdT {
+	var debug bool
+	if o.x1 < c.x1 || o.x2 > c.x2 ||
+		o.y1 < c.y1 || o.y2 > c.y2 ||
+		o.z1 < c.z1 || o.z2 > c.z2 {
+		logf("REPLACE: space=%+v, size=%v...", c, c.size())
+		debug = true
+	}
+	if o.x1 < c.x1 {
+		c.x1 = o.x1
+	}
+	if o.x2 > c.x2 {
+		c.x2 = o.x2
+	}
+	if o.y1 < c.y1 {
+		c.y1 = o.y1
+	}
+	if o.y2 > c.y2 {
+		c.y2 = o.y2
+	}
+	if o.z1 < c.z1 {
+		c.z1 = o.z1
+	}
+	if o.z2 > c.z2 {
+		c.z2 = o.z2
+	}
+	if debug {
+		logf("WITH: space=%+v, size=%v", c, c.size())
+	}
+	return c
+}
+
+func (c *cmdT) subtract(o *cmdT) *cmdT {
+	if c.x1 != c.x2 && c.x1 <= o.x2 {
+		// logf("trimming X line space%+v BEFORE: %+v", k, *c)
+		c.x1 = o.x2 + 1
+		// logf("trimming X line space%+v AFTER: %+v", k, *c)
+		if c.x1 > c.x2 {
+			log.Fatalf("c.x1 > c.x2: %+v", *c)
+		}
+	}
+	if c.y1 != c.y2 && c.y1 <= o.y2 {
+		// logf("trimming Y line space%+v BEFORE: %+v", k, *c)
+		c.y1 = o.y2 + 1
+		// logf("trimming Y line space%+v AFTER: %+v", k, *c)
+		if c.y1 > c.y2 {
+			log.Fatalf("c.y1 > c.y2: %+v", *c)
+		}
+	}
+	if c.z1 != c.z2 && c.z1 <= o.z2 {
+		// logf("trimming Z line space%+v BEFORE: %+v", k, *c)
+		c.z1 = o.z2 + 1
+		// logf("trimming Z line space%+v AFTER: %+v", k, *c)
+		if c.z1 > c.z2 {
+			log.Fatalf("c.z1 > c.z2: %+v", *c)
+		}
+	}
+	return c
 }
 
 var lineRE = regexp.MustCompile(`^(\S+) x=(-?\d+)\.\.(-?\d+),y=(-?\d+)..(-?\d+),z=(-?\d+)..(-?\d+)$`)
