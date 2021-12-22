@@ -6,9 +6,14 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/test"
 )
 
-func TestExample(t *testing.T) {
-	want := "Solution: 0\n"
+func TestExample1(t *testing.T) {
+	want := "Solution: 39\n"
 	test.Runner(t, example1, want, process, &printf)
+}
+
+func TestExample2(t *testing.T) {
+	want := "Solution: 590784\n"
+	test.Runner(t, example2, want, process, &printf)
 }
 
 func BenchmarkExample(b *testing.B) {
@@ -24,8 +29,9 @@ on x=10..12,y=10..12,z=10..12
 on x=11..13,y=11..13,z=11..13
 off x=9..11,y=9..11,z=9..11
 on x=10..10,y=10..10,z=10..10
+`
 
-
+var example2 = `
 on x=-20..26,y=-36..17,z=-47..7
 on x=-20..33,y=-21..23,z=-26..28
 on x=-22..28,y=-29..23,z=-38..16
@@ -48,5 +54,4 @@ off x=18..30,y=-20..-8,z=-3..13
 on x=-41..9,y=-7..43,z=-33..15
 on x=-54112..-39298,y=-85059..-49293,z=-27449..7877
 on x=967..23432,y=45373..81175,z=27513..53682
-
 `
