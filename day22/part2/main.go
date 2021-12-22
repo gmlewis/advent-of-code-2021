@@ -78,9 +78,9 @@ func process(filename string) {
 						if !ok {
 							continue
 						}
-						if cmd.x1 <= c.x1 && cmd.x2 >= c.x2 &&
-							cmd.y1 <= c.y1 && cmd.y2 >= c.y2 &&
-							cmd.z1 <= c.z1 && cmd.z2 >= c.z2 {
+						if (cmd.x1 <= c.x1 && cmd.x2 >= c.x2) ||
+							(cmd.y1 <= c.y1 && cmd.y2 >= c.y2) ||
+							(cmd.z1 <= c.z1 && cmd.z2 >= c.z2) {
 							// logf("deleting space[%+v]: %+v", k, *c)
 							delete(space, k)
 							continue
