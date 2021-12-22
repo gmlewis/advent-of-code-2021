@@ -10,6 +10,7 @@ import (
 	"sort"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/maps"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -45,11 +46,88 @@ func process(filename string) {
 	logf("zVals=%+v", zVals)
 	logf("zIndices=%+v", zIndices)
 
-	printf("Solution: %v\n", len(cmds))
+	extents := func(vals []int, i1, i2, limit int) (int, int) {
+		v1 := vals[i1]
+		if i1 == i2 {
+			return v1, limit
+		}
+		return v1, vals[i1+1] - 1
+	}
+
+	f := func(cmd *cmdT, space spaceT) spaceT {
+		xi1 := xIndices[cmd.x1]
+		yi1 := yIndices[cmd.y1]
+		zi1 := zIndices[cmd.z1]
+		xi2 := xIndices[cmd.x2]
+		yi2 := yIndices[cmd.y2]
+		zi2 := zIndices[cmd.z2]
+		logf("cmd=%+v", *cmd)
+		logf("on=%v: xi=%v..%v, yi=%v..%v, zi=%v..%v", cmd.on, xi1, xi2, yi1, yi2, zi1, zi2)
+		for zi := zi1; zi <= zi2; zi++ {
+			for yi := yi1; yi <= yi2; yi++ {
+				for xi := xi1; xi <= xi2; xi++ {
+					k := keyT{xi, yi, zi}
+					x1, x2 := extents(xVals, xi, xi2, cmd.x2)
+					y1, y2 := extents(yVals, yi, yi2, cmd.y2)
+					z1, z2 := extents(zVals, zi, zi2, cmd.z2)
+					if cmd.on {
+						space[k] = &cmdT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2}
+						// logf("space[%+v]=%+v", k, space[k])
+					} else {
+						c, ok := space[k]
+						if !ok {
+							continue
+						}
+						if cmd.x1 <= c.x1 && cmd.x2 >= c.x2 &&
+							cmd.y1 <= c.y1 && cmd.y2 >= c.y2 &&
+							cmd.z1 <= c.z1 && cmd.z2 >= c.z2 {
+							// logf("deleting space[%+v]: %+v", k, *c)
+							delete(space, k)
+							continue
+						}
+						if c.x1 != c.x2 && c.x1 <= cmd.x2 {
+							logf("trimming X line space[%+v] BEFORE: %+v", k, *c)
+							c.x1 = cmd.x2 + 1
+							logf("trimming X line space[%+v] AFTER: %+v", k, *c)
+							if c.x1 > c.x2 {
+								log.Fatalf("c.x1 > c.x2: %+v", *c)
+							}
+						}
+						if c.y1 != c.y2 && c.y1 <= cmd.y2 {
+							logf("trimming Y line space[%+v] BEFORE: %+v", k, *c)
+							c.y1 = cmd.y2 + 1
+							logf("trimming Y line space[%+v] AFTER: %+v", k, *c)
+							if c.y1 > c.y2 {
+								log.Fatalf("c.y1 > c.y2: %+v", *c)
+							}
+						}
+						if c.z1 != c.z2 && c.z1 <= cmd.z2 {
+							logf("trimming Z line space[%+v] BEFORE: %+v", k, *c)
+							c.z1 = cmd.z2 + 1
+							logf("trimming Z line space[%+v] AFTER: %+v", k, *c)
+							if c.z1 > c.z2 {
+								log.Fatalf("c.z1 > c.z2: %+v", *c)
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return space
+	}
+
+	space := Reduce(cmds, spaceT{}, f)
+	cubesOn := maps.Reduce(space, int64(0), func(k keyT, c *cmdT, acc int64) int64 {
+		return acc + c.size()
+	})
+
+	printf("Solution: %v\n", cubesOn)
 }
 
 type lookupT map[int]int
 type keyT [3]int
+type spaceT map[keyT]*cmdT
 type cmdT struct {
 	on bool
 	x1 int
@@ -60,7 +138,7 @@ type cmdT struct {
 	z2 int
 }
 
-func (c *cmdT) size() int64 {
+func (c *cmdT) size() int64 { // inclusive
 	return int64(c.x2-c.x1+1) * int64(c.y2-c.y1+1) * int64(c.z2-c.z1+1)
 }
 

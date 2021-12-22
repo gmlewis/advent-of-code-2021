@@ -11,6 +11,23 @@ func TestExample1(t *testing.T) {
 	test.Runner(t, example1, want, process, &printf)
 }
 
+func TestExample3Subset(t *testing.T) {
+	subset := `
+on x=-5..47,y=-31..22,z=-19..33
+on x=-44..5,y=-27..21,z=-14..35
+on x=-49..-1,y=-11..42,z=-10..38
+on x=-20..34,y=-40..6,z=-44..1
+off x=26..39,y=40..50,z=-2..11
+on x=-41..5,y=-41..6,z=-36..8
+off x=-43..-33,y=-45..-28,z=7..25
+on x=-33..15,y=-32..19,z=-34..11
+off x=35..47,y=-46..-34,z=-11..5
+on x=-14..36,y=-6..44,z=-16..29
+`
+	want := "Solution: 474140\n"
+	test.Runner(t, subset, want, process, &printf)
+}
+
 func TestExample3(t *testing.T) {
 	want := "Solution: 2758514936282235\n"
 	test.Runner(t, example3, want, process, &printf)
