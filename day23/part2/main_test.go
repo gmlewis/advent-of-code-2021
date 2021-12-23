@@ -22,6 +22,8 @@ func TestPossibleMoves(t *testing.T) {
 	s5 := parseLiteral(strings.Split(strings.TrimSpace(step5), "\n"))
 	s6 := parseLiteral(strings.Split(strings.TrimSpace(step6), "\n"))
 	s7 := parseLiteral(strings.Split(strings.TrimSpace(step7), "\n"))
+	s8 := parseLiteral(strings.Split(strings.TrimSpace(step8), "\n"))
+	s9 := parseLiteral(strings.Split(strings.TrimSpace(step9), "\n"))
 
 	tests := []struct {
 		name string
@@ -158,6 +160,22 @@ func TestPossibleMoves(t *testing.T) {
 			want: []moveT{
 				{from: keyT{4, 3}, to: keyT{3, 0}, energy: 40},
 				{from: keyT{4, 3}, to: keyT{5, 0}, energy: 40},
+			},
+		},
+		{
+			name: "D clears out the 2nd column",
+			puz:  s8,
+			from: keyT{4, 4},
+			want: []moveT{
+				{from: keyT{4, 4}, to: keyT{3, 0}, energy: 5000},
+			},
+		},
+		{
+			name: "B moves into place",
+			puz:  s9,
+			from: keyT{5, 0},
+			want: []moveT{
+				{from: keyT{5, 0}, to: keyT{4, 4}, energy: 5000},
 			},
 		},
 	}
