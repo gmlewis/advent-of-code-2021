@@ -8,6 +8,7 @@ import (
 	"log"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/mathfn"
 	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
@@ -34,6 +35,95 @@ type puzT struct {
 	energy   int
 	landings map[keyT]rune
 	inMotion map[keyT]rune
+}
+
+func (p *puzT) possibleMoves(from keyT) (moves []keyT, energies []int) {
+	r := p.inMotion[from]
+	if from[1] == 0 {
+		// Must move from hallway into its own room.
+		roomX := 2*int(r-'A') + 2
+		to := keyT{roomX, 2}
+		if p.landings[to] == 0 && p.clearPath(from, to) {
+			return []keyT{to}, []int{energy(r, from, to)}
+		}
+		to = keyT{roomX, 1}
+		if p.landings[to] == 0 && p.clearPath(from, to) {
+			return []keyT{to}, []int{energy(r, from, to)}
+		}
+		return nil, nil
+	}
+
+	// Moving from room into hallway.
+	if from[1] == 2 && p.landings[keyT{from[0], 1}] != 0 {
+		return nil, nil // blocked
+	}
+
+	f := func(x int) {
+		to := keyT{x, 0}
+		if p.clearPath(from, to) {
+			moves = append(moves, to)
+			energies = append(energies, energy(r, from, to))
+		}
+	}
+
+	for _, x := range orderX[from[0]] {
+		f(x)
+	}
+
+	return moves, energies
+}
+
+var orderX = map[int][]int{
+	2: []int{1, 3, 0, 5, 7, 9, 10},
+	4: []int{3, 5, 1, 7, 0, 9, 10},
+	6: []int{5, 7, 3, 9, 10, 1, 0},
+	8: []int{7, 9, 10, 5, 3, 1, 0},
+}
+
+func (p *puzT) clearPath(from, to keyT) bool {
+	if to[1] != 0 {
+		// Moving from hallway to room.
+		if p.landings[keyT{to[0], 1}] != 0 || p.landings[to] != 0 {
+			return false
+		}
+		for x := from[0]; x > to[0]; x-- {
+			if p.landings[keyT{x, 0}] != 0 {
+				return false
+			}
+		}
+		for x := from[0]; x < to[0]; x++ {
+			if p.landings[keyT{x, 0}] != 0 {
+				return false
+			}
+		}
+		return true
+	}
+
+	// Moving from room into hallway.
+	if from[1] == 2 && p.landings[keyT{from[0], 1}] != 0 {
+		return false
+	}
+	for _, x := range orderX[from[0]] {
+		if x == to[0] && p.landings[to] == 0 {
+			return true
+		}
+		if p.landings[keyT{x, 0}] != 0 {
+			return false
+		}
+	}
+	return false
+}
+
+func energy(r rune, from, to keyT) int {
+	dist := mathfn.Abs(from[0]-to[0]) + mathfn.Abs(from[1]-to[1])
+	return energyPerStep[r] * dist
+}
+
+var energyPerStep = map[rune]int{
+	'A': 1,
+	'B': 10,
+	'C': 100,
+	'D': 1000,
 }
 
 func parse(lines []string) *puzT {
