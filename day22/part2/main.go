@@ -47,12 +47,15 @@ func process(filename string) {
 	logf("zVals=%+v", zVals)
 	logf("zIndices=%+v", zIndices)
 
-	extents := func(vals []int, i1, i2, limit int) (int, int) {
+	extents := func(vals []int, i1, i2, limit int) (int, int, int) {
 		v1 := vals[i1]
 		if i1 == i2 {
-			return v1, limit
+			if i1+1 < len(vals) {
+				return v1, limit, vals[i1+1] - 1
+			}
+			return v1, limit, limit
 		}
-		return v1, vals[i1+1] - 1
+		return v1, vals[i1+1] - 1, vals[i1+1] - 1
 	}
 
 	f := func(cmd *cmdT, space spaceT) spaceT {
@@ -68,19 +71,19 @@ func process(filename string) {
 			for yi := yi1; yi <= yi2; yi++ {
 				for xi := xi1; xi <= xi2; xi++ {
 					k := keyT{xi, yi, zi}
-					x1, x2 := extents(xVals, xi, xi2, cmd.x2)
-					y1, y2 := extents(yVals, yi, yi2, cmd.y2)
-					z1, z2 := extents(zVals, zi, zi2, cmd.z2)
+					x1, x2, xm := extents(xVals, xi, xi2, cmd.x2)
+					y1, y2, ym := extents(yVals, yi, yi2, cmd.y2)
+					z1, z2, zm := extents(zVals, zi, zi2, cmd.z2)
 					c, ok := space[k]
 					if cmd.on {
 						if !ok {
-							space[k] = newCuboid(x1, x2, y1, y2, z1, z2)
+							space[k] = newCuboid(x1, x2, xm, y1, y2, ym, z1, z2, zm)
 							continue
 						}
 						if x1 >= c.x1 && x2 <= c.x2 && y1 >= c.y1 && y2 <= c.y2 && z1 >= c.z1 && z2 <= c.z2 {
 							continue
 						}
-						space[k] = c.add(newCuboid(x1, x2, y1, y2, z1, z2))
+						space[k] = c.add(newCuboid(x1, x2, xm, y1, y2, ym, z1, z2, zm))
 						continue
 					}
 
@@ -94,7 +97,7 @@ func process(filename string) {
 						delete(space, k)
 						continue
 					}
-					space[k].subtract(newCuboid(x1, x2, y1, y2, z1, z2))
+					space[k].subtract(newCuboid(x1, x2, xm, y1, y2, ym, z1, z2, zm))
 				}
 			}
 		}
@@ -182,8 +185,8 @@ func (t featuresT) String() string {
 	return strings.Join(features, "|")
 }
 
-func newCuboid(x1, x2, y1, y2, z1, z2 int) *cuboidT {
-	c := &cuboidT{x1: x1, x2: x2, y1: y1, y2: y2, z1: z1, z2: z2}
+func newCuboid(x1, x2, xm, y1, y2, ym, z1, z2, zm int) *cuboidT {
+	c := &cuboidT{x1: x1, x2: xm, y1: y1, y2: ym, z1: z1, z2: zm}
 	switch {
 	case x1 == x2 && y1 == y2 && z1 == z2:
 		c.features = singleDot
@@ -235,34 +238,7 @@ func (c *cuboidT) add(o *cuboidT) *cuboidT {
 	logf(`start: "on: %v",  // %v`, c, c.size())
 	logf(`add: "on: %v",  // %v`, o, o.size())
 	before := c.size()
-	var debug bool
-	if o.x1 < c.x1 || o.x2 > c.x2 ||
-		o.y1 < c.y1 || o.y2 > c.y2 ||
-		o.z1 < c.z1 || o.z2 > c.z2 {
-		logf("REPLACE: space=%+v, size=%v...", c, c.size())
-		debug = true
-	}
-	if o.x1 < c.x1 {
-		c.x1 = o.x1
-	}
-	if o.x2 > c.x2 {
-		c.x2 = o.x2
-	}
-	if o.y1 < c.y1 {
-		c.y1 = o.y1
-	}
-	if o.y2 > c.y2 {
-		c.y2 = o.y2
-	}
-	if o.z1 < c.z1 {
-		c.z1 = o.z1
-	}
-	if o.z2 > c.z2 {
-		c.z2 = o.z2
-	}
-	if debug {
-		logf("WITH: space=%+v, size=%v", c, c.size())
-	}
+	c.features |= o.features
 	logf("want: %q, // %v", c, c.size())
 	if c.size() <= before {
 		log.Fatalf("add: before=%v, after=%v", before, c.size())
@@ -274,30 +250,7 @@ func (c *cuboidT) subtract(o *cuboidT) *cuboidT {
 	logf(`start: "on: %v",  // %v`, c, c.size())
 	logf(`sub: "off: %v",  // %v`, o, o.size())
 	before := c.size()
-	if c.x1 != c.x2 && c.x1 <= o.x2 {
-		// logf("trimming X line space%+v BEFORE: %+v", k, *c)
-		c.x1 = o.x2 + 1
-		// logf("trimming X line space%+v AFTER: %+v", k, *c)
-		if c.x1 > c.x2 {
-			log.Fatalf("c.x1 > c.x2: %v", c)
-		}
-	}
-	if c.y1 != c.y2 && c.y1 <= o.y2 {
-		// logf("trimming Y line space%+v BEFORE: %+v", k, *c)
-		c.y1 = o.y2 + 1
-		// logf("trimming Y line space%+v AFTER: %+v", k, *c)
-		if c.y1 > c.y2 {
-			log.Fatalf("c.y1 > c.y2: %v", c)
-		}
-	}
-	if c.z1 != c.z2 && c.z1 <= o.z2 {
-		// logf("trimming Z line space%+v BEFORE: %+v", k, *c)
-		c.z1 = o.z2 + 1
-		// logf("trimming Z line space%+v AFTER: %+v", k, *c)
-		if c.z1 > c.z2 {
-			log.Fatalf("c.z1 > c.z2: %v", c)
-		}
-	}
+	c.features ^= o.features
 	logf("want: %q, // %v", c, c.size())
 	if c.size() >= before {
 		log.Fatalf("subtract: before=%v, after=%v", before, c.size())

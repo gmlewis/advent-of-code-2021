@@ -57,8 +57,8 @@ func TestAdd(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := processLine(tt.start, nil)[0]
 			a := processLine(tt.add, nil)[0]
-			sc := newCuboid(s.x1, s.x2, s.y1, s.y2, s.z1, s.z2)
-			ac := newCuboid(a.x1, a.x2, a.y1, a.y2, a.z1, a.z2)
+			sc := newCuboid(s.x1, s.x2, 1, s.y1, s.y2, 1, s.z1, s.z2, 1)
+			ac := newCuboid(a.x1, a.x2, 1, a.y1, a.y2, 1, a.z1, a.z2, 1)
 			got := sc.add(ac).String()
 			if got != tt.want {
 				t.Errorf("add = %v, want %v", got, tt.want)
@@ -86,8 +86,8 @@ func TestSubtract(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := processLine(tt.start, nil)[0]
 			o := processLine(tt.sub, nil)[0]
-			sc := newCuboid(s.x1, s.x2, s.y1, s.y2, s.z1, s.z2)
-			oc := newCuboid(o.x1, o.x2, o.y1, o.y2, o.z1, o.z2)
+			sc := newCuboid(s.x1, s.x2, 1, s.y1, s.y2, 1, s.z1, s.z2, 1)
+			oc := newCuboid(o.x1, o.x2, 1, o.y1, o.y2, 1, o.z1, o.z2, 1)
 			got := sc.subtract(oc).String()
 			if got != tt.want {
 				t.Errorf("subtract = %v, want %v", got, tt.want)
