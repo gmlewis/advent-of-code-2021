@@ -50,7 +50,7 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 		return nil
 	}
 
-	logf("solve(%v): %v allPossibleMoves: %+v", bestEnergy, p, moves)
+	// logf("solve(%v): %v allPossibleMoves: %+v", bestEnergy, p, moves)
 	var best *puzT
 	for _, move := range moves {
 		f := move.from
@@ -60,7 +60,7 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 			continue
 		}
 
-		logf("Moving '%c' from %+v to %+v using %v energy", p.inMotion[f], f, t, e)
+		// logf("Moving '%c' from %+v to %+v using %v energy", p.inMotion[f], f, t, e)
 		np := &puzT{energy: e + p.energy, landings: dup(p.landings), inMotion: dup(p.inMotion)}
 		if t[1] == 0 || arrivedX[p.inMotion[f]] != t[0] {
 			np.inMotion[t] = np.inMotion[f]
@@ -69,11 +69,11 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 		np.landings[t] = np.landings[f]
 		delete(np.landings, f)
 
-		if np.solve(bestEnergy) != nil {
-			if np.energy < bestEnergy {
-				best = np
-				bestEnergy = np.energy
-			}
+		np = np.solve(bestEnergy)
+		if np != nil && np.energy < bestEnergy {
+			best = np
+			bestEnergy = np.energy
+			// logf("NEW BEST ENERGY: %v", bestEnergy)
 		}
 	}
 	return best
