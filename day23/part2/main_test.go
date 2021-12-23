@@ -32,12 +32,11 @@ func TestPossibleMoves(t *testing.T) {
 	s15 := parseLiteral(strings.Split(strings.TrimSpace(step15), "\n"))
 	s16 := parseLiteral(strings.Split(strings.TrimSpace(step16), "\n"))
 	s17 := parseLiteral(strings.Split(strings.TrimSpace(step17), "\n"))
-	// s18 := parseLiteral(strings.Split(strings.TrimSpace(step18), "\n"))
-	// s19 := parseLiteral(strings.Split(strings.TrimSpace(step19), "\n"))
-	// s20 := parseLiteral(strings.Split(strings.TrimSpace(step20), "\n"))
-	// s21 := parseLiteral(strings.Split(strings.TrimSpace(step21), "\n"))
-	// s22 := parseLiteral(strings.Split(strings.TrimSpace(step22), "\n"))
-	// s23 := parseLiteral(strings.Split(strings.TrimSpace(step23), "\n"))
+	s18 := parseLiteral(strings.Split(strings.TrimSpace(step18), "\n"))
+	s19 := parseLiteral(strings.Split(strings.TrimSpace(step19), "\n"))
+	s20 := parseLiteral(strings.Split(strings.TrimSpace(step20), "\n"))
+	s21 := parseLiteral(strings.Split(strings.TrimSpace(step21), "\n"))
+	s22 := parseLiteral(strings.Split(strings.TrimSpace(step22), "\n"))
 
 	tests := []struct {
 		name string
@@ -272,6 +271,46 @@ func TestPossibleMoves(t *testing.T) {
 				{from: keyT{2, 3}, to: keyT{3, 0}, energy: 4000},
 				{from: keyT{2, 3}, to: keyT{5, 0}, energy: 6000},
 				{from: keyT{2, 3}, to: keyT{7, 0}, energy: 8000},
+			},
+		},
+		{
+			name: "A pops into place",
+			puz:  s18,
+			from: keyT{1, 0},
+			want: []moveT{
+				{from: keyT{1, 0}, to: keyT{2, 3}, energy: 4},
+			},
+		},
+		{
+			name: "next A pops into place",
+			puz:  s19,
+			from: keyT{0, 0},
+			want: []moveT{
+				{from: keyT{0, 0}, to: keyT{2, 2}, energy: 4},
+			},
+		},
+		{
+			name: "D moves into place",
+			puz:  s20,
+			from: keyT{3, 0},
+			want: []moveT{
+				{from: keyT{3, 0}, to: keyT{8, 2}, energy: 7000},
+			},
+		},
+		{
+			name: "last A moves into place",
+			puz:  s21,
+			from: keyT{9, 0},
+			want: []moveT{
+				{from: keyT{9, 0}, to: keyT{2, 1}, energy: 8},
+			},
+		},
+		{
+			name: "final D moves into place",
+			puz:  s22,
+			from: keyT{10, 0},
+			want: []moveT{
+				{from: keyT{10, 0}, to: keyT{8, 1}, energy: 3000},
 			},
 		},
 	}
@@ -531,16 +570,6 @@ var step22 = `
 #############
 #..........D#
 ###A#B#C#.###
-  #A#B#C#D#
-  #A#B#C#D#
-  #A#B#C#D#
-  #########
-`
-
-var step23 = `
-#############
-#...........#
-###A#B#C#D###
   #A#B#C#D#
   #A#B#C#D#
   #A#B#C#D#
