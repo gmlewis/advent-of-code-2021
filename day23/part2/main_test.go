@@ -24,6 +24,20 @@ func TestPossibleMoves(t *testing.T) {
 	s7 := parseLiteral(strings.Split(strings.TrimSpace(step7), "\n"))
 	s8 := parseLiteral(strings.Split(strings.TrimSpace(step8), "\n"))
 	s9 := parseLiteral(strings.Split(strings.TrimSpace(step9), "\n"))
+	s10 := parseLiteral(strings.Split(strings.TrimSpace(step10), "\n"))
+	s11 := parseLiteral(strings.Split(strings.TrimSpace(step11), "\n"))
+	s12 := parseLiteral(strings.Split(strings.TrimSpace(step12), "\n"))
+	s13 := parseLiteral(strings.Split(strings.TrimSpace(step13), "\n"))
+	s14 := parseLiteral(strings.Split(strings.TrimSpace(step14), "\n"))
+	s15 := parseLiteral(strings.Split(strings.TrimSpace(step15), "\n"))
+	s16 := parseLiteral(strings.Split(strings.TrimSpace(step16), "\n"))
+	s17 := parseLiteral(strings.Split(strings.TrimSpace(step17), "\n"))
+	// s18 := parseLiteral(strings.Split(strings.TrimSpace(step18), "\n"))
+	// s19 := parseLiteral(strings.Split(strings.TrimSpace(step19), "\n"))
+	// s20 := parseLiteral(strings.Split(strings.TrimSpace(step20), "\n"))
+	// s21 := parseLiteral(strings.Split(strings.TrimSpace(step21), "\n"))
+	// s22 := parseLiteral(strings.Split(strings.TrimSpace(step22), "\n"))
+	// s23 := parseLiteral(strings.Split(strings.TrimSpace(step23), "\n"))
 
 	tests := []struct {
 		name string
@@ -176,6 +190,72 @@ func TestPossibleMoves(t *testing.T) {
 			from: keyT{5, 0},
 			want: []moveT{
 				{from: keyT{5, 0}, to: keyT{4, 4}, energy: 50},
+			},
+		},
+		{
+			name: "next B moves into place",
+			puz:  s10,
+			from: keyT{7, 0},
+			want: []moveT{
+				{from: keyT{7, 0}, to: keyT{4, 3}, energy: 60},
+			},
+		},
+		{
+			name: "third B moves into place",
+			puz:  s11,
+			from: keyT{9, 0},
+			want: []moveT{
+				{from: keyT{9, 0}, to: keyT{4, 2}, energy: 70},
+			},
+		},
+		{
+			name: "last C moves into place",
+			puz:  s12,
+			from: keyT{8, 3},
+			want: []moveT{
+				{from: keyT{8, 3}, to: keyT{6, 1}, energy: 600},
+			},
+		},
+		{
+			name: "A gets out of the way",
+			puz:  s13,
+			from: keyT{8, 4},
+			want: []moveT{
+				{from: keyT{8, 4}, to: keyT{7, 0}, energy: 5},
+				{from: keyT{8, 4}, to: keyT{9, 0}, energy: 5},
+				{from: keyT{8, 4}, to: keyT{5, 0}, energy: 7},
+			},
+		},
+		{
+			name: "D moves into place",
+			puz:  s14,
+			from: keyT{3, 0},
+			want: []moveT{
+				{from: keyT{3, 0}, to: keyT{8, 4}, energy: 9000},
+			},
+		},
+		{
+			name: "B jumps up and over into place",
+			puz:  s15,
+			from: keyT{2, 1},
+			want: []moveT{
+				{from: keyT{2, 1}, to: keyT{4, 1}, energy: 40},
+			},
+		},
+		{
+			name: "D jumps up and over into place",
+			puz:  s16,
+			from: keyT{2, 2},
+			want: []moveT{
+				{from: keyT{2, 2}, to: keyT{8, 3}, energy: 11000},
+			},
+		},
+		{
+			name: "D gets out of the way of A",
+			puz:  s17,
+			from: keyT{2, 3},
+			want: []moveT{
+				{from: keyT{2, 3}, to: keyT{3, 0}, energy: 11000},
 			},
 		},
 	}
