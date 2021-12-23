@@ -49,35 +49,6 @@ on x=-41..9,y=-7..43,z=-33..15
 	}
 }
 
-func TestAdd(t *testing.T) {
-	tests := []struct {
-		name  string
-		start string
-		add   string
-		want  string
-	}{
-		{
-			name:  "simple 2x2x2 - no expansion",
-			start: "on x=0..1,y=0..1,z=0..1",
-			add:   "on x=0..1,y=0..1,z=0..1",
-			want:  "x=0..1,y=0..1,z=0..1",
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			s := processLine(tt.start, nil)[0]
-			a := processLine(tt.add, nil)[0]
-			sc := newCuboid(s.x1, s.x2, 1, s.y1, s.y2, 1, s.z1, s.z2, 1)
-			ac := newCuboid(a.x1, a.x2, 1, a.y1, a.y2, 1, a.z1, a.z2, 1)
-			got := sc.add(ac).String()
-			if got != tt.want {
-				t.Errorf("add = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestSubtract(t *testing.T) {
 	tests := []struct {
 		name  string

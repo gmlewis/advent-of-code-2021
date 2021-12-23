@@ -40,12 +40,12 @@ func process(filename string) {
 	xIndices := ReduceWithIndex(xVals, lookupT{}, func(i, x int, acc lookupT) lookupT { acc[x] = i; return acc })
 	yIndices := ReduceWithIndex(yVals, lookupT{}, func(i, y int, acc lookupT) lookupT { acc[y] = i; return acc })
 	zIndices := ReduceWithIndex(zVals, lookupT{}, func(i, z int, acc lookupT) lookupT { acc[z] = i; return acc })
-	logf("xVals=%+v", xVals)
-	logf("xIndices=%+v", xIndices)
-	logf("yVals=%+v", yVals)
-	logf("yIndices=%+v", yIndices)
-	logf("zVals=%+v", zVals)
-	logf("zIndices=%+v", zIndices)
+	// logf("xVals=%+v", xVals)
+	// logf("xIndices=%+v", xIndices)
+	// logf("yVals=%+v", yVals)
+	// logf("yIndices=%+v", yIndices)
+	// logf("zVals=%+v", zVals)
+	// logf("zIndices=%+v", zIndices)
 
 	extents := func(vals []int, i1, i2, limit int) (int, int, int) {
 		v1 := vals[i1]
@@ -65,8 +65,8 @@ func process(filename string) {
 		xi2 := xIndices[cmd.x2]
 		yi2 := yIndices[cmd.y2]
 		zi2 := zIndices[cmd.z2]
-		logf("cmd=%v", cmd)
-		logf("on=%v: xi=%v..%v, yi=%v..%v, zi=%v..%v", cmd.on, xi1, xi2, yi1, yi2, zi1, zi2)
+		// logf("cmd=%v", cmd)
+		// logf("on=%v: xi=%v..%v, yi=%v..%v, zi=%v..%v", cmd.on, xi1, xi2, yi1, yi2, zi1, zi2)
 		for zi := zi1; zi <= zi2; zi++ {
 			for yi := yi1; yi <= yi2; yi++ {
 				for xi := xi1; xi <= xi2; xi++ {
@@ -90,7 +90,7 @@ func process(filename string) {
 					if x1 <= c.x1 && x2 >= c.x2 &&
 						y1 <= c.y1 && y2 >= c.y2 &&
 						z1 <= c.z1 && z2 >= c.z2 {
-						logf("deleting space%+v: %v, size=%v", k, c, c.size())
+						// logf("deleting space%+v: %v, size=%v", k, c, c.size())
 						delete(space, k)
 						continue
 					}
