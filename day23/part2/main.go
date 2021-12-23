@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"sort"
+	"sync"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/mathfn"
@@ -51,31 +51,52 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 	}
 
 	// logf("solve(%v): %v allPossibleMoves: %+v", bestEnergy, p, moves)
+	var wg sync.WaitGroup
+	var mu sync.RWMutex
 	var best *puzT
+
 	for _, move := range moves {
 		f := move.from
 		t := move.to
 		e := move.energy
+		mu.RLock()
 		if e+p.energy >= bestEnergy {
+			mu.RUnlock()
 			continue
 		}
+		mu.RUnlock()
 
-		// logf("Moving '%c' from %+v to %+v using %v energy", p.inMotion[f], f, t, e)
-		np := &puzT{energy: e + p.energy, landings: dup(p.landings), inMotion: dup(p.inMotion)}
-		if t[1] == 0 || arrivedX[p.inMotion[f]] != t[0] {
-			np.inMotion[t] = np.inMotion[f]
-		}
-		delete(np.inMotion, f)
-		np.landings[t] = np.landings[f]
-		delete(np.landings, f)
+		wg.Add(1)
+		go func(f, t keyT, e int) {
+			// logf("Moving '%c' from %+v to %+v using %v energy", p.inMotion[f], f, t, e)
+			np := &puzT{energy: e + p.energy, landings: dup(p.landings), inMotion: dup(p.inMotion)}
+			if t[1] == 0 || arrivedX[p.inMotion[f]] != t[0] {
+				np.inMotion[t] = np.inMotion[f]
+			}
+			delete(np.inMotion, f)
+			np.landings[t] = np.landings[f]
+			delete(np.landings, f)
 
-		np = np.solve(bestEnergy)
-		if np != nil && np.energy < bestEnergy {
-			best = np
-			bestEnergy = np.energy
-			logf("NEW BEST ENERGY: %v", bestEnergy)
-		}
+			mu.RLock()
+			be := bestEnergy
+			mu.RUnlock()
+
+			np = np.solve(be)
+			if np != nil {
+				mu.Lock()
+				if np.energy < bestEnergy {
+					best = np
+					bestEnergy = np.energy
+				}
+				mu.Unlock()
+				// logf("NEW BEST ENERGY: %v", bestEnergy)
+			}
+			wg.Done()
+		}(f, t, e)
 	}
+
+	wg.Wait()
+
 	return best
 }
 
@@ -89,12 +110,12 @@ func (p *puzT) allPossibleMoves() (moves []moveT) {
 	for k := range p.inMotion {
 		moves = append(moves, p.possibleMoves(k)...)
 	}
-	sort.Slice(moves, func(a, b int) bool {
-		if p.inMotion[moves[a].from] == p.inMotion[moves[a].from] {
-			return moves[a].energy > moves[b].energy
-		}
-		return p.inMotion[moves[a].from] < p.inMotion[moves[a].from]
-	})
+	// sort.Slice(moves, func(a, b int) bool {
+	// 	if p.inMotion[moves[a].from] == p.inMotion[moves[a].from] {
+	// 		return moves[a].energy > moves[b].energy
+	// 	}
+	// 	return p.inMotion[moves[a].from] < p.inMotion[moves[a].from]
+	// })
 	return moves
 }
 
