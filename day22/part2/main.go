@@ -109,13 +109,13 @@ func process(filename string) {
 	}
 
 	space := Reduce(cmds, spaceT{}, f)
-	// var debug []string
+	var debug []string
 	cubesOn := maps.Reduce(space, int64(0), func(k keyT, c *cuboidT, acc int64) int64 {
-		// debug = append(debug, fmt.Sprintf("SUM: space%+v x=%v..%v,y=%v..%v,z=%v..%v = %v", k, c.x1, c.x2, c.y1, c.y2, c.z1, c.z2, c.size()))
+		debug = append(debug, fmt.Sprintf("SUM: space%+v %v = %v", k, c, c.size()))
 		return acc + c.size()
 	})
-	// sort.Strings(debug)
-	// logf("\n\n%v", strings.Join(debug, "\n"))
+	sort.Strings(debug)
+	logf("\n\n%v", strings.Join(debug, "\n"))
 
 	printf("Solution: %v\n", cubesOn)
 }
@@ -266,11 +266,11 @@ func (c *cuboidT) size() int64 { // inclusive
 }
 
 func (c *cuboidT) add(o *cuboidT) *cuboidT {
-	logf(`start: "on: %v",  // %v`, c, c.size())
-	logf(`add: "on: %v",  // %v`, o, o.size())
+	// logf(`start: "on: %v",  // %v`, c, c.size())
+	// logf(`add: "on: %v",  // %v`, o, o.size())
 	before := c.size()
 	c.features |= o.features
-	logf("want: %q, // %v", c, c.size())
+	// logf("want: %q, // %v", c, c.size())
 	if c.size() < before {
 		log.Fatalf("add: before=%v, after=%v", before, c.size())
 	}
@@ -278,11 +278,11 @@ func (c *cuboidT) add(o *cuboidT) *cuboidT {
 }
 
 func (c *cuboidT) subtract(o *cuboidT) *cuboidT {
-	logf(`start: "on: %v",  // %v`, c, c.size())
-	logf(`sub: "off: %v",  // %v`, o, o.size())
+	// logf(`start: "on: %v",  // %v`, c, c.size())
+	// logf(`sub: "off: %v",  // %v`, o, o.size())
 	before := c.size()
 	c.features &^= o.features
-	logf("want: %q, // %v", c, c.size())
+	// logf("want: %q, // %v", c, c.size())
 	if c.size() > before {
 		log.Fatalf("subtract: before=%v, after=%v", before, c.size())
 	}
