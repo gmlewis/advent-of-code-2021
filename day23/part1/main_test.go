@@ -17,6 +17,7 @@ func TestEnergy(t *testing.T) {
 
 func TestPossibleMoves(t *testing.T) {
 	startPuz := parse(strings.Split(strings.TrimSpace(example1), "\n"))
+	bMoved := parse(strings.Split(strings.TrimSpace(bMovedExample), "\n"))
 
 	tests := []struct {
 		name         string
@@ -65,6 +66,13 @@ func TestPossibleMoves(t *testing.T) {
 			name: "second blocked A",
 			from: keyT{8, 2},
 		},
+		{
+			name:         "C moves into place",
+			puz:          bMoved,
+			from:         keyT{4, 1},
+			want:         []keyT{{6, 1}},
+			wantEnergies: []int{400},
+		},
 	}
 
 	for _, tt := range tests {
@@ -100,6 +108,14 @@ var example1 = `
 #############
 #...........#
 ###B#C#B#D###
+  #A#D#C#A#
+  #########
+`
+
+var bMovedExample = `
+#############
+#...B.......#
+###B#C#.#D###
   #A#D#C#A#
   #########
 `
