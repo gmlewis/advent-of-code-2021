@@ -132,15 +132,17 @@ func (p *puzT) possibleMoves(from keyT) (moves []moveT) {
 		column = roomX + 1
 	}
 	// logf("Can %c move from %+v to %+v?", r, from, keyT{column, 0})
-	if p.clearPath(from, keyT{column, 0}) && (p.landings[keyT{column, 4}] == r || p.landings[keyT{column, 4}] == 0) {
+	if p.clearPath(from, keyT{column, 0}) && (p.landings[keyT{roomX, 4}] == r || p.landings[keyT{roomX, 4}] == 0) {
 		for y := 4; y >= 1; y-- {
 			if p.clearPath(keyT{column, 0}, keyT{roomX, y}) {
 				to := keyT{roomX, y}
+				// logf("Final move into destination: p.landings%+v=%v %v", keyT{roomX, 4}, p.landings[keyT{roomX, 4}], p)
 				return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
 			}
 		}
 	}
 
+	// logf("Normal move from room to hallway")
 	f := func(x int) {
 		to := keyT{x, 0}
 		if p.clearPath(from, to) {

@@ -152,11 +152,12 @@ func TestPossibleMoves(t *testing.T) {
 			},
 		},
 		{
-			name: "next B moves into hallway",
+			name: "next B moves into hallway to unblock D",
 			puz:  s7,
 			from: keyT{4, 3},
 			want: []moveT{
-				{from: main.keyT{4, 3}, to: main.keyT{5, 0}, energy: 50},
+				{from: keyT{4, 3}, to: keyT{3, 0}, energy: 40},
+				{from: keyT{4, 3}, to: keyT{5, 0}, energy: 40},
 			},
 		},
 	}
