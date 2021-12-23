@@ -198,22 +198,22 @@ func newCuboid(x1, x2, xm, y1, y2, ym, z1, z2, zm int) *cuboidT {
 		c.features = totallyFilled
 		return c
 	case x1 < x2 && y1 == y2 && z1 == z2:
-		c.features = xAxis
+		c.features = singleDot | xAxis
 		return c
 	case x1 == x2 && y1 < y2 && z1 == z2:
-		c.features = yAxis
+		c.features = singleDot | yAxis
 		return c
 	case x1 == x2 && y1 == y2 && z1 < z2:
-		c.features = zAxis
+		c.features = singleDot | zAxis
 		return c
 	case x1 < x2 && y1 < y2 && z1 == z2:
-		c.features = xyPlane
+		c.features = singleDot | xAxis | yAxis | xyPlane
 		return c
 	case x1 == x2 && y1 < y2 && z1 < z2:
-		c.features = yzPlane
+		c.features = singleDot | yAxis | zAxis | yzPlane
 		return c
 	case x1 < x2 && y1 == y2 && z1 < z2:
-		c.features = xzPlane
+		c.features = singleDot | xAxis | zAxis | xzPlane
 		return c
 	default:
 		log.Fatalf("bad cuboidT: %#v", c)
