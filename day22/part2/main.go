@@ -80,9 +80,6 @@ func process(filename string) {
 							space[k] = newCuboid(x1, x2, xm, y1, y2, ym, z1, z2, zm)
 							continue
 						}
-						if x1 >= c.x1 && x2 <= c.x2 && y1 >= c.y1 && y2 <= c.y2 && z1 >= c.z1 && z2 <= c.z2 {
-							continue
-						}
 						space[k] = c.add(newCuboid(x1, x2, xm, y1, y2, ym, z1, z2, zm))
 						continue
 					}
@@ -109,17 +106,17 @@ func process(filename string) {
 	}
 
 	space := Reduce(cmds, spaceT{}, f)
-	var debug []string
+	// var debug []string
 	cubesOn := maps.Reduce(space, int64(0), func(k keyT, c *cuboidT, acc int64) int64 {
-		debug = append(debug, fmt.Sprintf("SUM: space%+v %v = %v", k, c, c.size()))
+		// debug = append(debug, fmt.Sprintf("SUM: space%+v %v = %v", k, c, c.size()))
 		return acc + c.size()
 	})
-	sort.Strings(debug)
-	logf("\n\n%v", strings.Join(debug, "\n"))
+	// sort.Strings(debug)
+	// logf("\n\n%v", strings.Join(debug, "\n"))
 
-	if cubesOn == 247775 {
-		logf("toMap:\n%+v", space.toMap())
-	}
+	// if cubesOn == 247775 {
+	// 	logf("toMap:\n%+v", space.toMap())
+	// }
 
 	printf("Solution: %v\n", cubesOn)
 }
