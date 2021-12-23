@@ -175,7 +175,7 @@ func TestPossibleMoves(t *testing.T) {
 			puz:  s9,
 			from: keyT{5, 0},
 			want: []moveT{
-				{from: keyT{5, 0}, to: keyT{4, 4}, energy: 5000},
+				{from: keyT{5, 0}, to: keyT{4, 4}, energy: 50},
 			},
 		},
 	}

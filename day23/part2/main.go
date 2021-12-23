@@ -105,28 +105,27 @@ func (p *puzT) possibleMoves(from keyT) (moves []moveT) {
 	}
 	roomX := 2*int(r-'A') + 2
 	if from[1] == 0 {
-		// logf("%c at %+v must move from hallway into its own roomX=%v", r, from, roomX)
-		to := keyT{roomX, 2}
-		// logf("Can %c move from %+v to %+v?", r, from, to)
-		if p.landings[to] == 0 && p.clearPath(from, to) {
-			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
+		if p.landings[keyT{roomX, 4}] != r && p.landings[keyT{roomX, 4}] != 0 {
+			return nil // column is stil blocked
 		}
-		to = keyT{roomX, 1}
-		// logf("No. Can %c move from %+v to %+v?", r, from, to)
-		if p.landings[to] == 0 && p.clearPath(from, to) {
-			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
+
+		for y := 4; y >= 1; y-- {
+			to := keyT{roomX, y}
+			if p.clearPath(from, to) {
+				return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
+			}
 		}
-		// logf("No.")
+
 		return nil
 	}
 
-	// Moving from room into hallway.
+	// logf("Moving from room into hallway.")
 	if !p.clearPath(from, keyT{from[0], 0}) {
 		// logf("%c at %+v is blocked from moving into hallway", r, from)
 		return nil // blocked
 	}
 
-	// Can this be a final move into place (by going up, over, and down again)?
+	// logf("Can this be a final move into place (by going up, over, and down again)?")
 	column := roomX - 1
 	if from[0] > roomX {
 		column = roomX + 1
