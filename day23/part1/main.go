@@ -46,7 +46,11 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 	}
 
 	moves := p.allPossibleMoves()
-	logf("solve(%v): allPossibleMoves: %+v", bestEnergy, moves)
+	if len(moves) == 0 {
+		return nil
+	}
+
+	logf("solve(%v): %v allPossibleMoves: %+v", bestEnergy, p, moves)
 	var best *puzT
 	for _, move := range moves {
 		f := move.from
@@ -98,13 +102,16 @@ func (p *puzT) possibleMoves(from keyT) (moves []moveT) {
 	if from[1] == 0 {
 		// logf("%c at %+v must move from hallway into its own roomX=%v", r, from, roomX)
 		to := keyT{roomX, 2}
+		// logf("Can %c move from %+v to %+v?", r, from, to)
 		if p.landings[to] == 0 && p.clearPath(from, to) {
 			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
 		}
 		to = keyT{roomX, 1}
+		// logf("No. Can %c move from %+v to %+v?", r, from, to)
 		if p.landings[to] == 0 && p.clearPath(from, to) {
 			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
 		}
+		// logf("No.")
 		return nil
 	}
 
@@ -160,17 +167,20 @@ var orderX = map[int][]int{
 var arrivedX = map[rune]int{'A': 2, 'B': 4, 'C': 6, 'D': 8}
 
 func (p *puzT) clearPath(from, to keyT) bool {
+	if p.landings[to] != 0 {
+		return false
+	}
+
 	if to[1] != 0 {
-		// Moving from hallway to room.
 		if p.landings[keyT{to[0], 1}] != 0 || p.landings[to] != 0 {
 			return false
 		}
-		for x := from[0]; x > to[0]; x-- {
+		for x := from[0] - 1; x > to[0]; x-- {
 			if p.landings[keyT{x, 0}] != 0 {
 				return false
 			}
 		}
-		for x := from[0]; x < to[0]; x++ {
+		for x := from[0] + 1; x < to[0]; x++ {
 			if p.landings[keyT{x, 0}] != 0 {
 				return false
 			}
@@ -183,12 +193,12 @@ func (p *puzT) clearPath(from, to keyT) bool {
 		return false
 	}
 
-	for x := from[0]; x > to[0]; x-- {
+	for x := from[0] - 1; x > to[0]; x-- {
 		if p.landings[keyT{x, 0}] != 0 {
 			return false
 		}
 	}
-	for x := from[0]; x < to[0]; x++ {
+	for x := from[0] + 1; x < to[0]; x++ {
 		if p.landings[keyT{x, 0}] != 0 {
 			return false
 		}
@@ -222,6 +232,9 @@ func dup(src map[keyT]rune) map[keyT]rune {
 }
 
 func (p *puzT) isSolved() bool {
+	if len(p.landings) != 8 {
+		log.Fatalf("lost an amphipod! %v", p)
+	}
 	if len(p.inMotion) != 0 {
 		return false
 	}
@@ -277,10 +290,9 @@ func (p *puzT) String() string {
 		return r
 	}
 
-	return fmt.Sprintf(`#############
+	return fmt.Sprintf(`energy=%v
 #%v#
 ###%c#%c#%c#%c###
   #%c#%c#%c#%c#
-  #########
-`, landings, f(2, 1), f(4, 1), f(6, 1), f(8, 1), f(2, 2), f(4, 2), f(6, 2), f(8, 2))
+`, p.energy, landings, f(2, 1), f(4, 1), f(6, 1), f(8, 1), f(2, 2), f(4, 2), f(6, 2), f(8, 2))
 }

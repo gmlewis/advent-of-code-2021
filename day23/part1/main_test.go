@@ -17,6 +17,7 @@ func TestPossibleMoves(t *testing.T) {
 		t.Fatalf("fatal parse: bMoved.inMotion[%v]=%v, want 0", keyT{6, 2}, bMoved.inMotion[keyT{6, 2}])
 	}
 	thirdMove := parse(strings.Split(strings.TrimSpace(thirdMoveExample), "\n"))
+	fourthMove := parse(strings.Split(strings.TrimSpace(fourthMoveExample), "\n"))
 
 	tests := []struct {
 		name string
@@ -100,6 +101,14 @@ func TestPossibleMoves(t *testing.T) {
 				{from: keyT{2, 1}, to: keyT{4, 1}, energy: 40},
 			},
 		},
+		{
+			name: "b moves after 4th move",
+			puz:  fourthMove,
+			from: keyT{3, 0},
+			want: []moveT{
+				{from: keyT{3, 0}, to: keyT{4, 2}, energy: 30},
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -154,5 +163,13 @@ var thirdMoveExample = `
 #.....D.....#
 ###B#.#C#D###
   #A#B#C#A#
+  #########
+`
+
+var fourthMoveExample = `
+#############
+#...B.D.....#
+###B#.#C#D###
+  #A#.#C#A#
   #########
 `
