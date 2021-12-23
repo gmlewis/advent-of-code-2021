@@ -117,6 +117,10 @@ func process(filename string) {
 	sort.Strings(debug)
 	logf("\n\n%v", strings.Join(debug, "\n"))
 
+	if cubesOn == 247775 {
+		logf("toMap:\n%+v", space.toMap())
+	}
+
 	printf("Solution: %v\n", cubesOn)
 }
 
@@ -287,6 +291,75 @@ func (c *cuboidT) subtract(o *cuboidT) *cuboidT {
 		log.Fatalf("subtract: before=%v, after=%v", before, c.size())
 	}
 	return c
+}
+
+func (c *cuboidT) toMap(m map[keyT]int) {
+	if c.features&totallyFilled == totallyFilled {
+		for z := c.z1; z <= c.z2; z++ {
+			for y := c.y1; y <= c.y2; y++ {
+				for x := c.x1; x <= c.x2; x++ {
+					m[keyT{x, y, z}] = 1
+				}
+			}
+		}
+		return
+	}
+	if c.features&singleDot == singleDot {
+		m[keyT{c.x1, c.y1, c.z1}] = 1
+	}
+	if c.features&xAxis == xAxis {
+		for x := c.x1 + 1; x <= c.x2; x++ {
+			m[keyT{x, c.y1, c.z1}] = 1
+		}
+	}
+	if c.features&yAxis == yAxis {
+		for y := c.y1 + 1; y <= c.y2; y++ {
+			m[keyT{c.x1, y, c.z1}] = 1
+		}
+	}
+	if c.features&zAxis == zAxis {
+		for z := c.z1 + 1; z <= c.z2; z++ {
+			m[keyT{c.x1, c.y1, z}] = 1
+		}
+	}
+	if c.features&xyPlane == xyPlane {
+		for y := c.y1 + 1; y <= c.y2; y++ {
+			for x := c.x1 + 1; x <= c.x2; x++ {
+				m[keyT{x, y, c.z1}] = 1
+			}
+		}
+	}
+	if c.features&yzPlane == yzPlane {
+		for z := c.z1 + 1; z <= c.z2; z++ {
+			for y := c.y1 + 1; y <= c.y2; y++ {
+				m[keyT{c.x1, y, z}] = 1
+			}
+		}
+	}
+	if c.features&xzPlane == xzPlane {
+		for z := c.z1 + 1; z <= c.z2; z++ {
+			for x := c.x1 + 1; x <= c.x2; x++ {
+				m[keyT{x, c.y1, z}] = 1
+			}
+		}
+	}
+	if c.features&cubeBody == cubeBody {
+		for z := c.z1 + 1; z <= c.z2; z++ {
+			for y := c.y1 + 1; y <= c.y2; y++ {
+				for x := c.x1 + 1; x <= c.x2; x++ {
+					m[keyT{x, y, z}] = 1
+				}
+			}
+		}
+	}
+}
+
+func (s spaceT) toMap() map[keyT]int {
+	m := map[keyT]int{}
+	for _, c := range s {
+		c.toMap(m)
+	}
+	return m
 }
 
 var lineRE = regexp.MustCompile(`^(\S+) x=(-?\d+)\.\.(-?\d+),y=(-?\d+)..(-?\d+),z=(-?\d+)..(-?\d+)$`)
