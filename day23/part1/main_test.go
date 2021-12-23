@@ -4,8 +4,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
-
 	"github.com/gmlewis/advent-of-code-2021/test"
 )
 
@@ -20,35 +18,62 @@ func TestPossibleMoves(t *testing.T) {
 	bMoved := parse(strings.Split(strings.TrimSpace(bMovedExample), "\n"))
 
 	tests := []struct {
-		name         string
-		puz          *puzT
-		from         keyT
-		want         []keyT
-		wantEnergies []int
+		name string
+		puz  *puzT
+		from keyT
+		want []moveT
 	}{
 		{
-			name:         "first B",
-			from:         keyT{2, 1},
-			want:         []keyT{{1, 0}, {3, 0}, {0, 0}, {5, 0}, {7, 0}, {9, 0}, {10, 0}},
-			wantEnergies: []int{20, 20, 30, 40, 60, 80, 90},
+			name: "first B",
+			from: keyT{2, 1},
+			want: []moveT{
+				{from: keyT{2, 1}, to: keyT{1, 0}, energy: 20},
+				{from: keyT{2, 1}, to: keyT{3, 0}, energy: 20},
+				{from: keyT{2, 1}, to: keyT{0, 0}, energy: 30},
+				{from: keyT{2, 1}, to: keyT{5, 0}, energy: 40},
+				{from: keyT{2, 1}, to: keyT{7, 0}, energy: 60},
+				{from: keyT{2, 1}, to: keyT{9, 0}, energy: 80},
+				{from: keyT{2, 1}, to: keyT{10, 0}, energy: 90},
+			},
 		},
 		{
-			name:         "first C",
-			from:         keyT{4, 1},
-			want:         []keyT{{3, 0}, {5, 0}, {1, 0}, {7, 0}, {0, 0}, {9, 0}, {10, 0}},
-			wantEnergies: []int{200, 200, 400, 400, 500, 600, 700},
+			name: "first C",
+			from: keyT{4, 1},
+			want: []moveT{
+				{from: keyT{4, 1}, to: keyT{3, 0}, energy: 200},
+				{from: keyT{4, 1}, to: keyT{5, 0}, energy: 200},
+				{from: keyT{4, 1}, to: keyT{1, 0}, energy: 400},
+				{from: keyT{4, 1}, to: keyT{7, 0}, energy: 400},
+				{from: keyT{4, 1}, to: keyT{0, 0}, energy: 500},
+				{from: keyT{4, 1}, to: keyT{9, 0}, energy: 600},
+				{from: keyT{4, 1}, to: keyT{10, 0}, energy: 700},
+			},
 		},
 		{
-			name:         "second B",
-			from:         keyT{6, 1},
-			want:         []keyT{{5, 0}, {7, 0}, {3, 0}, {9, 0}, {10, 0}, {1, 0}, {0, 0}},
-			wantEnergies: []int{20, 20, 40, 40, 50, 60, 70},
+			name: "second B",
+			from: keyT{6, 1},
+			want: []moveT{
+				{from: keyT{6, 1}, to: keyT{5, 0}, energy: 20},
+				{from: keyT{6, 1}, to: keyT{7, 0}, energy: 20},
+				{from: keyT{6, 1}, to: keyT{3, 0}, energy: 40},
+				{from: keyT{6, 1}, to: keyT{9, 0}, energy: 40},
+				{from: keyT{6, 1}, to: keyT{10, 0}, energy: 50},
+				{from: keyT{6, 1}, to: keyT{1, 0}, energy: 60},
+				{from: keyT{6, 1}, to: keyT{0, 0}, energy: 70},
+			},
 		},
 		{
-			name:         "first D",
-			from:         keyT{8, 1},
-			want:         []keyT{{7, 0}, {9, 0}, {10, 0}, {5, 0}, {3, 0}, {1, 0}, {0, 0}},
-			wantEnergies: []int{2000, 2000, 3000, 4000, 6000, 8000, 9000},
+			name: "first D",
+			from: keyT{8, 1},
+			want: []moveT{
+				{from: keyT{8, 1}, to: keyT{7, 0}, energy: 2000},
+				{from: keyT{8, 1}, to: keyT{9, 0}, energy: 2000},
+				{from: keyT{8, 1}, to: keyT{10, 0}, energy: 3000},
+				{from: keyT{8, 1}, to: keyT{5, 0}, energy: 4000},
+				{from: keyT{8, 1}, to: keyT{3, 0}, energy: 6000},
+				{from: keyT{8, 1}, to: keyT{1, 0}, energy: 8000},
+				{from: keyT{8, 1}, to: keyT{0, 0}, energy: 9000},
+			},
 		},
 		{
 			name: "first blocked A",
@@ -67,11 +92,12 @@ func TestPossibleMoves(t *testing.T) {
 			from: keyT{8, 2},
 		},
 		{
-			name:         "C moves into place",
-			puz:          bMoved,
-			from:         keyT{4, 1},
-			want:         []keyT{{6, 1}},
-			wantEnergies: []int{400},
+			name: "C moves into place",
+			puz:  bMoved,
+			from: keyT{4, 1},
+			want: []moveT{
+				{from: keyT{4, 1}, to: keyT{6, 1}, energy: 400},
+			},
 		},
 	}
 
@@ -80,12 +106,14 @@ func TestPossibleMoves(t *testing.T) {
 			if tt.puz == nil {
 				tt.puz = startPuz
 			}
-			got, energies := tt.puz.possibleMoves(tt.from)
-			if !cmp.Equal(got, tt.want) {
-				t.Errorf("possibleMoves(%v) = keys %#v, want %#v", tt.from, got, tt.want)
+			got := tt.puz.possibleMoves(tt.from)
+			if len(got) != len(tt.want) {
+				t.Errorf("possibleMoves(%v) = %#v, want %#v", tt.from, got, tt.want)
 			}
-			if !cmp.Equal(energies, tt.wantEnergies) {
-				t.Errorf("possibleMoves(%v) = energies %#v, want %#v", tt.from, energies, tt.wantEnergies)
+			for i := range got {
+				if got[i].from != tt.want[i].from || got[i].to != tt.want[i].to || got[i].energy != tt.want[i].energy {
+					t.Errorf("possibleMoves(%v)[%v] = %#v, want %#v", tt.from, i, got[i], tt.want[i])
+				}
 			}
 		})
 	}

@@ -44,12 +44,13 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 		return p
 	}
 
-	from, to, energies := p.allPossibleMoves()
-	logf("solve(%v): allPossibleMoves:\nfrom: %+v\nto: %+v\nenergies:%+v", bestEnergy, from, to, energies)
+	moves := p.allPossibleMoves()
+	logf("solve(%v): allPossibleMoves: %+v", bestEnergy, moves)
 	var best *puzT
-	for i, f := range from {
-		t := to[i]
-		e := energies[i]
+	for _, move := range moves {
+		f := move.from
+		t := move.to
+		e := move.energy
 		if e+p.energy >= bestEnergy {
 			continue
 		}
@@ -73,41 +74,39 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 	return best
 }
 
-func (p *puzT) allPossibleMoves() (from, to []keyT, energies []int) {
-	for k := range p.inMotion {
-		m, e := p.possibleMoves(k)
-		if len(m) == 0 {
-			continue
-		}
-		for range m {
-			from = append(from, k)
-		}
-		to = append(to, m...)
-		energies = append(energies, e...)
-	}
-	return from, to, energies
+type moveT struct {
+	from   keyT
+	to     keyT
+	energy int
 }
 
-func (p *puzT) possibleMoves(from keyT) (moves []keyT, energies []int) {
+func (p *puzT) allPossibleMoves() (moves []moveT) {
+	for k := range p.inMotion {
+		moves = append(moves, p.possibleMoves(k)...)
+	}
+	return moves
+}
+
+func (p *puzT) possibleMoves(from keyT) (moves []moveT) {
 	r := p.inMotion[from]
 	roomX := 2*int(r-'A') + 2
 	if from[1] == 0 {
-		logf("%c at %+v must move from hallway into its own roomX=%v", r, from, roomX)
+		// logf("%c at %+v must move from hallway into its own roomX=%v", r, from, roomX)
 		to := keyT{roomX, 2}
 		if p.landings[to] == 0 && p.clearPath(from, to) {
-			return []keyT{to}, []int{energy(r, from, to)}
+			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
 		}
 		to = keyT{roomX, 1}
 		if p.landings[to] == 0 && p.clearPath(from, to) {
-			return []keyT{to}, []int{energy(r, from, to)}
+			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
 		}
-		return nil, nil
+		return nil
 	}
 
 	// Moving from room into hallway.
 	if from[1] == 2 && p.landings[keyT{from[0], 1}] != 0 {
-		logf("%c at %+v is blocked from moving into hallway", r, from)
-		return nil, nil // blocked
+		// logf("%c at %+v is blocked from moving into hallway", r, from)
+		return nil // blocked
 	}
 
 	// Can this be a final move into place?
@@ -115,28 +114,27 @@ func (p *puzT) possibleMoves(from keyT) (moves []keyT, energies []int) {
 	if from[0] > roomX {
 		column = roomX + 1
 	}
-	logf("Can %c move from %+v to %+v?", r, from, keyT{column, 0})
+	// logf("Can %c move from %+v to %+v?", r, from, keyT{column, 0})
 	if p.clearPath(from, keyT{column, 0}) {
-		logf("Yes! Can %c move from %+v to %+v?", r, keyT{column, 0}, keyT{roomX, 2})
+		// logf("Yes! Can %c move from %+v to %+v?", r, keyT{column, 0}, keyT{roomX, 2})
 		if p.clearPath(keyT{column, 0}, keyT{roomX, 2}) {
-			logf("Yes!")
+			// logf("Yes!")
 			to := keyT{roomX, 2}
-			return []keyT{to}, []int{energy(r, from, to)}
+			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
 		}
-		logf("No. Can %c move instead from %+v to %+v?", r, keyT{column, 0}, keyT{roomX, 1})
+		// logf("No. Can %c move instead from %+v to %+v?", r, keyT{column, 0}, keyT{roomX, 1})
 		if p.clearPath(keyT{column, 0}, keyT{roomX, 1}) {
-			logf("Yes!")
+			// logf("Yes!")
 			to := keyT{roomX, 1}
-			return []keyT{to}, []int{energy(r, from, to)}
+			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
 		}
 	}
-	logf("No.")
+	// logf("No.")
 
 	f := func(x int) {
 		to := keyT{x, 0}
 		if p.clearPath(from, to) {
-			moves = append(moves, to)
-			energies = append(energies, energy(r, from, to))
+			moves = append(moves, moveT{from: from, to: to, energy: energy(r, from, to)})
 		}
 	}
 
@@ -144,7 +142,7 @@ func (p *puzT) possibleMoves(from keyT) (moves []keyT, energies []int) {
 		f(x)
 	}
 
-	return moves, energies
+	return moves
 }
 
 var orderX = map[int][]int{
@@ -180,16 +178,6 @@ func (p *puzT) clearPath(from, to keyT) bool {
 		return false
 	}
 
-	// for _, x := range orderX[from[0]] {
-	// 	logf("clearPath: checking x=%v: to[0]=%v, p.landings%+v=%v", x, to[0], to, p.landings[to])
-	// 	if x == to[0] && p.landings[to] == 0 {
-	// 		return true
-	// 	}
-	// 	logf("clearPath: checking p.landings%+v=%v", keyT{x, 0}, p.landings[keyT{x, 0}])
-	// 	if p.landings[keyT{x, 0}] != 0 {
-	// 		return false
-	// 	}
-	// }
 	for x := from[0]; x > to[0]; x-- {
 		if p.landings[keyT{x, 0}] != 0 {
 			return false
@@ -204,6 +192,11 @@ func (p *puzT) clearPath(from, to keyT) bool {
 }
 
 func energy(r rune, from, to keyT) int {
+	if from[1] > 0 && to[1] > 0 {
+		dist := mathfn.Abs(from[0]-to[0]) + from[1] + to[1]
+		return energyPerStep[r] * dist
+	}
+
 	dist := mathfn.Abs(from[0]-to[0]) + mathfn.Abs(from[1]-to[1])
 	return energyPerStep[r] * dist
 }
