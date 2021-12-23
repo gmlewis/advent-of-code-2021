@@ -70,26 +70,22 @@ func TestAdd(t *testing.T) {
 func TestSubtract(t *testing.T) {
 	tests := []struct {
 		name  string
-		start string
-		sub   string
-		want  string
+		start *cuboidT
+		sub   *cuboidT
+		want  *cuboidT
 	}{
 		{
-			name:  "simple 2x2x2",
-			start: "on x=0..1,y=0..1,z=0..1",
-			sub:   "off x=1..1,y=1..1,z=1..1",
-			want:  "x=0..0,y=0..0,z=0..0",
+			name:  "xyPlane sub zAxis",
+			start: &cuboidT{x1: -41, x2: -41, y1: 41, y2: 42, z1: -47, z2: -39, features: yzPlane},
+			sub:   &cuboidT{x1: -41, x2: -41, y1: 41, y2: 42, z1: -47, z2: -39, features: zAxis},
+			want:  &cuboidT{x1: -41, x2: -41, y1: 41, y2: 42, z1: -47, z2: -39, features: yzPlane},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := processLine(tt.start, nil)[0]
-			o := processLine(tt.sub, nil)[0]
-			sc := newCuboid(s.x1, s.x2, 1, s.y1, s.y2, 1, s.z1, s.z2, 1)
-			oc := newCuboid(o.x1, o.x2, 1, o.y1, o.y2, 1, o.z1, o.z2, 1)
-			got := sc.subtract(oc).String()
-			if got != tt.want {
+			got := tt.start.subtract(tt.sub)
+			if got.features != tt.want.features {
 				t.Errorf("subtract = %v, want %v", got, tt.want)
 			}
 		})

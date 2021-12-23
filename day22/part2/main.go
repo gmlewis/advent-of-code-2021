@@ -98,6 +98,9 @@ func process(filename string) {
 						continue
 					}
 					space[k].subtract(newCuboid(x1, x2, xm, y1, y2, ym, z1, z2, zm))
+					if space[k] == nil {
+						delete(space, k)
+					}
 				}
 			}
 		}
@@ -231,7 +234,35 @@ func (c *cuboidT) String() string {
 }
 
 func (c *cuboidT) size() int64 { // inclusive
-	return int64(c.x2-c.x1+1) * int64(c.y2-c.y1+1) * int64(c.z2-c.z1+1)
+	if c.features&totallyFilled == totallyFilled {
+		return int64(c.x2-c.x1+1) * int64(c.y2-c.y1+1) * int64(c.z2-c.z1+1)
+	}
+	var sum int64
+	if c.features&singleDot == singleDot {
+		sum += 1
+	}
+	if c.features&xAxis == xAxis && c.x2 > c.x1 {
+		sum += int64(c.x2 - c.x1)
+	}
+	if c.features&yAxis == yAxis && c.y2 > c.y1 {
+		sum += int64(c.y2 - c.y1)
+	}
+	if c.features&zAxis == zAxis && c.z2 > c.z1 {
+		sum += int64(c.z2 - c.z1)
+	}
+	if c.features&xyPlane == xyPlane && c.x2 > c.x1 && c.y2 > c.y1 {
+		sum += int64(c.x2-c.x1) * int64(c.y2-c.y1)
+	}
+	if c.features&yzPlane == yzPlane && c.y2 > c.y1 && c.z2 > c.z1 {
+		sum += int64(c.y2-c.y1) * int64(c.z2-c.z1)
+	}
+	if c.features&xzPlane == xzPlane && c.x2 > c.x1 && c.z2 > c.z1 {
+		sum += int64(c.x2-c.x1) * int64(c.z2-c.z1)
+	}
+	if c.features&cubeBody == cubeBody && c.x2 > c.x1 && c.y2 > c.y1 && c.z2 > c.z1 {
+		sum += int64(c.x2-c.x1) * int64(c.y2-c.y1) * int64(c.z2-c.z1)
+	}
+	return sum
 }
 
 func (c *cuboidT) add(o *cuboidT) *cuboidT {
@@ -240,7 +271,7 @@ func (c *cuboidT) add(o *cuboidT) *cuboidT {
 	before := c.size()
 	c.features |= o.features
 	logf("want: %q, // %v", c, c.size())
-	if c.size() <= before {
+	if c.size() < before {
 		log.Fatalf("add: before=%v, after=%v", before, c.size())
 	}
 	return c
@@ -250,9 +281,9 @@ func (c *cuboidT) subtract(o *cuboidT) *cuboidT {
 	logf(`start: "on: %v",  // %v`, c, c.size())
 	logf(`sub: "off: %v",  // %v`, o, o.size())
 	before := c.size()
-	c.features ^= o.features
+	c.features &^= o.features
 	logf("want: %q, // %v", c, c.size())
-	if c.size() >= before {
+	if c.size() > before {
 		log.Fatalf("subtract: before=%v, after=%v", before, c.size())
 	}
 	return c
