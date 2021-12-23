@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/gmlewis/advent-of-code-2021/test"
@@ -34,8 +36,17 @@ on x=-49..-5,y=-3..45,z=-29..18
 off x=18..30,y=-20..-8,z=-3..13
 on x=-41..9,y=-7..43,z=-33..15
 `
-	want := "Solution: 590784\n"
-	test.Runner(t, subset, want, process, &printf)
+
+	lines := strings.Split(strings.TrimSpace(subset), "\n")
+	want := []int{
+		139590, 210918, 225476, 328328, 387734, 420416, 436132, 478727, 494759, 494804, 492164, 534936, 534936, 567192, 567150, 592167, 588567, 592902, 590029, 590784, 590784, 590784,
+	}
+
+	for i := 1; i <= len(lines); i++ {
+		subset := strings.Join(lines[0:i], "\n")
+		wantStr := fmt.Sprintf("Solution: %v\n", want[i-1])
+		test.Runner(t, subset, wantStr, process, &printf)
+	}
 }
 
 func TestAdd(t *testing.T) {
@@ -105,8 +116,26 @@ on x=-33..15,y=-32..19,z=-34..11
 off x=35..47,y=-46..-34,z=-11..5
 on x=-14..36,y=-6..44,z=-16..29
 `
-	want := "Solution: 474140\n"
-	test.Runner(t, subset, want, process, &printf)
+
+	lines := strings.Split(strings.TrimSpace(subset), "\n")
+	want := []int{
+		151686,
+		248314,
+		310956,
+		389786,
+		389786,
+		421952,
+		421700,
+		433638,
+		433638,
+		474140,
+	}
+
+	for i := 1; i <= len(lines); i++ {
+		subset := strings.Join(lines[0:i], "\n")
+		wantStr := fmt.Sprintf("Solution: %v\n", want[i-1])
+		test.Runner(t, subset, wantStr, process, &printf)
+	}
 }
 
 func TestInputSubset(t *testing.T) {
