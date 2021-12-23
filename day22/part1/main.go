@@ -27,10 +27,6 @@ func process(filename string) {
 	lines := must.ReadFileLines(filename)
 	grid := Reduce(lines, gridT{}, processLine)
 
-	if len(grid) == 248314 {
-		logf("%+v", grid)
-	}
-
 	printf("Solution: %v\n", len(grid))
 }
 

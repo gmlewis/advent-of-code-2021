@@ -8,7 +8,6 @@ import (
 	"log"
 	"regexp"
 	"sort"
-	"strings"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/maps"
@@ -40,12 +39,6 @@ func process(filename string) {
 	xIndices := ReduceWithIndex(xVals, lookupT{}, func(i, x int, acc lookupT) lookupT { acc[x] = i; return acc })
 	yIndices := ReduceWithIndex(yVals, lookupT{}, func(i, y int, acc lookupT) lookupT { acc[y] = i; return acc })
 	zIndices := ReduceWithIndex(zVals, lookupT{}, func(i, z int, acc lookupT) lookupT { acc[z] = i; return acc })
-	// logf("xVals=%+v", xVals)
-	// logf("xIndices=%+v", xIndices)
-	// logf("yVals=%+v", yVals)
-	// logf("yIndices=%+v", yIndices)
-	// logf("zVals=%+v", zVals)
-	// logf("zIndices=%+v", zIndices)
 
 	extents := func(vals []int, i1, i2, limit int) (int, int, int) {
 		v1 := vals[i1]
@@ -65,8 +58,6 @@ func process(filename string) {
 		xi2 := xIndices[cmd.x2]
 		yi2 := yIndices[cmd.y2]
 		zi2 := zIndices[cmd.z2]
-		// logf("cmd=%v", cmd)
-		// logf("on=%v: xi=%v..%v, yi=%v..%v, zi=%v..%v", cmd.on, xi1, xi2, yi1, yi2, zi1, zi2)
 		for zi := zi1; zi <= zi2; zi++ {
 			for yi := yi1; yi <= yi2; yi++ {
 				for xi := xi1; xi <= xi2; xi++ {
@@ -90,7 +81,6 @@ func process(filename string) {
 					if x1 <= c.x1 && x2 >= c.x2 &&
 						y1 <= c.y1 && y2 >= c.y2 &&
 						z1 <= c.z1 && z2 >= c.z2 {
-						// logf("deleting space%+v: %v, size=%v", k, c, c.size())
 						delete(space, k)
 						continue
 					}
@@ -106,17 +96,9 @@ func process(filename string) {
 	}
 
 	space := Reduce(cmds, spaceT{}, f)
-	// var debug []string
 	cubesOn := maps.Reduce(space, int64(0), func(k keyT, c *cuboidT, acc int64) int64 {
-		// debug = append(debug, fmt.Sprintf("SUM: space%+v %v = %v", k, c, c.size()))
 		return acc + c.size()
 	})
-	// sort.Strings(debug)
-	// logf("\n\n%v", strings.Join(debug, "\n"))
-
-	// if cubesOn == 247775 {
-	// 	logf("toMap:\n%+v", space.toMap())
-	// }
 
 	printf("Solution: %v\n", cubesOn)
 }
@@ -157,38 +139,6 @@ const (
 
 const totallyFilled = singleDot | xAxis | yAxis | zAxis | xyPlane | yzPlane | xzPlane | cubeBody
 
-func (t featuresT) String() string {
-	if t&totallyFilled == totallyFilled {
-		return "totallyFilled"
-	}
-	var features []string
-	if t&singleDot == singleDot {
-		features = append(features, "singleDot")
-	}
-	if t&xAxis == xAxis {
-		features = append(features, "xAxis")
-	}
-	if t&yAxis == yAxis {
-		features = append(features, "yAxis")
-	}
-	if t&zAxis == zAxis {
-		features = append(features, "zAxis")
-	}
-	if t&xyPlane == xyPlane {
-		features = append(features, "xyPlane")
-	}
-	if t&yzPlane == yzPlane {
-		features = append(features, "yzPlane")
-	}
-	if t&xzPlane == xzPlane {
-		features = append(features, "xzPlane")
-	}
-	if t&cubeBody == cubeBody {
-		features = append(features, "cubeBody")
-	}
-	return strings.Join(features, "|")
-}
-
 func newCuboid(x1, x2, xm, y1, y2, ym, z1, z2, zm int) *cuboidT {
 	c := &cuboidT{x1: x1, x2: xm, y1: y1, y2: ym, z1: z1, z2: zm}
 	switch {
@@ -220,18 +170,6 @@ func newCuboid(x1, x2, xm, y1, y2, ym, z1, z2, zm int) *cuboidT {
 		log.Fatalf("bad cuboidT: %#v", c)
 	}
 	return nil
-}
-
-func (c *cmdT) String() string {
-	state := "off"
-	if c.on {
-		state = "on"
-	}
-	return fmt.Sprintf("%v: x=%v..%v,y=%v..%v,z=%v..%v", state, c.x1, c.x2, c.y1, c.y2, c.z1, c.z2)
-}
-
-func (c *cuboidT) String() string {
-	return fmt.Sprintf("x=%v..%v,y=%v..%v,z=%v..%v; features=%v", c.x1, c.x2, c.y1, c.y2, c.z1, c.z2, c.features)
 }
 
 func (c *cuboidT) size() int64 { // inclusive
@@ -267,96 +205,13 @@ func (c *cuboidT) size() int64 { // inclusive
 }
 
 func (c *cuboidT) add(o *cuboidT) *cuboidT {
-	// logf(`start: "on: %v",  // %v`, c, c.size())
-	// logf(`add: "on: %v",  // %v`, o, o.size())
-	before := c.size()
 	c.features |= o.features
-	// logf("want: %q, // %v", c, c.size())
-	if c.size() < before {
-		log.Fatalf("add: before=%v, after=%v", before, c.size())
-	}
 	return c
 }
 
 func (c *cuboidT) subtract(o *cuboidT) *cuboidT {
-	// logf(`start: "on: %v",  // %v`, c, c.size())
-	// logf(`sub: "off: %v",  // %v`, o, o.size())
-	before := c.size()
 	c.features &^= o.features
-	// logf("want: %q, // %v", c, c.size())
-	if c.size() > before {
-		log.Fatalf("subtract: before=%v, after=%v", before, c.size())
-	}
 	return c
-}
-
-func (c *cuboidT) toMap(m map[keyT]int) {
-	if c.features&totallyFilled == totallyFilled {
-		for z := c.z1; z <= c.z2; z++ {
-			for y := c.y1; y <= c.y2; y++ {
-				for x := c.x1; x <= c.x2; x++ {
-					m[keyT{x, y, z}] = 1
-				}
-			}
-		}
-		return
-	}
-	if c.features&singleDot == singleDot {
-		m[keyT{c.x1, c.y1, c.z1}] = 1
-	}
-	if c.features&xAxis == xAxis {
-		for x := c.x1 + 1; x <= c.x2; x++ {
-			m[keyT{x, c.y1, c.z1}] = 1
-		}
-	}
-	if c.features&yAxis == yAxis {
-		for y := c.y1 + 1; y <= c.y2; y++ {
-			m[keyT{c.x1, y, c.z1}] = 1
-		}
-	}
-	if c.features&zAxis == zAxis {
-		for z := c.z1 + 1; z <= c.z2; z++ {
-			m[keyT{c.x1, c.y1, z}] = 1
-		}
-	}
-	if c.features&xyPlane == xyPlane {
-		for y := c.y1 + 1; y <= c.y2; y++ {
-			for x := c.x1 + 1; x <= c.x2; x++ {
-				m[keyT{x, y, c.z1}] = 1
-			}
-		}
-	}
-	if c.features&yzPlane == yzPlane {
-		for z := c.z1 + 1; z <= c.z2; z++ {
-			for y := c.y1 + 1; y <= c.y2; y++ {
-				m[keyT{c.x1, y, z}] = 1
-			}
-		}
-	}
-	if c.features&xzPlane == xzPlane {
-		for z := c.z1 + 1; z <= c.z2; z++ {
-			for x := c.x1 + 1; x <= c.x2; x++ {
-				m[keyT{x, c.y1, z}] = 1
-			}
-		}
-	}
-	if c.features&cubeBody == cubeBody {
-		for z := c.z1 + 1; z <= c.z2; z++ {
-			for y := c.y1 + 1; y <= c.y2; y++ {
-				for x := c.x1 + 1; x <= c.x2; x++ {
-					m[keyT{x, y, z}] = 1
-				}
-			}
-		}
-	}
-}
-
-func (s spaceT) toMap() map[keyT]int {
-	m := map[keyT]int{}
-	for _, c := range s {
-		c.toMap(m)
-	}
-	return m
 }
 
 var lineRE = regexp.MustCompile(`^(\S+) x=(-?\d+)\.\.(-?\d+),y=(-?\d+)..(-?\d+),z=(-?\d+)..(-?\d+)$`)
