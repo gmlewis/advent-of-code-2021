@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"sort"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/mathfn"
@@ -84,11 +85,15 @@ func (p *puzT) allPossibleMoves() (moves []moveT) {
 	for k := range p.inMotion {
 		moves = append(moves, p.possibleMoves(k)...)
 	}
+	sort.Slice(moves, func(a, b int) bool { return moves[a].energy < moves[b].energy })
 	return moves
 }
 
 func (p *puzT) possibleMoves(from keyT) (moves []moveT) {
 	r := p.inMotion[from]
+	if r == 0 {
+		log.Fatalf("possibleMoves(%+v) not in p.inMotion=%#v", from, p.inMotion)
+	}
 	roomX := 2*int(r-'A') + 2
 	if from[1] == 0 {
 		// logf("%c at %+v must move from hallway into its own roomX=%v", r, from, roomX)
@@ -236,7 +241,9 @@ func parse(lines []string) *puzT {
 			return
 		}
 		p.landings[k] = r
-		p.inMotion[k] = r
+		if y != 2 || arrivedX[r] != x {
+			p.inMotion[k] = r
+		}
 	}
 
 	for y := 1; y <= 2; y++ {

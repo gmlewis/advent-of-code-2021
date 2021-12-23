@@ -7,15 +7,16 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/test"
 )
 
-func TestClearPath(t *testing.T) {
-}
-
-func TestEnergy(t *testing.T) {
-}
-
 func TestPossibleMoves(t *testing.T) {
 	startPuz := parse(strings.Split(strings.TrimSpace(example1), "\n"))
 	bMoved := parse(strings.Split(strings.TrimSpace(bMovedExample), "\n"))
+	if bMoved.inMotion[keyT{2, 2}] != 0 {
+		t.Fatalf("fatal parse: bMoved.inMotion[%v]=%v, want 0", keyT{2, 2}, bMoved.inMotion[keyT{2, 2}])
+	}
+	if bMoved.inMotion[keyT{6, 2}] != 0 {
+		t.Fatalf("fatal parse: bMoved.inMotion[%v]=%v, want 0", keyT{6, 2}, bMoved.inMotion[keyT{6, 2}])
+	}
+	thirdMove := parse(strings.Split(strings.TrimSpace(thirdMoveExample), "\n"))
 
 	tests := []struct {
 		name string
@@ -76,27 +77,27 @@ func TestPossibleMoves(t *testing.T) {
 			},
 		},
 		{
-			name: "first blocked A",
-			from: keyT{2, 2},
-		},
-		{
 			name: "blocked D",
 			from: keyT{4, 2},
-		},
-		{
-			name: "blocked C",
-			from: keyT{6, 2},
 		},
 		{
 			name: "second blocked A",
 			from: keyT{8, 2},
 		},
 		{
-			name: "C moves into place",
+			name: "top C moves into place",
 			puz:  bMoved,
 			from: keyT{4, 1},
 			want: []moveT{
 				{from: keyT{4, 1}, to: keyT{6, 1}, energy: 400},
+			},
+		},
+		{
+			name: "b moves after 3rd move",
+			puz:  thirdMove,
+			from: keyT{2, 1},
+			want: []moveT{
+				{from: keyT{2, 1}, to: keyT{4, 1}, energy: 40},
 			},
 		},
 	}
@@ -145,5 +146,13 @@ var bMovedExample = `
 #...B.......#
 ###B#C#.#D###
   #A#D#C#A#
+  #########
+`
+
+var thirdMoveExample = `
+#############
+#.....D.....#
+###B#.#C#D###
+  #A#B#C#A#
   #########
 `
