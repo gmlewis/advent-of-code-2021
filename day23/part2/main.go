@@ -135,8 +135,8 @@ func (p *puzT) possibleMoves(from keyT) (moves []moveT) {
 		for y := 4; y >= 1; y-- {
 			if p.clearPath(keyT{column, 0}, keyT{roomX, y}) {
 				to := keyT{roomX, y}
-				// logf("Final move into destination: p.landings%+v=%v %v", keyT{roomX, 4}, p.landings[keyT{roomX, 4}], p)
-				return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
+				moves = append(moves, moveT{from: from, to: to, energy: energy(r, from, to)})
+				break
 			}
 		}
 	}

@@ -157,6 +157,8 @@ func TestPossibleMoves(t *testing.T) {
 			from: keyT{4, 1},
 			want: []moveT{
 				{from: keyT{4, 1}, to: keyT{6, 3}, energy: 600},
+				{from: keyT{4, 1}, to: keyT{3, 0}, energy: 200},
+				{from: keyT{4, 1}, to: keyT{5, 0}, energy: 200},
 			},
 		},
 		{
@@ -165,6 +167,8 @@ func TestPossibleMoves(t *testing.T) {
 			from: keyT{4, 2},
 			want: []moveT{
 				{from: keyT{4, 2}, to: keyT{6, 2}, energy: 600},
+				{from: keyT{4, 2}, to: keyT{3, 0}, energy: 300},
+				{from: keyT{4, 2}, to: keyT{5, 0}, energy: 300},
 			},
 		},
 		{
@@ -214,6 +218,9 @@ func TestPossibleMoves(t *testing.T) {
 			from: keyT{8, 3},
 			want: []moveT{
 				{from: keyT{8, 3}, to: keyT{6, 1}, energy: 600},
+				{from: keyT{8, 3}, to: keyT{7, 0}, energy: 400},
+				{from: keyT{8, 3}, to: keyT{9, 0}, energy: 400},
+				{from: keyT{8, 3}, to: keyT{5, 0}, energy: 600},
 			},
 		},
 		{
@@ -240,6 +247,9 @@ func TestPossibleMoves(t *testing.T) {
 			from: keyT{2, 1},
 			want: []moveT{
 				{from: keyT{2, 1}, to: keyT{4, 1}, energy: 40},
+				{from: keyT{2, 1}, to: keyT{3, 0}, energy: 20},
+				{from: keyT{2, 1}, to: keyT{5, 0}, energy: 40},
+				{from: keyT{2, 1}, to: keyT{7, 0}, energy: 60},
 			},
 		},
 		{
@@ -248,6 +258,9 @@ func TestPossibleMoves(t *testing.T) {
 			from: keyT{2, 2},
 			want: []moveT{
 				{from: keyT{2, 2}, to: keyT{8, 3}, energy: 11000},
+				{from: keyT{2, 2}, to: keyT{3, 0}, energy: 3000},
+				{from: keyT{2, 2}, to: keyT{5, 0}, energy: 5000},
+				{from: keyT{2, 2}, to: keyT{7, 0}, energy: 7000},
 			},
 		},
 		{
@@ -255,7 +268,10 @@ func TestPossibleMoves(t *testing.T) {
 			puz:  s17,
 			from: keyT{2, 3},
 			want: []moveT{
-				{from: keyT{2, 3}, to: keyT{3, 0}, energy: 11000},
+				{from: keyT{2, 3}, to: keyT{8, 2}, energy: 11000},
+				{from: keyT{2, 3}, to: keyT{3, 0}, energy: 4000},
+				{from: keyT{2, 3}, to: keyT{5, 0}, energy: 6000},
+				{from: keyT{2, 3}, to: keyT{7, 0}, energy: 8000},
 			},
 		},
 	}
