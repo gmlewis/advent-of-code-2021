@@ -497,6 +497,12 @@ func input(digits [14]int64) int64 {
 	x += z        // line 147: add x z
 	x %= 26       // line 148: mod x 26
 
+	if digits[6]-1 == digits[7] {
+		assert(x == (digits[5]+11), "A: line 148: x!=(digits[5]+11) (%v!=%v)", x, (digits[5] + 11))
+	} else {
+		assert(x == (digits[7]+13), "B: line 148: x!=(digits[7]+13) (%v!=%v)", x, (digits[7] + 13))
+	}
+
 	// line 149: div z 1
 	x += 14 // line 150: add x 14
 
