@@ -41,6 +41,11 @@ func input(digits [14]int64) int64 {
 	x %= 26       // line 4: mod x 26
 	// line 5: div z 1
 	x += 14 // line 6: add x 14
+
+	if x != 14 {
+		log.Fatalf("x!=14 (%v)", x)
+	}
+
 	logf("digits[0]=%v: x(%v)==w(%v): %v\n", digits[0], x, w, x == w)
 	if x == w {
 		x = 1
@@ -69,6 +74,11 @@ func input(digits [14]int64) int64 {
 	x %= 26       // line 22: mod x 26
 	// line 23: div z 1
 	x += 10 // line 24: add x 10
+
+	// 	if x != digits[2]-8+11 {
+	// 		log.Fatalf("x!=digits[2]-8+11: (%v)!=(%v)", x, digits[2]-8+11)
+	// 	}
+
 	logf("digits[1]=%v: x(%v)==w(%v): %v\n", digits[1], x, w, x == w)
 	if x == w {
 		x = 1
