@@ -101,6 +101,9 @@ func input(digits [14]int64) int64 {
 	} else {
 		x = 0
 	} // line 26: eql x 0
+
+	assert(x == 1, "x!=1 (%v)", x)
+
 	y = 0   // line 27: mul y 0
 	y += 25 // line 28: add y 25
 	y *= x  // line 29: mul y x
@@ -119,9 +122,9 @@ func input(digits [14]int64) int64 {
 	// line 41: div z 1
 	x += 13 // line 42: add x 13
 
-	//	if x != digits[2]-8+11 {
-	//		log.Fatalf("x!=digits[2]-8+11: (%v!=%v)", x, digits[2]-8+11)
-	//	}
+	assert(x == digits[0]+22, "x!=digits[0]+12+10 (%v!=%v)", x, digits[0]+12+10)
+	assert(y == digits[1]+9, "y!=digits[1]+9 (%v!=%v)", y, digits[1]+9)
+	assert(z == 26*(digits[0]+12)+(digits[1]+9), "z!=26*(digits[0]+12)+(digits[1]+9) (%v!=%v)", z, 26*(digits[0]+12)+(digits[1]+9))
 
 	logf("digits[2]=%v: x(%v)==w(%v): %v\n", digits[2], x, w, x == w)
 	if x == w {
@@ -134,6 +137,9 @@ func input(digits [14]int64) int64 {
 	} else {
 		x = 0
 	} // line 44: eql x 0
+
+	assert(x == 1, "x!=1 (%v)", x)
+
 	y = 0   // line 45: mul y 0
 	y += 25 // line 46: add y 25
 	y *= x  // line 47: mul y x
