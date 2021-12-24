@@ -81,7 +81,6 @@ func TestInput(t *testing.T) {
 			digits: [14]int64{9, 9, 9, 9, 9, 9, 9, 8, 9, 2, 4, 9, 7, 9},
 			want:   14678,
 		},
-		// STOP pursuing digits[2] != digits[3] since z blows up larger.
 		{
 			name: `all 9s with:
 		           digits[6]-1==digits[7] and
@@ -90,7 +89,7 @@ func TestInput(t *testing.T) {
 		           digits[9]+2==digits[10] and
 		           digits[2]!=digits[3]`,
 			digits: [14]int64{9, 9, 9, 8, 9, 9, 9, 8, 9, 2, 4, 9, 7, 9},
-			want:   14678,
+			want:   381564,
 		},
 	}
 
