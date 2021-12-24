@@ -86,7 +86,7 @@ func input(digits [14]int64) int64 {
 	// line 23: div z 1
 	x += 10 // line 24: add x 10
 
-	assert(x == digits[0]+22, "x!=digits[0]+12+10 (%v!=%v)", x, digits[0]+12+10)
+	assert(x == digits[0]+22, "line 24: x!=digits[0]+12+10 (%v!=%v)", x, digits[0]+12+10)
 	assert(y == digits[0]+12, "y!=digits[0]+12 (%v!=%v)", y, digits[0]+12)
 	assert(z == digits[0]+12, "line 24: z!=digits[0]+12 (%v!=%v)", z, digits[0]+12)
 
@@ -108,21 +108,26 @@ func input(digits [14]int64) int64 {
 	y += 25 // line 28: add y 25
 	y *= x  // line 29: mul y x
 	y += 1  // line 30: add y 1
-	z *= y  // line 31: mul z y
-	y = 0   // line 32: mul y 0
-	y += w  // line 33: add y w
-	y += 9  // line 34: add y 9
-	y *= x  // line 35: mul y x
-	z += y  // line 36: add z y
+	assert(y == 26, "line 30: y!=26 (%v)", y)
+	z *= y // line 31: mul z y
+	assert(z == 26*(digits[0]+12), "line 31: z!=26*(digits[0]+12) (%v!=%v)", z, 26*(digits[0]+12))
+	y = 0  // line 32: mul y 0
+	y += w // line 33: add y w
+	y += 9 // line 34: add y 9
+	y *= x // line 35: mul y x
+	z += y // line 36: add z y
+	assert(z == 26*(digits[0]+12)+(digits[1]+9), "line 36: z!=26*(digits[0]+12)+(digits[1]+9) (%v!=%v)", z, 26*(digits[0]+12)+(digits[1]+9))
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[2] // line 37: inp w
 	x = 0         // line 38: mul x 0
 	x += z        // line 39: add x z
-	x %= 26       // line 40: mod x 26
+	assert(x == 26*(digits[0]+12)+(digits[1]+9), "line 39: x!=26*(digits[0]+12)+(digits[1]+9) (%v!=%v)", x, 26*(digits[0]+12)+(digits[1]+9))
+	x %= 26 // line 40: mod x 26
+	assert(x == (digits[1]+9), "line 40: x!=(digits[1]+9) (%v!=%v)", x, (digits[1] + 9))
 	// line 41: div z 1
 	x += 13 // line 42: add x 13
 
-	assert(x == digits[0]+22, "x!=digits[0]+12+10 (%v!=%v)", x, digits[0]+12+10)
+	assert(x == (digits[1]+22), "line 42: x!=(digits[1]+9+13) (%v!=%v)", x, (digits[1] + 9 + 13))
 	assert(y == digits[1]+9, "y!=digits[1]+9 (%v!=%v)", y, digits[1]+9)
 	assert(z == 26*(digits[0]+12)+(digits[1]+9), "line 42: z!=26*(digits[0]+12)+(digits[1]+9) (%v!=%v)", z, 26*(digits[0]+12)+(digits[1]+9))
 
@@ -780,7 +785,7 @@ func input(digits [14]int64) int64 {
 		assert(x == (digits[1]-7), "line 222: x: (%v!=%v)", x, (digits[1] + 9 - 16))
 	}
 
-	assert(x == 4 || x == digits[11]-2, "x!=4 && x!=digits[11]-2: (%v!=%v)", x, digits[11]-2)
+	// assert(x == 4 || x == digits[11]-2, "x!=4 && x!=digits[11]-2: (%v!=%v)", x, digits[11]-2)
 
 	logf("digits[12]=%v: x(%v)==w(%v): %v\n", digits[12], x, w, x == w)
 	if x == w {
@@ -815,13 +820,25 @@ func input(digits [14]int64) int64 {
 		assert(y == 0, "line 233: y: (%v)", y)
 	}
 	z += y // line 234: add z y
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] && digits[1]-7 == digits[12] {
+		assert(z == (digits[0]+12), "line 234: z: (%v!=%v)", z, (digits[0] + 12))
+	}
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[13] // line 235: inp w
 	x = 0          // line 236: mul x 0
 	x += z         // line 237: add x z
 	x %= 26        // line 238: mod x 26
-	z /= 26        // line 239: div z 26
-	x += -6        // line 240: add x -6
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] && digits[1]-7 == digits[12] {
+		assert(x == (digits[0]+12), "line 238: x: (%v!=%v)", x, (digits[0] + 12))
+	}
+	z /= 26 // line 239: div z 26
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] && digits[1]-7 == digits[12] {
+		assert(z == 0, "line 239: z: (%v)", z)
+	}
+	x += -6 // line 240: add x -6
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] && digits[1]-7 == digits[12] {
+		assert(x == (digits[0]+6), "line 240: x: (%v!=%v)", x, (digits[0] + 6))
+	}
 	logf("digits[13]=%v: x(%v)==w(%v): %v\n", digits[13], x, w, x == w)
 	if x == w {
 		x = 1
@@ -833,6 +850,9 @@ func input(digits [14]int64) int64 {
 	} else {
 		x = 0
 	} // line 242: eql x 0
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] && digits[1]-7 == digits[12] && digits[0]+6 == digits[13] {
+		assert(x == 0, "line 242: x: (%v)", x)
+	}
 	y = 0   // line 243: mul y 0
 	y += 25 // line 244: add y 25
 	y *= x  // line 245: mul y x

@@ -137,6 +137,81 @@ func TestInput(t *testing.T) {
 			digits: [14]int64{9, 9, 9, 9, 9, 2, 9, 8, 1, 3, 5, 4, 2, 9},
 			want:   14,
 		},
+		{
+			name: `all 9s with:
+               digits[6]-1==digits[7] and
+               digits[11]-2==digits[12] and
+               digits[10]+5!=digits[11] and
+               digits[9]+2==digits[10] and
+               digits[8]+2==digits[9] and
+               digits[5]+3==digits[10] and
+               digits[4]-5==digits[11] and
+               digits[1]-7==digits[12] and
+               digits[0]+6==digits[13]`,
+			digits: [14]int64{3, 9, 9, 9, 9, 2, 9, 8, 1, 3, 5, 4, 2, 9},
+			// 39999298135429 - too low
+			want: 0,
+		},
+		{
+			name: `all 9s with:
+               digits[6]-1==digits[7] and
+               digits[11]-2==digits[12] and
+               digits[10]+5!=digits[11] and
+               digits[9]+2==digits[10] and
+               digits[8]+2==digits[9] and
+               digits[5]+3==digits[10] and
+               digits[4]-5==digits[11] and
+               digits[1]-7==digits[12] and
+               digits[0]+6==digits[13]`,
+			digits: [14]int64{3, 9, 9, 9, 9, 6, 9, 8, 5, 7, 9, 4, 2, 9},
+			// 39999698579429 - too low
+			want: 0,
+		},
+		{
+			name: `all 9s with:
+               digits[6]-1==digits[7] and
+               digits[11]-2==digits[12] and
+               digits[10]+5!=digits[11] and
+               digits[9]+2!=digits[10] and
+               digits[8]+2==digits[9] and
+               digits[5]+3==digits[10] and
+               digits[4]-5==digits[11] and
+               digits[1]-7==digits[12] and
+               digits[0]+6==digits[13]`,
+			digits: [14]int64{3, 9, 9, 9, 9, 6, 9, 8, 7, 9, 9, 4, 2, 9},
+			// 39999698799429
+			want: 0,
+		},
+		{
+			name: `all 9s with:
+               digits[6]-1==digits[7] and
+               digits[11]-2==digits[12] and
+               digits[10]+5!=digits[11] and
+               digits[9]+2==digits[10] and
+               digits[8]+2==digits[9] and
+               digits[5]+3==digits[10] and
+               digits[4]-5==digits[11] and
+               digits[1]-7==digits[12] and
+               digits[0]+6==digits[13]`,
+			digits: [14]int64{1, 8, 1, 1, 8, 1, 2, 1, 1, 3, 4, 3, 1, 7},
+			// 18118121134317 - too high
+			want: 0,
+		},
+		{
+			name: `all 9s with:
+               digits[6]-1==digits[7] and
+               digits[11]-2==digits[12] and
+               digits[10]+5!=digits[11] and
+               digits[9]+2==digits[10] and
+               digits[8]+2==digits[9] and
+               digits[5]+3==digits[10] and
+               digits[4]-5==digits[11] and
+               digits[1]-7==digits[12] and
+               digits[0]+6==digits[13]`,
+			digits: [14]int64{1, 8, 1, 1, 8, 1, 2, 1, 1, 3, 4, 3, 1, 7},
+			//
+			want: 0,
+		},
 	}
 
 	for _, tt := range tests {
