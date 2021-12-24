@@ -726,10 +726,6 @@ func input(digits [14]int64) int64 {
 		assert(x == (digits[4]-5), "line 204: x: (%v!=%v)", x, digits[4]-5)
 	}
 
-	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[5]+3 == digits[10] {
-		// assert(x == 15 || x == digits[10]+5, "x!=15 && x!=digits[10]+5: (%v!=%v)", x, digits[10]+5)
-	}
-
 	logf("digits[11]=%v: x(%v)==w(%v): %v\n", digits[11], x, w, x == w)
 	if x == w {
 		x = 1
@@ -741,6 +737,9 @@ func input(digits [14]int64) int64 {
 	} else {
 		x = 0
 	} // line 206: eql x 0
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] {
+		assert(x == 0, "line 206: x!=0: (%v)", x)
+	}
 	y = 0   // line 207: mul y 0
 	y += 25 // line 208: add y 25
 	y *= x  // line 209: mul y x
