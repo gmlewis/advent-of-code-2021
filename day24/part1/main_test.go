@@ -58,9 +58,14 @@ func TestInput(t *testing.T) {
 			want:   9919490,
 		},
 		{
-			name:   "all 9s with digit[6]-1==digit[7]",
+			name:   "all 9s with digits[6]-1==digits[7]",
 			digits: [14]int64{9, 9, 9, 9, 9, 9, 9, 8, 9, 9, 9, 9, 9, 9},
 			want:   381518,
+		},
+		{
+			name:   "all 9s with digits[6]-1==digits[7] and digits[11]-2==digits[12]",
+			digits: [14]int64{9, 9, 9, 9, 9, 9, 9, 8, 9, 9, 9, 9, 7, 9},
+			want:   381512,
 		},
 	}
 

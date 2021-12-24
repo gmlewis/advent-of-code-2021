@@ -377,6 +377,11 @@ func input(digits [14]int64) int64 {
 	x %= 26        // line 220: mod x 26
 	z /= 26        // line 221: div z 26
 	x += -16       // line 222: add x -16
+
+	if x != digits[11]-2 {
+		log.Fatalf("x != digits[11]-2: (%v)!=(%v)", x, digits[11]-2)
+	}
+
 	logf("digits[12]=%v: x(%v)==w(%v): %v\n", digits[12], x, w, x == w)
 	if x == w {
 		x = 1
@@ -426,6 +431,7 @@ func input(digits [14]int64) int64 {
 	y += 5  // line 250: add y 5
 	y *= x  // line 251: mul y x
 	z += y  // line 252: add z y
+	logf("FINAL: z = %v", z)
 
 	return z
 }
