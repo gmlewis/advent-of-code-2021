@@ -32,6 +32,12 @@ func process(filename string) {
 	printf("Solution: %v\n", len(lines))
 }
 
+func assert(v bool, fmtStr string, args ...interface{}) {
+	if !v {
+		log.Fatalf(fmtStr, args...)
+	}
+}
+
 func input(digits [14]int64) int64 {
 	var w, x, y, z int64
 
@@ -42,9 +48,9 @@ func input(digits [14]int64) int64 {
 	// line 5: div z 1
 	x += 14 // line 6: add x 14
 
-	if x != 14 {
-		log.Fatalf("x!=14 (%v)", x)
-	}
+	assert(x == 14, "x!=14 (%v)", x)
+	assert(y == 0, "y!=0 (%v)", y)
+	assert(z == 0, "z!=0 (%v)", z)
 
 	logf("digits[0]=%v: x(%v)==w(%v): %v\n", digits[0], x, w, x == w)
 	if x == w {
@@ -57,6 +63,11 @@ func input(digits [14]int64) int64 {
 	} else {
 		x = 0
 	} // line 8: eql x 0
+
+	assert(x == 1, "x!=1 (%v)", x)
+	assert(y == 0, "y!=0 (%v)", y)
+	assert(z == 0, "z!=0 (%v)", z)
+
 	y = 0   // line 9: mul y 0
 	y += 25 // line 10: add y 25
 	y *= x  // line 11: mul y x
@@ -75,9 +86,9 @@ func input(digits [14]int64) int64 {
 	// line 23: div z 1
 	x += 10 // line 24: add x 10
 
-	// 	if x != digits[2]-8+11 {
-	// 		log.Fatalf("x!=digits[2]-8+11: (%v)!=(%v)", x, digits[2]-8+11)
-	// 	}
+	assert(x == digits[0]+22, "x!=digits[0]+12+10 (%v!=%v)", x, digits[0]+12+10)
+	assert(y == digits[0]+12, "y!=digits[0]+12 (%v!=%v)", y, digits[0]+12)
+	assert(z == digits[0]+12, "z!=digits[0]+12 (%v!=%v)", z, digits[0]+12)
 
 	logf("digits[1]=%v: x(%v)==w(%v): %v\n", digits[1], x, w, x == w)
 	if x == w {
@@ -109,7 +120,7 @@ func input(digits [14]int64) int64 {
 	x += 13 // line 42: add x 13
 
 	//	if x != digits[2]-8+11 {
-	//		log.Fatalf("x!=digits[2]-8+11: (%v)!=(%v)", x, digits[2]-8+11)
+	//		log.Fatalf("x!=digits[2]-8+11: (%v!=%v)", x, digits[2]-8+11)
 	//	}
 
 	logf("digits[2]=%v: x(%v)==w(%v): %v\n", digits[2], x, w, x == w)
@@ -142,7 +153,7 @@ func input(digits [14]int64) int64 {
 	x += -8       // line 60: add x -8
 
 	//  	if x != digits[2]-8+11 {
-	//  		log.Fatalf("x!=digits[2]-8+11: (%v)!=(%v)", x, digits[2]-8+11)
+	//  		log.Fatalf("x!=digits[2]-8+11: (%v!=%v)", x, digits[2]-8+11)
 	//  	}
 
 	logf("digits[3]=%v: x(%v)==w(%v): %v\n", digits[3], x, w, x == w)
@@ -175,7 +186,7 @@ func input(digits [14]int64) int64 {
 	x += 11 // line 78: add x 11
 
 	// 	if x != digits[2]-8+11 {
-	// 		log.Fatalf("x!=digits[2]-8+11: (%v)!=(%v)", x, digits[2]-8+11)
+	// 		log.Fatalf("x!=digits[2]-8+11: (%v!=%v)", x, digits[2]-8+11)
 	// 	}
 
 	logf("digits[4]=%v: x(%v)==w(%v): %v\n", digits[4], x, w, x == w)
@@ -207,9 +218,7 @@ func input(digits [14]int64) int64 {
 	// line 95: div z 1
 	x += 11 // line 96: add x 11
 
-	if x != digits[4]+11 {
-		log.Fatalf("x!=digits[4]+11: (%v)!=(%v)", x, digits[4]+11)
-	}
+	assert(x == digits[4]+11, "x!=digits[4]+11: (%v!=%v)", x, digits[4]+11)
 
 	logf("digits[5]=%v: x(%v)==w(%v): %v\n", digits[5], x, w, x == w)
 	if x == w {
@@ -240,9 +249,7 @@ func input(digits [14]int64) int64 {
 	// line 113: div z 1
 	x += 14 // line 114: add x 14
 
-	if x != digits[5]+11+14 {
-		log.Fatalf("x!=digits[5]+11+14: (%v)!=(%v)", x, digits[5]+11+14)
-	}
+	assert(x == digits[5]+11+14, "x!=digits[5]+11+14: (%v!=%v)", x, digits[5]+11+14)
 
 	logf("digits[6]=%v: x(%v)==w(%v): %v\n", digits[6], x, w, x == w)
 	if x == w {
@@ -273,9 +280,7 @@ func input(digits [14]int64) int64 {
 	z /= 26       // line 131: div z 26
 	x += -11      // line 132: add x -11
 
-	if x != digits[6]+10-11 {
-		log.Fatalf("x!=digits[6]+10-11: (%v)!=(%v)", x, digits[6]+10-11)
-	}
+	assert(x == digits[6]+10-11, "x!=digits[6]+10-11: (%v!=%v)", x, digits[6]+10-11)
 
 	logf("digits[7]=%v: x(%v)==w(%v): %v\n", digits[7], x, w, x == w)
 	if x == w {
@@ -306,9 +311,7 @@ func input(digits [14]int64) int64 {
 	// line 149: div z 1
 	x += 14 // line 150: add x 14
 
-	if x != 34 && x != digits[7]+13+14 {
-		log.Fatalf("x!=34 && x!=digits[7]+13+14: (%v)!=(%v)", x, digits[7]+13+14)
-	}
+	assert(x == 34 || x == digits[7]+13+14, "x!=34 && x!=digits[7]+13+14: (%v!=%v)", x, digits[7]+13+14)
 
 	logf("digits[8]=%v: x(%v)==w(%v): %v\n", digits[8], x, w, x == w)
 	if x == w {
@@ -339,9 +342,7 @@ func input(digits [14]int64) int64 {
 	z /= 26       // line 167: div z 26
 	x += -1       // line 168: add x -1
 
-	if x != digits[8]+3-1 {
-		log.Fatalf("x != digits[8]+3-1: (%v)!=(%v)", x, digits[8]+3-1)
-	}
+	assert(x == digits[8]+3-1, "x != digits[8]+3-1: (%v!=%v)", x, digits[8]+3-1)
 
 	logf("digits[9]=%v: x(%v)==w(%v): %v\n", digits[9], x, w, x == w)
 	if x == w {
@@ -372,9 +373,7 @@ func input(digits [14]int64) int64 {
 	z /= 26        // line 185: div z 26
 	x += -8        // line 186: add x -8
 
-	if x != digits[9]+10-8 {
-		log.Fatalf("x != digits[9]+2: (%v)!=(%v)", x, digits[9]+10-8)
-	}
+	assert(x == digits[9]+10-8, "x != digits[9]+2: (%v!=%v)", x, digits[9]+10-8)
 
 	logf("digits[10]=%v: x(%v)==w(%v): %v\n", digits[10], x, w, x == w)
 	if x == w {
@@ -405,9 +404,7 @@ func input(digits [14]int64) int64 {
 	z /= 26        // line 203: div z 26
 	x += -5        // line 204: add x -5
 
-	if x != 15 && x != digits[10]+5 {
-		log.Fatalf("x!=15 && x!=digits[10]+5: (%v)!=(%v)", x, digits[10]+5)
-	}
+	assert(x == 15 || x == digits[10]+5, "x!=15 && x!=digits[10]+5: (%v!=%v)", x, digits[10]+5)
 
 	logf("digits[11]=%v: x(%v)==w(%v): %v\n", digits[11], x, w, x == w)
 	if x == w {
@@ -438,9 +435,7 @@ func input(digits [14]int64) int64 {
 	z /= 26        // line 221: div z 26
 	x += -16       // line 222: add x -16
 
-	if x != 4 && x != digits[11]-2 {
-		log.Fatalf("x!=4 && x!=digits[11]-2: (%v)!=(%v)", x, digits[11]-2)
-	}
+	assert(x == 4 || x == digits[11]-2, "x!=4 && x!=digits[11]-2: (%v!=%v)", x, digits[11]-2)
 
 	logf("digits[12]=%v: x(%v)==w(%v): %v\n", digits[12], x, w, x == w)
 	if x == w {
