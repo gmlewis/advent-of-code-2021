@@ -507,6 +507,12 @@ func input(digits [14]int64) int64 {
 	x += 14 // line 150: add x 14
 
 	if digits[6]-1 == digits[7] {
+		assert(x == (digits[5]+25), "A: line 150: x!=(digits[5]+11+14) (%v!=%v)", x, (digits[5] + 11 + 14))
+	} else {
+		assert(x == (digits[7]+27), "B: line 150: x!=(digits[7]+13+14) (%v!=%v)", x, (digits[7] + 13 + 14))
+	}
+
+	if digits[6]-1 == digits[7] {
 		assert(x == 34, "x!=34 (%v)", x)
 	} else {
 		assert(x == digits[7]+27, "x!=digits[7]+13+14: (%v!=%v)", x, digits[7]+13+14)
