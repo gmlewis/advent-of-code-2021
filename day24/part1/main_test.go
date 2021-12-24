@@ -13,14 +13,54 @@ func TestInput(t *testing.T) {
 		want   int64
 	}{
 		{
+			name:   "all 1s",
+			digits: [14]int64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+			want:   6117450,
+		},
+		{
+			name:   "all 2s",
+			digits: [14]int64{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+			want:   6592705,
+		},
+		{
+			name:   "all 3s",
+			digits: [14]int64{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+			want:   7067960,
+		},
+		{
+			name:   "all 4s",
+			digits: [14]int64{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
+			want:   7543215,
+		},
+		{
+			name:   "all 5s",
+			digits: [14]int64{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
+			want:   8018470,
+		},
+		{
+			name:   "all 6s",
+			digits: [14]int64{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
+			want:   8493725,
+		},
+		{
+			name:   "all 7s",
+			digits: [14]int64{7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7},
+			want:   8968980,
+		},
+		{
+			name:   "all 8s",
+			digits: [14]int64{8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8},
+			want:   9444235,
+		},
+		{
 			name:   "all 9s",
 			digits: [14]int64{9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9},
 			want:   9919490,
 		},
 		{
-			name:   "all 1s",
-			digits: [14]int64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-			want:   6117450,
+			name:   "all 9s with digit[6]-1==digit[7]",
+			digits: [14]int64{9, 9, 9, 9, 9, 9, 9, 8, 9, 9, 9, 9, 9, 9},
+			want:   381518,
 		},
 	}
 
@@ -40,28 +80,3 @@ func BenchmarkExample(b *testing.B) {
 func BenchmarkInput(b *testing.B) {
 	test.Benchmark(b, "../input.txt", process, &logf, &printf)
 }
-
-var example1 = `
-inp x
-mul x -1
-
-
-inp z
-inp x
-mul z 3
-eql z x
-
-
-inp w
-add z w
-mod z 2
-div w 2
-add y w
-mod y 2
-div w 2
-add x w
-mod x 2
-div w 2
-mod w 2
-
-`
