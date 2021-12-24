@@ -174,23 +174,33 @@ func input(digits [14]int64) int64 {
 	} else {
 		x = 0
 	} // line 62: eql x 0
-	y = 0   // line 63: mul y 0
-	y += 25 // line 64: add y 25
-	y *= x  // line 65: mul y x
-	y += 1  // line 66: add y 1
-	z *= y  // line 67: mul z y
-	y = 0   // line 68: mul y 0
-	y += w  // line 69: add y w
-	y += 3  // line 70: add y 3
-	y *= x  // line 71: mul y x
-	z += y  // line 72: add z y
+	assert(x == 0, "x!=0 (%v)", x) // when digits[2] == digits[3]
+	y = 0                          // line 63: mul y 0
+	y += 25                        // line 64: add y 25
+	y *= x                         // line 65: mul y x
+	y += 1                         // line 66: add y 1
+	assert(y == 1, "y!=1 (%v)", y) // when digits[2] == digits[3]
+	z *= y                         // line 67: mul z y
+	assert(z == 26*(digits[0]+12)+(digits[1]+9), "z!=(26*(digits[0]+12)+(digits[1]+9)) (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9)))
+	y = 0                          // line 68: mul y 0
+	y += w                         // line 69: add y w
+	y += 3                         // line 70: add y 3
+	y *= x                         // line 71: mul y x
+	assert(y == 0, "y!=0 (%v)", y) // when digits[2] == digits[3]
+	z += y                         // line 72: add z y
+
+	assert(z == 26*(digits[0]+12)+(digits[1]+9), "z!=(26*(digits[0]+12)+(digits[1]+9)) (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9))) // when digits[2] == digits[3]
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[4] // line 73: inp w
 	x = 0         // line 74: mul x 0
 	x += z        // line 75: add x z
 	x %= 26       // line 76: mod x 26
+
+	assert(x == (digits[1]+9), "x!=(digits[1]+9) (%v!=%v)", x, (digits[1] + 9)) // when digits[2] == digits[3]
 	// line 77: div z 1
 	x += 11 // line 78: add x 11
+
+	assert(x == (digits[1]+20), "x!=(digits[1]+9+11) (%v!=%v)", x, (digits[1] + 9 + 11)) // when digits[2] == digits[3]
 
 	// 	if x != digits[2]-8+11 {
 	// 		log.Fatalf("x!=digits[2]-8+11: (%v!=%v)", x, digits[2]-8+11)
