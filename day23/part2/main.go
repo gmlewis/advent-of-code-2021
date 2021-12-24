@@ -23,11 +23,15 @@ func main() {
 	Each(flag.Args(), process)
 }
 
+var mu sync.RWMutex // protects bestEnergy
+var bestEnergy int
+
 func process(filename string) {
 	logf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
 	p := parse(lines)
-	p = p.solve(math.MaxInt)
+	bestEnergy = math.MaxInt
+	p = p.solve()
 	logf("\n%v", p)
 
 	printf("Solution: %v\n", p.energy)
@@ -40,7 +44,7 @@ type puzT struct {
 	inMotion map[keyT]rune
 }
 
-func (p *puzT) solve(bestEnergy int) *puzT {
+func (p *puzT) solve() *puzT {
 	if p.isSolved() {
 		return p
 	}
@@ -51,9 +55,10 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 	}
 
 	// logf("solve(%v): %v allPossibleMoves: %+v", bestEnergy, p, moves)
+
 	var wg sync.WaitGroup
-	var mu sync.RWMutex
-	var best *puzT
+	throttleCh := make(chan struct{}, 3)
+	ch := make(chan *puzT, 10)
 
 	for _, move := range moves {
 		f := move.from
@@ -67,6 +72,7 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 		mu.RUnlock()
 
 		wg.Add(1)
+		throttleCh <- struct{}{}
 		go func(f, t keyT, e int) {
 			// logf("Moving '%c' from %+v to %+v using %v energy", p.inMotion[f], f, t, e)
 			np := &puzT{energy: e + p.energy, landings: dup(p.landings), inMotion: dup(p.inMotion)}
@@ -77,25 +83,30 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 			np.landings[t] = np.landings[f]
 			delete(np.landings, f)
 
-			mu.RLock()
-			be := bestEnergy
-			mu.RUnlock()
-
-			np = np.solve(be)
+			np = np.solve()
 			if np != nil {
-				mu.Lock()
-				if np.energy < bestEnergy {
-					best = np
-					bestEnergy = np.energy
-				}
-				mu.Unlock()
-				// logf("NEW BEST ENERGY: %v", bestEnergy)
+				ch <- np
 			}
+			<-throttleCh
 			wg.Done()
 		}(f, t, e)
 	}
 
-	wg.Wait()
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
+	var best *puzT
+	for np := range ch {
+		mu.Lock()
+		if np.energy < bestEnergy {
+			best = np
+			bestEnergy = np.energy
+			// logf("NEW BEST ENERGY: %v", bestEnergy)
+		}
+		mu.Unlock()
+	}
 
 	return best
 }
