@@ -776,6 +776,9 @@ func input(digits [14]int64) int64 {
 		assert(z == (digits[0]+12), "line 221: z: (%v!=%v)", z, (digits[0] + 12))
 	}
 	x += -16 // line 222: add x -16
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] {
+		assert(x == (digits[1]-7), "line 222: x: (%v!=%v)", x, (digits[1] + 9 - 16))
+	}
 
 	assert(x == 4 || x == digits[11]-2, "x!=4 && x!=digits[11]-2: (%v!=%v)", x, digits[11]-2)
 
@@ -790,6 +793,9 @@ func input(digits [14]int64) int64 {
 	} else {
 		x = 0
 	} // line 224: eql x 0
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] && digits[1]-7 == digits[12] {
+		assert(x == 0, "line 224: x: (%v)", x)
+	}
 	y = 0   // line 225: mul y 0
 	y += 25 // line 226: add y 25
 	y *= x  // line 227: mul y x
