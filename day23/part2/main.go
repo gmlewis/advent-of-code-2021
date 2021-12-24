@@ -199,47 +199,70 @@ var arrivedX = map[rune]int{'A': 2, 'B': 4, 'C': 6, 'D': 8}
 var xToRune = map[int]rune{2: 'A', 4: 'B', 6: 'C', 8: 'D'}
 
 func (p *puzT) clearPath(from, to keyT) bool {
+	if from == to {
+		return true
+	}
 	if p.landings[to] != 0 {
 		return false
 	}
 
-	if to[1] != 0 {
-		for y := 1; y < to[1]; y++ {
-			if p.landings[keyT{to[0], y}] != 0 {
-				return false
-			}
-		}
-		for x := from[0] - 1; x > to[0]; x-- {
-			if p.landings[keyT{x, 0}] != 0 {
-				return false
-			}
-		}
-		for x := from[0] + 1; x < to[0]; x++ {
-			if p.landings[keyT{x, 0}] != 0 {
-				return false
-			}
-		}
-		return true
+	switch {
+	case from[0] < to[0] && to[1] == 0:
+		return p.clearPath(from, keyT{to[0] - 1, to[1]})
+	case from[0] > to[0] && to[1] == 0:
+		return p.clearPath(from, keyT{to[0] + 1, to[1]})
+	case from[0] != to[0] && to[1] > 0:
+		return p.clearPath(from, keyT{to[0], to[1] - 1})
+	case from[0] == to[0]:
+		return p.clearPath(from, keyT{to[0], to[1] + 1})
+	default:
+		log.Fatalf("unhandled clearPath: from=%+v, to=%+v", from, to)
 	}
-
-	// Moving from room into hallway.
-	for y := 1; y < from[1]; y++ {
-		if p.landings[keyT{from[0], y}] != 0 {
-			return false
-		}
-	}
-	for x := from[0] - 1; x > to[0]; x-- {
-		if p.landings[keyT{x, 0}] != 0 {
-			return false
-		}
-	}
-	for x := from[0] + 1; x < to[0]; x++ {
-		if p.landings[keyT{x, 0}] != 0 {
-			return false
-		}
-	}
-	return true
+	return false
 }
+
+// func (p *puzT) clearPath(from, to keyT) bool {
+// 	if p.landings[to] != 0 {
+// 		return false
+// 	}
+//
+// 	if to[1] != 0 {
+// 		for y := 1; y < to[1]; y++ {
+// 			if p.landings[keyT{to[0], y}] != 0 {
+// 				return false
+// 			}
+// 		}
+// 		for x := from[0] - 1; x > to[0]; x-- {
+// 			if p.landings[keyT{x, 0}] != 0 {
+// 				return false
+// 			}
+// 		}
+// 		for x := from[0] + 1; x < to[0]; x++ {
+// 			if p.landings[keyT{x, 0}] != 0 {
+// 				return false
+// 			}
+// 		}
+// 		return true
+// 	}
+//
+// 	// Moving from room into hallway.
+// 	for y := 1; y < from[1]; y++ {
+// 		if p.landings[keyT{from[0], y}] != 0 {
+// 			return false
+// 		}
+// 	}
+// 	for x := from[0] - 1; x > to[0]; x-- {
+// 		if p.landings[keyT{x, 0}] != 0 {
+// 			return false
+// 		}
+// 	}
+// 	for x := from[0] + 1; x < to[0]; x++ {
+// 		if p.landings[keyT{x, 0}] != 0 {
+// 			return false
+// 		}
+// 	}
+// 	return true
+// }
 
 func energy(r rune, from, to keyT) int {
 	if from[1] > 0 && to[1] > 0 {
