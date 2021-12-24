@@ -744,12 +744,22 @@ func input(digits [14]int64) int64 {
 	y += 25 // line 208: add y 25
 	y *= x  // line 209: mul y x
 	y += 1  // line 210: add y 1
-	z *= y  // line 211: mul z y
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] {
+		assert(y == 1, "line 210: y!=1: (%v)", y)
+	}
+	z *= y // line 211: mul z y
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] {
+		assert(z == 26*(digits[0]+12)+(digits[1]+9), "line 211: z: (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9)))
+	}
 	y = 0   // line 212: mul y 0
 	y += w  // line 213: add y w
 	y += 14 // line 214: add y 14
-	y *= x  // line 215: mul y x
-	z += y  // line 216: add z y
+	assert(y == digits[11]+14, "line 214: y!=digits[11]+14: (%v!=%v)", y, digits[11]+14)
+	y *= x // line 215: mul y x
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] {
+		assert(y == 0, "line 215: y!=0: (%v)", y)
+	}
+	z += y // line 216: add z y
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[12] // line 217: inp w
 	x = 0          // line 218: mul x 0
