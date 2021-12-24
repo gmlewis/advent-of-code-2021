@@ -552,17 +552,53 @@ func input(digits [14]int64) int64 {
 	y = 0  // line 158: mul y 0
 	y += w // line 159: add y w
 	y += 3 // line 160: add y 3
+	assert(y == digits[8]+3, "y!=digits[8]+3 (%v!=%v)", y, digits[8]+3)
 	y *= x // line 161: mul y x
+	assert(y == digits[8]+3, "y!=digits[8]+3 (%v!=%v)", y, digits[8]+3)
+
 	z += y // line 162: add z y
+
+	if digits[6]-1 == digits[7] {
+		if digits[2] == digits[3] {
+			assert(z == (26*(17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4])+(digits[5]+11)))+(digits[8]+3), "A: line 162: z: (%v!=%v)", z, (26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))+(digits[8]+3))
+		} else {
+			assert(z == (26*((456976*(digits[0]+12)+17576*(digits[1]+9))+676*(digits[3]+3)+26*(digits[4])+(digits[5]+11)))+(digits[8]+3), "B: line 162: z: (%v!=%v)", z, (26*((26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]))+(digits[5]+11)))+(digits[8]+3))
+		}
+	} else {
+		if digits[2] == digits[3] {
+			assert(z == (26*(26*(17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4])+(digits[5]+11))+(digits[7]+13)))+(digits[8]+3), "C: line 162: z: (%v!=%v)", z, (26*(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))+(digits[7]+13))+(digits[8]+3))
+		} else {
+			assert(z == (26*(11881376*(digits[0]+12)+456976*(digits[1]+9))+16576*(digits[3]+3)+676*(digits[4])+26*(digits[5]+11)+(digits[7]+13))+(digits[8]+3), "D: line 162: z: (%v!=%v)", z, (26*(26*(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]))+(digits[5]+11))+(digits[7]+13))+(digits[8]+3))
+		}
+	}
+
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[9] // line 163: inp w
 	x = 0         // line 164: mul x 0
 	x += z        // line 165: add x z
 	x %= 26       // line 166: mod x 26
-	z /= 26       // line 167: div z 26
-	x += -1       // line 168: add x -1
 
-	assert(x == digits[8]+3-1, "x != digits[8]+3-1: (%v!=%v)", x, digits[8]+3-1)
+	assert(x == (digits[8]+3), "line 166: x: (%v!=%v)", x, (digits[8] + 3))
+
+	z /= 26 // line 167: div z 26
+
+	if digits[6]-1 == digits[7] {
+		if digits[2] == digits[3] {
+			assert(z == 17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4])+(digits[5]+11), "A: line 167: z!=(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11) (%v!=%v)", z, (26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))
+		} else {
+			assert(z == (456976*(digits[0]+12)+17576*(digits[1]+9))+676*(digits[3]+3)+26*(digits[4])+(digits[5]+11), "B: line 167: z!=(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]))+(digits[5]+11) (%v!=%v)", z, (26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]))+(digits[5]+11))
+		}
+	} else {
+		if digits[2] == digits[3] {
+			assert(z == 26*(17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4])+(digits[5]+11))+(digits[7]+13), "C: line 167: z!=(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))+(digits[7]+13) (%v!=%v)", z, (26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))+(digits[7]+13))
+		} else {
+			assert(z == (11881376*(digits[0]+12)+456976*(digits[1]+9))+16576*(digits[3]+3)+676*(digits[4])+26*(digits[5]+11)+(digits[7]+13), "D: line 167: z: (%v!=%v)", z, (26*(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]))+(digits[5]+11))+(digits[7]+13))
+		}
+	}
+
+	x += -1 // line 168: add x -1
+
+	assert(x == digits[8]+2, "x != digits[8]+3-1: (%v!=%v)", x, digits[8]+3-1)
 
 	logf("digits[9]=%v: x(%v)==w(%v): %v\n", digits[9], x, w, x == w)
 	if x == w {
