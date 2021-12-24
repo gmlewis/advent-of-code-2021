@@ -722,6 +722,9 @@ func input(digits [14]int64) int64 {
 		assert(z == 26*(digits[0]+12)+(digits[1]+9), "line 203: z: (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9)))
 	}
 	x += -5 // line 204: add x -5
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[5]+3 == digits[10] {
+		assert(x == (digits[4]-5), "line 204: x: (%v!=%v)", x, digits[4]-5)
+	}
 
 	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[5]+3 == digits[10] {
 		// assert(x == 15 || x == digits[10]+5, "x!=15 && x!=digits[10]+5: (%v!=%v)", x, digits[10]+5)
