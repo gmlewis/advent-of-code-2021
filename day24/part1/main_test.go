@@ -101,6 +101,17 @@ func TestInput(t *testing.T) {
 			digits: [14]int64{9, 9, 9, 9, 9, 9, 9, 8, 1, 3, 5, 9, 7, 9},
 			want:   14678,
 		},
+		{
+			name: `all 9s with:
+               digits[6]-1==digits[7] and
+               digits[11]-2==digits[12] and
+               digits[10]+5!=digits[11] and
+               digits[9]+2==digits[10] and
+               digits[8]+2==digits[9] and
+               digits[5]+3==digits[10]`,
+			digits: [14]int64{9, 9, 9, 9, 9, 2, 9, 8, 1, 3, 5, 9, 7, 9},
+			want:   560,
+		},
 	}
 
 	for _, tt := range tests {
