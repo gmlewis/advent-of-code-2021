@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"sort"
 	"sync"
 
 	. "github.com/gmlewis/advent-of-code-2021/enum"
@@ -30,6 +31,7 @@ func process(filename string) {
 	logf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
 	p := parse(lines)
+	logf("START:\n%v", p)
 	bestEnergy = math.MaxInt
 	p = p.solve()
 	logf("\n%v", p)
@@ -103,7 +105,7 @@ func (p *puzT) solve() *puzT {
 		if np.energy < bestEnergy {
 			best = np
 			bestEnergy = np.energy
-			// logf("NEW BEST ENERGY: %v", bestEnergy)
+			logf("NEW BEST ENERGY: %v", bestEnergy)
 		}
 		mu.Unlock()
 	}
@@ -121,12 +123,7 @@ func (p *puzT) allPossibleMoves() (moves []moveT) {
 	for k := range p.inMotion {
 		moves = append(moves, p.possibleMoves(k)...)
 	}
-	// sort.Slice(moves, func(a, b int) bool {
-	// 	if p.inMotion[moves[a].from] == p.inMotion[moves[a].from] {
-	// 		return moves[a].energy > moves[b].energy
-	// 	}
-	// 	return p.inMotion[moves[a].from] < p.inMotion[moves[a].from]
-	// })
+	sort.Slice(moves, func(a, b int) bool { return moves[a].from[1] > moves[b].from[1] })
 	return moves
 }
 
@@ -308,8 +305,8 @@ func (p *puzT) isSolved() bool {
 
 func parse(lines []string) *puzT {
 	lines = append(lines[:4], lines[2], lines[3])
-	lines[2] = "  #D#C#B#A#"
-	lines[3] = "  #D#B#A#C#"
+	lines[3] = "  #D#C#B#A#"
+	lines[4] = "  #D#B#A#C#"
 	return parseLiteral(lines)
 }
 
