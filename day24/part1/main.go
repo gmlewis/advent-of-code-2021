@@ -342,13 +342,18 @@ func input(digits [14]int64) int64 {
 	y += 10 // line 196: add y 10
 	y *= x  // line 197: mul y x
 	z += y  // line 198: add z y
-	logf("z = %v", z)
+	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[11] // line 199: inp w
 	x = 0          // line 200: mul x 0
 	x += z         // line 201: add x z
 	x %= 26        // line 202: mod x 26
 	z /= 26        // line 203: div z 26
 	x += -5        // line 204: add x -5
+
+	if x != digits[10]+5 {
+		log.Fatalf("x != digits[10]+5: (%v)!=(%v)", x, digits[10]+5)
+	}
+
 	logf("digits[11]=%v: x(%v)==w(%v): %v\n", digits[11], x, w, x == w)
 	if x == w {
 		x = 1
@@ -370,7 +375,7 @@ func input(digits [14]int64) int64 {
 	y += 14 // line 214: add y 14
 	y *= x  // line 215: mul y x
 	z += y  // line 216: add z y
-	logf("z = %v", z)
+	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[12] // line 217: inp w
 	x = 0          // line 218: mul x 0
 	x += z         // line 219: add x z
@@ -378,8 +383,8 @@ func input(digits [14]int64) int64 {
 	z /= 26        // line 221: div z 26
 	x += -16       // line 222: add x -16
 
-	if x != digits[11]-2 {
-		log.Fatalf("x != digits[11]-2: (%v)!=(%v)", x, digits[11]-2)
+	if x != 4 && x != digits[11]-2 {
+		log.Fatalf("x!=4 && x!=digits[11]-2: (%v)!=(%v)", x, digits[11]-2)
 	}
 
 	logf("digits[12]=%v: x(%v)==w(%v): %v\n", digits[12], x, w, x == w)
