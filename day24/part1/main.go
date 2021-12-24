@@ -760,13 +760,22 @@ func input(digits [14]int64) int64 {
 		assert(y == 0, "line 215: y!=0: (%v)", y)
 	}
 	z += y // line 216: add z y
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] {
+		assert(z == 26*(digits[0]+12)+(digits[1]+9), "line 216: z: (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9)))
+	}
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[12] // line 217: inp w
 	x = 0          // line 218: mul x 0
 	x += z         // line 219: add x z
 	x %= 26        // line 220: mod x 26
-	z /= 26        // line 221: div z 26
-	x += -16       // line 222: add x -16
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] {
+		assert(x == (digits[1]+9), "line 220: x: (%v!=%v)", x, (digits[1] + 9))
+	}
+	z /= 26 // line 221: div z 26
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] {
+		assert(z == (digits[0]+12), "line 221: z: (%v!=%v)", z, (digits[0] + 12))
+	}
+	x += -16 // line 222: add x -16
 
 	assert(x == 4 || x == digits[11]-2, "x!=4 && x!=digits[11]-2: (%v!=%v)", x, digits[11]-2)
 
