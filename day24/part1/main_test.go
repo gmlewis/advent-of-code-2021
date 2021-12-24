@@ -6,9 +6,31 @@ import (
 	"github.com/gmlewis/advent-of-code-2021/test"
 )
 
-func TestExample(t *testing.T) {
-	want := "Solution: 0\n"
-	test.Runner(t, example1, want, process, &printf)
+func TestInput(t *testing.T) {
+	tests := []struct {
+		name   string
+		digits [14]int64
+		want   int64
+	}{
+		{
+			name:   "all 9s",
+			digits: [14]int64{9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9},
+			want:   9919490,
+		},
+		{
+			name:   "all 1s",
+			digits: [14]int64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+			want:   6117450,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := input(tt.digits); got != tt.want {
+				t.Errorf("input() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }
 
 func BenchmarkExample(b *testing.B) {
