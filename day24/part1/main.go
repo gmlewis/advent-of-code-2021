@@ -64,7 +64,7 @@ func input(digits [14]int64) int64 {
 		x = 0
 	} // line 8: eql x 0
 
-	assert(x == 1, "x!=1 (%v)", x)
+	assert(x == 1, "x!=1 (%v)", x) // cannot change this
 	assert(y == 0, "y!=0 (%v)", y)
 	assert(z == 0, "z!=0 (%v)", z)
 
@@ -88,7 +88,7 @@ func input(digits [14]int64) int64 {
 
 	assert(x == digits[0]+22, "x!=digits[0]+12+10 (%v!=%v)", x, digits[0]+12+10)
 	assert(y == digits[0]+12, "y!=digits[0]+12 (%v!=%v)", y, digits[0]+12)
-	assert(z == digits[0]+12, "z!=digits[0]+12 (%v!=%v)", z, digits[0]+12)
+	assert(z == digits[0]+12, "line 24: z!=digits[0]+12 (%v!=%v)", z, digits[0]+12)
 
 	logf("digits[1]=%v: x(%v)==w(%v): %v\n", digits[1], x, w, x == w)
 	if x == w {
@@ -102,7 +102,7 @@ func input(digits [14]int64) int64 {
 		x = 0
 	} // line 26: eql x 0
 
-	assert(x == 1, "x!=1 (%v)", x)
+	assert(x == 1, "x!=1 (%v)", x) // cannot change this
 
 	y = 0   // line 27: mul y 0
 	y += 25 // line 28: add y 25
@@ -124,7 +124,7 @@ func input(digits [14]int64) int64 {
 
 	assert(x == digits[0]+22, "x!=digits[0]+12+10 (%v!=%v)", x, digits[0]+12+10)
 	assert(y == digits[1]+9, "y!=digits[1]+9 (%v!=%v)", y, digits[1]+9)
-	assert(z == 26*(digits[0]+12)+(digits[1]+9), "z!=26*(digits[0]+12)+(digits[1]+9) (%v!=%v)", z, 26*(digits[0]+12)+(digits[1]+9))
+	assert(z == 26*(digits[0]+12)+(digits[1]+9), "line 42: z!=26*(digits[0]+12)+(digits[1]+9) (%v!=%v)", z, 26*(digits[0]+12)+(digits[1]+9))
 
 	logf("digits[2]=%v: x(%v)==w(%v): %v\n", digits[2], x, w, x == w)
 	if x == w {
@@ -137,21 +137,23 @@ func input(digits [14]int64) int64 {
 	} else {
 		x = 0
 	} // line 44: eql x 0
-	assert(x == 1, "x!=1 (%v)", x)
+
+	assert(x == 1, "x!=1 (%v)", x) // cannot change this
+
 	y = 0   // line 45: mul y 0
 	y += 25 // line 46: add y 25
 	y *= x  // line 47: mul y x
 	y += 1  // line 48: add y 1
 	assert(y == 26, "y!=26 (%v)", y)
 	z *= y // line 49: mul z y
-	assert(z == 676*(digits[0]+12)+26*(digits[1]+9), "z!=26*(26*(digits[0]+12)+(digits[1]+9)) (%v!=%v)", z, 26*(26*(digits[0]+12)+(digits[1]+9)))
+	assert(z == 676*(digits[0]+12)+26*(digits[1]+9), "line 49: z!=26*(26*(digits[0]+12)+(digits[1]+9)) (%v!=%v)", z, 26*(26*(digits[0]+12)+(digits[1]+9)))
 	y = 0  // line 50: mul y 0
 	y += w // line 51: add y w
 	y += 8 // line 52: add y 8
 	y *= x // line 53: mul y x
 	assert(y == digits[2]+8, "y!=digits[2]+8 (%v!=%v)", y, digits[2]+8)
 	z += y // line 54: add z y
-	assert(z == 676*(digits[0]+12)+26*(digits[1]+9)+(digits[2]+8), "z!=26*(26*(digits[0]+12)+(digits[1]+9))+(digits[2]+8) (%v!=%v)", z, 26*(26*(digits[0]+12)+(digits[1]+9))+(digits[2]+8))
+	assert(z == 676*(digits[0]+12)+26*(digits[1]+9)+(digits[2]+8), "line 54: z!=26*(26*(digits[0]+12)+(digits[1]+9))+(digits[2]+8) (%v!=%v)", z, 26*(26*(digits[0]+12)+(digits[1]+9))+(digits[2]+8))
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[3] // line 55: inp w
 	x = 0         // line 56: mul x 0
@@ -159,7 +161,7 @@ func input(digits [14]int64) int64 {
 	x %= 26       // line 58: mod x 26
 	assert(x == digits[2]+8, "x!=(digits[2]+8) (%v!=%v)", x, (digits[2] + 8))
 	z /= 26 // line 59: div z 26
-	assert(z == 26*(digits[0]+12)+(digits[1]+9), "z!=(26*(digits[0]+12)+(digits[1]+9)) (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9)))
+	assert(z == 26*(digits[0]+12)+(digits[1]+9), "line 59: z!=(26*(digits[0]+12)+(digits[1]+9)) (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9)))
 	x += -8 // line 60: add x -8
 	assert(x == digits[2], "x!=digits[2] (%v!=%v)", x, digits[2])
 
@@ -190,9 +192,9 @@ func input(digits [14]int64) int64 {
 	}
 	z *= y // line 67: mul z y
 	if digits[2] == digits[3] {
-		assert(z == 26*(digits[0]+12)+(digits[1]+9), "z!=(26*(digits[0]+12)+(digits[1]+9)) (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9)))
+		assert(z == 26*(digits[0]+12)+(digits[1]+9), "line 67: z!=(26*(digits[0]+12)+(digits[1]+9)) (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9)))
 	} else {
-		assert(z == (676*(digits[0]+12)+26*(digits[1]+9)), "z!=(26*(26*(digits[0]+12)+(digits[1]+9))) (%v!=%v)", z, (26 * (26*(digits[0]+12) + (digits[1] + 9))))
+		assert(z == (676*(digits[0]+12)+26*(digits[1]+9)), "line 67: z!=(26*(26*(digits[0]+12)+(digits[1]+9))) (%v!=%v)", z, (26 * (26*(digits[0]+12) + (digits[1] + 9))))
 	}
 	y = 0  // line 68: mul y 0
 	y += w // line 69: add y w
@@ -206,9 +208,9 @@ func input(digits [14]int64) int64 {
 	z += y // line 72: add z y
 
 	if digits[2] == digits[3] {
-		assert(z == 26*(digits[0]+12)+(digits[1]+9), "z!=(26*(digits[0]+12)+(digits[1]+9)) (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9)))
+		assert(z == 26*(digits[0]+12)+(digits[1]+9), "line 72: z!=(26*(digits[0]+12)+(digits[1]+9)) (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9)))
 	} else {
-		assert(z == (676*(digits[0]+12)+26*(digits[1]+9))+(digits[3]+3), "z!=(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3) (%v!=%v)", z, (26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))
+		assert(z == (676*(digits[0]+12)+26*(digits[1]+9))+(digits[3]+3), "line 72: z!=(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3) (%v!=%v)", z, (26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))
 	}
 
 	logf("x=%v, y=%v, z=%v", x, y, z)
@@ -243,7 +245,8 @@ func input(digits [14]int64) int64 {
 	} else {
 		x = 0
 	} // line 80: eql x 0
-	assert(x == 1, "x!=1 (%v)", x)
+
+	assert(x == 1, "x!=1 (%v)", x) // cannot change this
 
 	y = 0   // line 81: mul y 0
 	y += 25 // line 82: add y 25
@@ -255,10 +258,9 @@ func input(digits [14]int64) int64 {
 	z *= y // line 85: mul z y
 
 	if digits[2] == digits[3] {
-		assert(z == 676*(digits[0]+12)+26*(digits[1]+9), "z!=(26*(26*(digits[0]+12)+(digits[1]+9))) (%v!=%v)", z, (26 * (26*(digits[0]+12) + (digits[1] + 9))))
+		assert(z == 676*(digits[0]+12)+26*(digits[1]+9), "line 85: z!=(26*(26*(digits[0]+12)+(digits[1]+9))) (%v!=%v)", z, (26 * (26*(digits[0]+12) + (digits[1] + 9))))
 	} else {
-		assert(z == (17576*(digits[0]+12)+676*(digits[1]+9))+26*(digits[3]+3), "z!=(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3)) (%v!=%v)", z, (26*(26*(26*(digits[0]+12)+(digits[1]+9))) + (digits[3] + 3)))
-		// STOP pursuing digits[2] != digits[3] from now on...
+		assert(z == (17576*(digits[0]+12)+676*(digits[1]+9))+26*(digits[3]+3), "line 85: z!=(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3)) (%v!=%v)", z, (26*(26*(26*(digits[0]+12)+(digits[1]+9))) + (digits[3] + 3)))
 	}
 
 	y = 0  // line 86: mul y 0
@@ -269,7 +271,12 @@ func input(digits [14]int64) int64 {
 	assert(y == digits[4], "y!=digits[4] (%v!=%v)", y, digits[4])
 
 	z += y // line 90: add z y
-	assert(z == 676*(digits[0]+12)+26*(digits[1]+9)+(digits[4]), "z!=(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]) (%v!=%v)", z, (26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))
+
+	if digits[2] == digits[3] {
+		assert(z == 676*(digits[0]+12)+26*(digits[1]+9)+(digits[4]), "line 90: z!=(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]) (%v!=%v)", z, (26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))
+	} else {
+		assert(z == (17576*(digits[0]+12)+676*(digits[1]+9))+26*(digits[3]+3)+(digits[4]), "line 85: z!=(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]) (%v!=%v)", z, (26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]))
+	}
 
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[5] // line 91: inp w
@@ -296,7 +303,7 @@ func input(digits [14]int64) int64 {
 		x = 0
 	} // line 98: eql x 0
 
-	assert(x == 1, "x!=1 (%v)", x)
+	assert(x == 1, "line 98: x!=1 (%v)", x)
 
 	y = 0   // line 99: mul y 0
 	y += 25 // line 100: add y 25
@@ -307,7 +314,11 @@ func input(digits [14]int64) int64 {
 
 	z *= y // line 103: mul z y
 
-	assert(z == 17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4]), "z!=(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4])) (%v!=%v)", z, (26*(26*(26*(digits[0]+12)+(digits[1]+9))) + (digits[4]))) // when digits[2] == digits[3]
+	if digits[2] == digits[3] {
+		assert(z == 17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4]), "line 103: z!=(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4])) (%v!=%v)", z, (26*(26*(26*(digits[0]+12)+(digits[1]+9))) + (digits[4])))
+	} else {
+		assert(z == (456976*(digits[0]+12)+17576*(digits[1]+9))+676*(digits[3]+3)+26*(digits[4]), "line 103: z!=(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4])) (%v!=%v)", z, (26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3)) + (digits[4])))
+	}
 
 	y = 0   // line 104: mul y 0
 	y += w  // line 105: add y w
@@ -321,7 +332,11 @@ func input(digits [14]int64) int64 {
 
 	z += y // line 108: add z y
 
-	assert(z == 17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4])+(digits[5]+11), "z!=(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11) (%v!=%v)", z, (26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11)) // when digits[2] == digits[3]
+	if digits[2] == digits[3] {
+		assert(z == 17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4])+(digits[5]+11), "line 108: z!=(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11) (%v!=%v)", z, (26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))
+	} else {
+		assert(z == (456976*(digits[0]+12)+17576*(digits[1]+9))+676*(digits[3]+3)+26*(digits[4])+(digits[5]+11), "line 108: z!=(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]))+(digits[5]+11) (%v!=%v)", z, (26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]))+(digits[5]+11))
+	}
 
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[6] // line 109: inp w
@@ -329,12 +344,12 @@ func input(digits [14]int64) int64 {
 	x += z        // line 111: add x z
 	x %= 26       // line 112: mod x 26
 
-	assert(x == (digits[5]+11), "x!=(digits[5]+11) (%v!=%v)", x, (digits[5] + 11)) // when digits[2] == digits[3]
+	assert(x == (digits[5]+11), "x!=(digits[5]+11) (%v!=%v)", x, (digits[5] + 11))
 
 	// line 113: div z 1
 	x += 14 // line 114: add x 14
 
-	assert(x == digits[5]+25, "x!=digits[5]+11+14: (%v!=%v)", x, digits[5]+11+14) // when digits[2] == digits[3]
+	assert(x == digits[5]+25, "x!=digits[5]+11+14: (%v!=%v)", x, digits[5]+11+14)
 
 	logf("digits[6]=%v: x(%v)==w(%v): %v\n", digits[6], x, w, x == w)
 	if x == w {
@@ -348,7 +363,7 @@ func input(digits [14]int64) int64 {
 		x = 0
 	} // line 116: eql x 0
 
-	assert(x == 1, "x!=1 (%v)", x)
+	assert(x == 1, "line 116: x!=1 (%v)", x)
 
 	y = 0   // line 117: mul y 0
 	y += 25 // line 118: add y 25
@@ -359,7 +374,10 @@ func input(digits [14]int64) int64 {
 
 	z *= y // line 121: mul z y
 
-	assert(z == 456976*(digits[0]+12)+17576*(digits[1]+9)+676*(digits[4])+26*(digits[5]+11), "z!=(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11)) (%v!=%v)", z, (26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4])) + (digits[5] + 11))) // when digits[2] == digits[3]
+	if digits[2] == digits[3] {
+		assert(z == 456976*(digits[0]+12)+17576*(digits[1]+9)+676*(digits[4])+26*(digits[5]+11), "line 121: z!=(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11)) (%v!=%v)", z, (26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4])) + (digits[5] + 11)))
+	} else {
+	}
 
 	y = 0   // line 122: mul y 0
 	y += w  // line 123: add y w
@@ -373,7 +391,7 @@ func input(digits [14]int64) int64 {
 
 	z += y // line 126: add z y
 
-	assert(z == 456976*(digits[0]+12)+17576*(digits[1]+9)+676*(digits[4])+26*(digits[5]+11)+(digits[6]+10), "z!=(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))+(digits[6]+10) (%v!=%v)", z, (26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))+(digits[6]+10)) // when digits[2] == digits[3]
+	assert(z == 456976*(digits[0]+12)+17576*(digits[1]+9)+676*(digits[4])+26*(digits[5]+11)+(digits[6]+10), "line 126: z!=(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))+(digits[6]+10) (%v!=%v)", z, (26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))+(digits[6]+10))
 
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[7] // line 127: inp w
@@ -381,15 +399,15 @@ func input(digits [14]int64) int64 {
 	x += z        // line 129: add x z
 	x %= 26       // line 130: mod x 26
 
-	assert(x == (digits[6]+10), "x!=(digits[6]+10) (%v!=%v)", x, (digits[6] + 10)) // when digits[2] == digits[3]
+	assert(x == (digits[6]+10), "x!=(digits[6]+10) (%v!=%v)", x, (digits[6] + 10))
 
 	z /= 26 // line 131: div z 26
 
-	assert(z == 17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4])+(digits[5]+11), "z!=(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11) (%v!=%v)", z, (26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11)) // when digits[2] == digits[3]
+	assert(z == 17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4])+(digits[5]+11), "line 131: z!=(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11) (%v!=%v)", z, (26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))
 
 	x += -11 // line 132: add x -11
 
-	assert(x == digits[6]-1, "x!=digits[6]+10-11: (%v!=%v)", x, digits[6]+10-11) // when digits[2] == digits[3]
+	assert(x == digits[6]-1, "x!=digits[6]+10-11: (%v!=%v)", x, digits[6]+10-11)
 
 	logf("digits[7]=%v: x(%v)==w(%v): %v\n", digits[7], x, w, x == w)
 	if x == w {
@@ -402,6 +420,13 @@ func input(digits [14]int64) int64 {
 	} else {
 		x = 0
 	} // line 134: eql x 0
+
+	if digits[6]-1 == digits[7] {
+		assert(x == 0, "line 134: x!=0 (%v)", x)
+	} else {
+		assert(x == 1, "line 134: x!=1 (%v)", x)
+	}
+
 	y = 0   // line 135: mul y 0
 	y += 25 // line 136: add y 25
 	y *= x  // line 137: mul y x
