@@ -800,12 +800,21 @@ func input(digits [14]int64) int64 {
 	y += 25 // line 226: add y 25
 	y *= x  // line 227: mul y x
 	y += 1  // line 228: add y 1
-	z *= y  // line 229: mul z y
-	y = 0   // line 230: mul y 0
-	y += w  // line 231: add y w
-	y += 6  // line 232: add y 6
-	y *= x  // line 233: mul y x
-	z += y  // line 234: add z y
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] && digits[1]-7 == digits[12] {
+		assert(y == 1, "line 228: y: (%v)", y)
+	}
+	z *= y // line 229: mul z y
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] && digits[1]-7 == digits[12] {
+		assert(z == (digits[0]+12), "line 229: z: (%v!=%v)", z, (digits[0] + 12))
+	}
+	y = 0  // line 230: mul y 0
+	y += w // line 231: add y w
+	y += 6 // line 232: add y 6
+	y *= x // line 233: mul y x
+	if digits[8]+2 == digits[9] && digits[6]-1 == digits[7] && digits[2] == digits[3] && digits[5]+3 == digits[10] && digits[4]-5 == digits[11] && digits[1]-7 == digits[12] {
+		assert(y == 0, "line 233: y: (%v)", y)
+	}
+	z += y // line 234: add z y
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[13] // line 235: inp w
 	x = 0          // line 236: mul x 0
