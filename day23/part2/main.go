@@ -33,10 +33,9 @@ func process(filename string) {
 	p := parse(lines)
 	logf("START:\n%v", p)
 	bestEnergy = math.MaxInt
-	p = p.solve()
-	logf("\n%v", p)
+	p.solve()
 
-	printf("Solution: %v\n", p.energy)
+	printf("Solution: %v\n", bestEnergy)
 }
 
 type keyT [2]int
@@ -56,8 +55,6 @@ func (p *puzT) solve() *puzT {
 		return nil
 	}
 
-	// logf("solve(%v): %v allPossibleMoves: %+v", bestEnergy, p, moves)
-
 	var wg sync.WaitGroup
 	throttleCh := make(chan struct{}, 3)
 	ch := make(chan *puzT, 10)
@@ -76,7 +73,6 @@ func (p *puzT) solve() *puzT {
 		wg.Add(1)
 		throttleCh <- struct{}{}
 		go func(f, t keyT, e int) {
-			// logf("Moving '%c' from %+v to %+v using %v energy", p.inMotion[f], f, t, e)
 			np := &puzT{energy: e + p.energy, landings: dup(p.landings), inMotion: dup(p.inMotion)}
 			if t[1] == 0 || arrivedX[p.inMotion[f]] != t[0] {
 				np.inMotion[t] = np.inMotion[f]
@@ -103,7 +99,7 @@ func (p *puzT) solve() *puzT {
 	for np := range ch {
 		mu.Lock()
 		if np.energy < bestEnergy {
-			best = np
+			best = &puzT{energy: np.energy}
 			bestEnergy = np.energy
 			logf("NEW BEST ENERGY: %v", bestEnergy)
 		}
@@ -148,18 +144,14 @@ func (p *puzT) possibleMoves(from keyT) (moves []moveT) {
 		return nil
 	}
 
-	// logf("Moving from room into hallway.")
 	if !p.clearPath(from, keyT{from[0], 0}) {
-		// logf("%c at %+v is blocked from moving into hallway", r, from)
 		return nil // blocked
 	}
 
-	// logf("Can this be a final move into place (by going up, over, and down again)?")
 	column := roomX - 1
 	if from[0] > roomX {
 		column = roomX + 1
 	}
-	// logf("Can %c move from %+v to %+v?", r, from, keyT{column, 0})
 	if p.clearPath(from, keyT{column, 0}) && (p.landings[keyT{roomX, 4}] == r || p.landings[keyT{roomX, 4}] == 0) {
 		for y := 4; y >= 1; y-- {
 			if p.clearPath(keyT{column, 0}, keyT{roomX, y}) {
@@ -170,7 +162,6 @@ func (p *puzT) possibleMoves(from keyT) (moves []moveT) {
 		}
 	}
 
-	// logf("Normal move from room to hallway")
 	f := func(x int) {
 		to := keyT{x, 0}
 		if p.clearPath(from, to) {
@@ -217,49 +208,6 @@ func (p *puzT) clearPath(from, to keyT) bool {
 	}
 	return false
 }
-
-// func (p *puzT) clearPath(from, to keyT) bool {
-// 	if p.landings[to] != 0 {
-// 		return false
-// 	}
-//
-// 	if to[1] != 0 {
-// 		for y := 1; y < to[1]; y++ {
-// 			if p.landings[keyT{to[0], y}] != 0 {
-// 				return false
-// 			}
-// 		}
-// 		for x := from[0] - 1; x > to[0]; x-- {
-// 			if p.landings[keyT{x, 0}] != 0 {
-// 				return false
-// 			}
-// 		}
-// 		for x := from[0] + 1; x < to[0]; x++ {
-// 			if p.landings[keyT{x, 0}] != 0 {
-// 				return false
-// 			}
-// 		}
-// 		return true
-// 	}
-//
-// 	// Moving from room into hallway.
-// 	for y := 1; y < from[1]; y++ {
-// 		if p.landings[keyT{from[0], y}] != 0 {
-// 			return false
-// 		}
-// 	}
-// 	for x := from[0] - 1; x > to[0]; x-- {
-// 		if p.landings[keyT{x, 0}] != 0 {
-// 			return false
-// 		}
-// 	}
-// 	for x := from[0] + 1; x < to[0]; x++ {
-// 		if p.landings[keyT{x, 0}] != 0 {
-// 			return false
-// 		}
-// 	}
-// 	return true
-// }
 
 func energy(r rune, from, to keyT) int {
 	if from[1] > 0 && to[1] > 0 {
@@ -357,11 +305,13 @@ func (p *puzT) String() string {
 	}
 
 	return fmt.Sprintf(`energy=%v
+#############
 #%v#
 ###%c#%c#%c#%c###
   #%c#%c#%c#%c#
   #%c#%c#%c#%c#
   #%c#%c#%c#%c#
+  #########
 `, p.energy, landings,
 		f(2, 1), f(4, 1), f(6, 1), f(8, 1),
 		f(2, 2), f(4, 2), f(6, 2), f(8, 2),

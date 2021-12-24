@@ -28,7 +28,6 @@ func process(filename string) {
 	lines := must.ReadFileLines(filename)
 	p := parse(lines)
 	p = p.solve(math.MaxInt)
-	logf("\n%v", p)
 
 	printf("Solution: %v\n", p.energy)
 }
@@ -50,7 +49,6 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 		return nil
 	}
 
-	// logf("solve(%v): %v allPossibleMoves: %+v", bestEnergy, p, moves)
 	var best *puzT
 	for _, move := range moves {
 		f := move.from
@@ -60,7 +58,6 @@ func (p *puzT) solve(bestEnergy int) *puzT {
 			continue
 		}
 
-		// logf("Moving '%c' from %+v to %+v using %v energy", p.inMotion[f], f, t, e)
 		np := &puzT{energy: e + p.energy, landings: dup(p.landings), inMotion: dup(p.inMotion)}
 		if t[1] == 0 || arrivedX[p.inMotion[f]] != t[0] {
 			np.inMotion[t] = np.inMotion[f]
@@ -100,24 +97,19 @@ func (p *puzT) possibleMoves(from keyT) (moves []moveT) {
 	}
 	roomX := 2*int(r-'A') + 2
 	if from[1] == 0 {
-		// logf("%c at %+v must move from hallway into its own roomX=%v", r, from, roomX)
 		to := keyT{roomX, 2}
-		// logf("Can %c move from %+v to %+v?", r, from, to)
 		if p.landings[to] == 0 && p.clearPath(from, to) {
 			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
 		}
 		to = keyT{roomX, 1}
-		// logf("No. Can %c move from %+v to %+v?", r, from, to)
 		if p.landings[to] == 0 && p.clearPath(from, to) {
 			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
 		}
-		// logf("No.")
 		return nil
 	}
 
 	// Moving from room into hallway.
 	if from[1] == 2 && p.landings[keyT{from[0], 1}] != 0 {
-		// logf("%c at %+v is blocked from moving into hallway", r, from)
 		return nil // blocked
 	}
 
@@ -126,22 +118,16 @@ func (p *puzT) possibleMoves(from keyT) (moves []moveT) {
 	if from[0] > roomX {
 		column = roomX + 1
 	}
-	// logf("Can %c move from %+v to %+v?", r, from, keyT{column, 0})
 	if p.clearPath(from, keyT{column, 0}) {
-		// logf("Yes! Can %c move from %+v to %+v?", r, keyT{column, 0}, keyT{roomX, 2})
 		if p.clearPath(keyT{column, 0}, keyT{roomX, 2}) {
-			// logf("Yes!")
 			to := keyT{roomX, 2}
 			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
 		}
-		// logf("No. Can %c move instead from %+v to %+v?", r, keyT{column, 0}, keyT{roomX, 1})
 		if p.clearPath(keyT{column, 0}, keyT{roomX, 1}) {
-			// logf("Yes!")
 			to := keyT{roomX, 1}
 			return []moveT{{from: from, to: to, energy: energy(r, from, to)}}
 		}
 	}
-	// logf("No.")
 
 	f := func(x int) {
 		to := keyT{x, 0}
