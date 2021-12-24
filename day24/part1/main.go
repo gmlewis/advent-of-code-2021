@@ -157,12 +157,11 @@ func input(digits [14]int64) int64 {
 	x = 0         // line 56: mul x 0
 	x += z        // line 57: add x z
 	x %= 26       // line 58: mod x 26
-	z /= 26       // line 59: div z 26
-	x += -8       // line 60: add x -8
-
-	//  	if x != digits[2]-8+11 {
-	//  		log.Fatalf("x!=digits[2]-8+11: (%v!=%v)", x, digits[2]-8+11)
-	//  	}
+	assert(x == digits[2]+8, "x!=(digits[2]+8) (%v!=%v)", x, (digits[2] + 8))
+	z /= 26 // line 59: div z 26
+	assert(z == 26*(digits[0]+12)+(digits[1]+9), "z!=(26*(digits[0]+12)+(digits[1]+9)) (%v!=%v)", z, (26*(digits[0]+12) + (digits[1] + 9)))
+	x += -8 // line 60: add x -8
+	assert(x == digits[2], "x!=digits[2] (%v!=%v)", x, digits[2])
 
 	logf("digits[3]=%v: x(%v)==w(%v): %v\n", digits[3], x, w, x == w)
 	if x == w {
