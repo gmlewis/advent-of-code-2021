@@ -466,13 +466,37 @@ func input(digits [14]int64) int64 {
 	y = 0   // line 140: mul y 0
 	y += w  // line 141: add y w
 	y += 13 // line 142: add y 13
-	y *= x  // line 143: mul y x
-	z += y  // line 144: add z y
+	assert(y == digits[7]+13, "line 142: y!=digits[7]+13 (%v!=%v)", y, digits[7]+13)
+	y *= x // line 143: mul y x
+
+	if digits[6]-1 == digits[7] {
+		assert(y == 0, "line 143: y!=0 (%v)", y)
+	} else {
+		assert(y == digits[7]+13, "line 143: y!=digits[7]+13 (%v!=%v)", y, digits[7]+13)
+	}
+
+	z += y // line 144: add z y
+
+	if digits[6]-1 == digits[7] {
+		if digits[2] == digits[3] {
+			assert(z == 17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4])+(digits[5]+11), "A: line 144: z!=(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11) (%v!=%v)", z, (26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))
+		} else {
+			assert(z == (456976*(digits[0]+12)+17576*(digits[1]+9))+676*(digits[3]+3)+26*(digits[4])+(digits[5]+11), "B: line 144: z!=(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]))+(digits[5]+11) (%v!=%v)", z, (26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]))+(digits[5]+11))
+		}
+	} else {
+		if digits[2] == digits[3] {
+			assert(z == 26*(17576*(digits[0]+12)+676*(digits[1]+9)+26*(digits[4])+(digits[5]+11))+(digits[7]+13), "C: line 144: z!=(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))+(digits[7]+13) (%v!=%v)", z, (26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[4]))+(digits[5]+11))+(digits[7]+13))
+		} else {
+			assert(z == (11881376*(digits[0]+12)+456976*(digits[1]+9))+16576*(digits[3]+3)+676*(digits[4])+26*(digits[5]+11)+(digits[7]+13), "D: line 144: z: (%v!=%v)", z, (26*(26*(26*(26*(26*(digits[0]+12)+(digits[1]+9)))+(digits[3]+3))+(digits[4]))+(digits[5]+11))+(digits[7]+13))
+		}
+	}
+
 	logf("x=%v, y=%v, z=%v", x, y, z)
 	w = digits[8] // line 145: inp w
 	x = 0         // line 146: mul x 0
 	x += z        // line 147: add x z
 	x %= 26       // line 148: mod x 26
+
 	// line 149: div z 1
 	x += 14 // line 150: add x 14
 
