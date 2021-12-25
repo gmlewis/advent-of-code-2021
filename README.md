@@ -88,6 +88,12 @@ Benchmarks were run on an Intel i7 laptop running Linux Mint 19.3.
 | day24/part1 | BenchmarkInput-4   |    6079 |      400067 ns/op |
 | day24/part2 | BenchmarkInput-4   |    6079 |      400067 ns/op |
 |-------------|--------------------|---------|-------------------|
+| day25/part1 | BenchmarkInput-4   |       1 |  1119637278 ns/op |
+|-------------|--------------------|---------|-------------------|
+
+Several of the algorithms can be improved, obviously, but that was
+a lot of fun and you never stop learning when tackling the wide
+variety of challenges.  Thank you for AOC, http://was.tl/ !
 
 ----------------------------------------------------------------------
 

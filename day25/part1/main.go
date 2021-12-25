@@ -30,25 +30,14 @@ func process(filename string) {
 		xsize: len(lines[0]),
 		ysize: len(lines),
 	}
-	puz.right = func(k keyT) keyT {
-		return keyT{(k[0] + 1) % puz.xsize, k[1]}
-	}
-	puz.down = func(k keyT) keyT {
-		return keyT{k[0], (k[1] + 1) % puz.ysize}
-	}
-	logf("xsize=%v, ysize=%v", puz.xsize, puz.ysize)
 
 	ReduceWithIndex(lines, puz, parseLine)
-	logf("puz:\n%v", puz)
 
 	for steps := 1; true; steps++ {
-		np, count := puz.step()
-		logf("step=%v, count=%v", steps, count)
-		if count == 0 {
+		if puz.step() == 0 {
 			printf("Solution: %v\n", steps)
 			break
 		}
-		puz = np
 	}
 }
 
@@ -58,43 +47,48 @@ type puzT struct {
 	b     map[keyT]rune
 	xsize int
 	ysize int
-	right keyFunc
-	down  keyFunc
 }
 
-func (p *puzT) step() (np *puzT, count int) {
-	np = &puzT{b: map[keyT]rune{}, xsize: p.xsize, ysize: p.ysize, right: p.right, down: p.down}
+func (p *puzT) step() (count int) {
+	nb := map[keyT]rune{}
 	// east-facing
 	for k, v := range p.b {
 		if v != '>' {
-			np.b[k] = v
+			nb[k] = v
 			continue
 		}
 		if rk := p.right(k); p.b[rk] == 0 {
-			np.b[rk] = v
+			nb[rk] = v
 			count++
 		} else {
-			np.b[k] = v
+			nb[k] = v
 		}
 	}
-	// logf("after east-facing puz:\n%v", np)
 	// south-facing
-	np2 := &puzT{b: map[keyT]rune{}, xsize: p.xsize, ysize: p.ysize, right: p.right, down: p.down}
-	for k, v := range np.b {
+	nb2 := map[keyT]rune{}
+	for k, v := range nb {
 		if v != 'v' {
-			np2.b[k] = v
+			nb2[k] = v
 			continue
 		}
-		if dk := np.down(k); np.b[dk] == 0 {
-			np2.b[dk] = v
+		if dk := p.down(k); nb[dk] == 0 {
+			nb2[dk] = v
 			count++
 		} else {
-			np2.b[k] = v
+			nb2[k] = v
 		}
 	}
-	// logf("after south-facing puz:\n%v", np2)
+	p.b = nb2
 
-	return np2, count
+	return count
+}
+
+func (p *puzT) right(k keyT) keyT {
+	return keyT{(k[0] + 1) % p.xsize, k[1]}
+}
+
+func (p *puzT) down(k keyT) keyT {
+	return keyT{k[0], (k[1] + 1) % p.ysize}
 }
 
 func (p *puzT) String() string {
