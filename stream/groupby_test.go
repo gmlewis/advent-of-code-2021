@@ -3,8 +3,8 @@ package stream
 import (
 	"testing"
 
-	"github.com/gmlewis/advent-of-code-2021/enum"
-	"github.com/gmlewis/advent-of-code-2021/strfn"
+	"github.com/gmlewis/advent-of-code-2021/v1/enum"
+	"github.com/gmlewis/advent-of-code-2021/v1/strfn"
 	"github.com/google/go-cmp/cmp"
 )
 

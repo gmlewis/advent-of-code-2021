@@ -8,10 +8,10 @@ import (
 	"log"
 	"strings"
 
-	. "github.com/gmlewis/advent-of-code-2021/enum"
-	"github.com/gmlewis/advent-of-code-2021/maps"
-	"github.com/gmlewis/advent-of-code-2021/must"
-	"github.com/gmlewis/advent-of-code-2021/stream"
+	. "github.com/gmlewis/advent-of-code-2021/v1/enum"
+	"github.com/gmlewis/advent-of-code-2021/v1/maps"
+	"github.com/gmlewis/advent-of-code-2021/v1/must"
+	"github.com/gmlewis/advent-of-code-2021/v1/stream"
 )
 
 var logf = log.Printf

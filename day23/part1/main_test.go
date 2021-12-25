@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gmlewis/advent-of-code-2021/test"
+	"github.com/gmlewis/advent-of-code-2021/v1/test"
 )
 
 func TestPossibleMoves(t *testing.T) {

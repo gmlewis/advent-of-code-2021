@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/gmlewis/advent-of-code-2021/must"
+	"github.com/gmlewis/advent-of-code-2021/v1/must"
 	"github.com/google/go-cmp/cmp"
 )
 

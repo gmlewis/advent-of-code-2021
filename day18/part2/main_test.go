@@ -3,8 +3,8 @@ package main
 import (
 	"testing"
 
-	. "github.com/gmlewis/advent-of-code-2021/enum"
-	"github.com/gmlewis/advent-of-code-2021/test"
+	. "github.com/gmlewis/advent-of-code-2021/v1/enum"
+	"github.com/gmlewis/advent-of-code-2021/v1/test"
 )
 
 func TestSum(t *testing.T) {

@@ -1,4 +1,4 @@
-module github.com/gmlewis/advent-of-code-2021
+module github.com/gmlewis/advent-of-code-2021/v1
 
 go 1.18
 

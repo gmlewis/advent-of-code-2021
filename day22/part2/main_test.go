@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gmlewis/advent-of-code-2021/test"
+	"github.com/gmlewis/advent-of-code-2021/v1/test"
 )
 
 func TestExample1(t *testing.T) {

@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"log"
 
-	. "github.com/gmlewis/advent-of-code-2021/enum"
-	"github.com/gmlewis/advent-of-code-2021/maps"
-	"github.com/gmlewis/advent-of-code-2021/must"
-	"github.com/gmlewis/advent-of-code-2021/strfn"
+	. "github.com/gmlewis/advent-of-code-2021/v1/enum"
+	"github.com/gmlewis/advent-of-code-2021/v1/maps"
+	"github.com/gmlewis/advent-of-code-2021/v1/must"
+	"github.com/gmlewis/advent-of-code-2021/v1/strfn"
 )
 
 var logf = log.Printf
