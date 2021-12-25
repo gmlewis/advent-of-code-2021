@@ -27,7 +27,7 @@ func process(filename string) {
 	lines := must.ReadFileLines(filename)
 
 	code, f := translate(0, 0, lines, func([14]int, regT) regT { return regT{} })
-	logf("\n%v\n", strings.Join(code, "\n"))
+	logf("%v lines of code", len(code))
 
 	max := [14]int{3, 9, 9, 9, 9, 6, 9, 8, 7, 9, 9, 4, 2, 9}
 	min := [14]int{1, 8, 1, 1, 6, 1, 2, 1, 1, 3, 4, 1, 1, 7}
@@ -894,7 +894,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.w = digits[digit-1]
-				logf("r.w=%v%v", r.w, comment)
+				// logf("r.w=%v%v", r.w, comment)
 				return r
 			}
 
@@ -903,7 +903,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.x = 0
-				logf("r.x=%v%v", r.x, comment)
+				// logf("r.x=%v%v", r.x, comment)
 				return r
 			}
 
@@ -912,7 +912,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.y = 0
-				logf("r.y=%v%v", r.y, comment)
+				// logf("r.y=%v%v", r.y, comment)
 				return r
 			}
 
@@ -921,7 +921,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.y *= r.x
-				logf("r.y *= r.x(%v) = %v%v", r.x, r.y, comment)
+				// logf("r.y *= r.x(%v) = %v%v", r.x, r.y, comment)
 				return r
 			}
 
@@ -930,7 +930,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.z *= r.y
-				logf("r.z *= r.y(%v) = %v%v", r.y, r.z, comment)
+				// logf("r.z *= r.y(%v) = %v%v", r.y, r.z, comment)
 				return r
 			}
 
@@ -939,7 +939,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.x += r.z
-				logf("r.x += r.z(%v) = %v%v", r.z, r.x, comment)
+				// logf("r.x += r.z(%v) = %v%v", r.z, r.x, comment)
 				return r
 			}
 
@@ -948,7 +948,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.z += r.y
-				logf("r.z += r.y(%v) = %v%v", r.y, r.z, comment)
+				// logf("r.z += r.y(%v) = %v%v", r.y, r.z, comment)
 				return r
 			}
 
@@ -957,7 +957,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.y += r.w
-				logf("r.y += r.w(%v) = %v%v", r.w, r.y, comment)
+				// logf("r.y += r.w(%v) = %v%v", r.w, r.y, comment)
 				return r
 			}
 
@@ -969,7 +969,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.x += num
-				logf("r.x += %v = %v%v", num, r.x, comment)
+				// logf("r.x += %v = %v%v", num, r.x, comment)
 				return r
 			}
 
@@ -981,7 +981,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.y += num
-				logf("r.y += %v = %v%v", num, r.y, comment)
+				// logf("r.y += %v = %v%v", num, r.y, comment)
 				return r
 			}
 
@@ -990,7 +990,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.x %= 26
-				logf("r.x %%= 26 = %v%v", r.x, comment)
+				// logf("r.x %%= 26 = %v%v", r.x, comment)
 				return r
 			}
 
@@ -1002,7 +1002,7 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 			f2 = func(digits [14]int, regs regT) regT {
 				r := f(digits, regs)
 				r.z /= 26
-				logf("r.z /= 26 = %v%v", r.z, comment)
+				// logf("r.z /= 26 = %v%v", r.z, comment)
 				return r
 			}
 
@@ -1012,10 +1012,10 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 				r := f(digits, regs)
 				if r.x == r.w {
 					r.x = 1
-					logf("x==w: r.x = 1%v", comment)
+					// logf("x==w: r.x = 1%v", comment)
 				} else {
 					r.x = 0
-					logf("x!=w: r.x = 0%v", comment)
+					// logf("x!=w: r.x = 0%v", comment)
 				}
 				return r
 			}
@@ -1026,10 +1026,10 @@ func translate(digit, lineCount int, lines []string, f func([14]int, regT) regT)
 				r := f(digits, regs)
 				if r.x == 0 {
 					r.x = 1
-					logf("x==0: r.x = 1%v", comment)
+					// logf("x==0: r.x = 1%v", comment)
 				} else {
 					r.x = 0
-					logf("x!=0: r.x = 0%v", comment)
+					// logf("x!=0: r.x = 0%v", comment)
 				}
 				return r
 			}
