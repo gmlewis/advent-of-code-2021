@@ -85,6 +85,9 @@ Benchmarks were run on an Intel i7 laptop running Linux Mint 19.3.
 | day23/part1 | BenchmarkInput-4   |       1 | 19647640120 ns/op |
 | day23/part2 | BenchmarkInput-4   |       1 |110287766926 ns/op |
 |-------------|--------------------|---------|-------------------|
+| day24/part1 | BenchmarkInput-4   |    6079 |      400067 ns/op |
+| day24/part2 | BenchmarkInput-4   |    6079 |      400067 ns/op |
+|-------------|--------------------|---------|-------------------|
 
 ----------------------------------------------------------------------
 

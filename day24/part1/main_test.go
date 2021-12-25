@@ -1,12 +1,36 @@
 package main
 
 import (
+	"bytes"
+	"compress/gzip"
+	"encoding/base64"
+	"io"
+	"strings"
 	"testing"
 
 	"github.com/gmlewis/advent-of-code-2021/test"
 )
 
 func TestInput(t *testing.T) {
+	inputB64 := "H4sICDN+xmEAA2lucHV0LnR4dADNk88OwiAMxu99ir6ACWWDzMcxwQOJ889BGTy9Y8Ns6klak50K/drkl6+tP18xQH8/4YAKDs6NMUF/yVFbcP6BCakI1MLxlitDiWrqjKUzojYlMZQETf+E8aMwvHT91pAL/U9ESppozwRqpIG6OqDxMSu7TpqoYVpE0kBqa0BETCL5Q6v0aFmjP7jEXSRxlyqBViZtb27i589HMuJILXtwVprJcpHEicwX0RNRm5K//gcAAA=="
+	decoded, err := base64.StdEncoding.DecodeString(inputB64)
+	if err != nil {
+		t.Fatalf("unable to decode input: %v", err)
+	}
+	var buf bytes.Buffer
+	zr, err := gzip.NewReader(bytes.NewBuffer(decoded))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := io.Copy(&buf, zr); err != nil {
+		t.Fatal(err)
+	}
+	if err := zr.Close(); err != nil {
+		t.Fatal(err)
+	}
+	lines := strings.Split(strings.TrimSpace(buf.String()), "\n")
+	_, f := translate(0, 0, lines, func([14]int, regT) regT { return regT{} })
+
 	tests := []struct {
 		name   string
 		digits [14]int
@@ -216,15 +240,12 @@ func TestInput(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := input(tt.digits); got != tt.want {
-				t.Errorf("input() = %v, want %v", got, tt.want)
+			r := f(tt.digits, regT{})
+			if got := r.z; got != tt.want {
+				t.Errorf("f() = %v, want %v", got, tt.want)
 			}
 		})
 	}
-}
-
-func BenchmarkExample(b *testing.B) {
-	test.Benchmark(b, "../example1.txt", process, &logf, &printf)
 }
 
 func BenchmarkInput(b *testing.B) {
