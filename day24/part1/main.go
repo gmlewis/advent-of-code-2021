@@ -25,9 +25,8 @@ func process(filename string) {
 	logf("Processing %v ...", filename)
 	lines := must.ReadFileLines(filename)
 
-	// digit = 0
-	// code := MapWithIndex(lines, translate)
-	// printf("%v\n", strings.Join(code, "\n"))
+	code := translate(0, 0, lines)
+	printf("%v\n", strings.Join(code, "\n"))
 
 	printf("Solution: %v\n", len(lines))
 }
@@ -868,49 +867,57 @@ func input(digits [14]int) int {
 	return z
 }
 
-var digit int
+func translate(digit, lineCount int, lines []string) []string {
+	var result []string
 
-func translate(i int, line string) string {
-	prefix := line[0:5]
-	suffix := strings.TrimSpace(line[5:])
-	comment := fmt.Sprintf("  // line %v: %v", i+1, line)
-	switch {
-	case line == "inp w":
-		digit++
-		return fmt.Sprintf("w = digits[%v]%v", digit-1, comment)
+	for j, line := range lines {
+		i := lineCount + j
+		prefix := line[0:5]
+		suffix := strings.TrimSpace(line[5:])
+		comment := fmt.Sprintf("  // line %v: %v", i+1, line)
+		switch {
+		case line == "inp w":
+			digit++
+			line = fmt.Sprintf("w = digits[%v]%v", digit-1, comment)
+			result = append(result, line)
+			return append(result, translate(digit, i+1, lines[j+1:])...)
 
-	case line == "mul x 0":
-		return "x = 0" + comment
-	case line == "mul y 0":
-		return "y = 0" + comment
-	case line == "mul y x":
-		return "y *= x" + comment
-	case line == "mul z y":
-		return "z *= y" + comment
+		case line == "mul x 0":
+			line = "x = 0" + comment
+		case line == "mul y 0":
+			line = "y = 0" + comment
+		case line == "mul y x":
+			line = "y *= x" + comment
+		case line == "mul z y":
+			line = "z *= y" + comment
 
-	case line == "add x z":
-		return "x += z" + comment
-	case line == "add z y":
-		return "z += y" + comment
-	case prefix == "add x":
-		return fmt.Sprintf("x += %v%v", suffix, comment)
-	case prefix == "add y":
-		return fmt.Sprintf("y += %v%v", suffix, comment)
+		case line == "add x z":
+			line = "x += z" + comment
+		case line == "add z y":
+			line = "z += y" + comment
+		case prefix == "add x":
+			line = fmt.Sprintf("x += %v%v", suffix, comment)
+		case prefix == "add y":
+			line = fmt.Sprintf("y += %v%v", suffix, comment)
 
-	case line == "mod x 26":
-		return "x %= 26" + comment
+		case line == "mod x 26":
+			line = "x %= 26" + comment
 
-	case line == "div z 1":
-		return comment
-	case line == "div z 26":
-		return "z /= 26" + comment
+		case line == "div z 1":
+			line = comment
+		case line == "div z 26":
+			line = "z /= 26" + comment
 
-	case line == "eql x w":
-		return "if x==w { x = 1 } else { x = 0 }" + comment
-	case line == "eql x 0":
-		return "if x==0 { x = 1 } else { x = 0 }" + comment
-	default:
-		log.Fatalf("unhandled line: %v", line)
+		case line == "eql x w":
+			line = "if x==w { x = 1 } else { x = 0 }" + comment
+		case line == "eql x 0":
+			line = "if x==0 { x = 1 } else { x = 0 }" + comment
+		default:
+			log.Fatalf("unhandled line: %v", line)
+		}
+
+		result = append(result, line)
 	}
-	return ""
+
+	return result
 }
