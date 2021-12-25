@@ -208,8 +208,8 @@ func TestInput(t *testing.T) {
                digits[4]-5==digits[11] and
                digits[1]-7==digits[12] and
                digits[0]+6==digits[13]`,
-			digits: [14]int64{1, 8, 1, 1, 8, 1, 2, 1, 1, 3, 4, 3, 1, 7},
-			//
+			digits: [14]int64{1, 8, 1, 1, 6, 1, 2, 1, 1, 3, 4, 1, 1, 7},
+			// 18116121134117
 			want: 0,
 		},
 	}
