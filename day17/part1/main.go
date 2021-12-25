@@ -9,8 +9,8 @@ import (
 	"math"
 	"strings"
 
-	. "github.com/gmlewis/advent-of-code-2021/v1/enum"
-	"github.com/gmlewis/advent-of-code-2021/v1/must"
+	. "github.com/gmlewis/advent-of-code-2021/enum"
+	"github.com/gmlewis/advent-of-code-2021/must"
 )
 
 var logf = log.Printf

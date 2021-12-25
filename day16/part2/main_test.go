@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/gmlewis/advent-of-code-2021/v1/test"
+	"github.com/gmlewis/advent-of-code-2021/test"
 )
 
 func TestExamples(t *testing.T) {

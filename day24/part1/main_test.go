@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gmlewis/advent-of-code-2021/v1/test"
+	"github.com/gmlewis/advent-of-code-2021/test"
 )
 
 func TestInput(t *testing.T) {
