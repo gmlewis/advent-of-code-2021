@@ -38,8 +38,8 @@ func assert(v bool, fmtStr string, args ...interface{}) {
 	}
 }
 
-func input(digits [14]int64) int64 {
-	var w, x, y, z int64
+func input(digits [14]int) int {
+	var w, x, y, z int
 
 	w = digits[0] // line 1: inp w
 	x = 0         // line 2: mul x 0
