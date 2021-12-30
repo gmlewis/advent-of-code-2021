@@ -36,91 +36,58 @@ func process(filename string) {
 	ysize := len(lines)
 	logf("xsize=%v, ysize=%v", xsize, ysize)
 
-	risk := dijkstra(b, keyT{0, 0}, keyT{xsize, ysize}, keyT{5*xsize - 1, 5*ysize - 1})
+	g := &graphT{b: b, stepSize: keyT{xsize, ysize}, target: keyT{5*xsize - 1, 5*ysize - 1}}
+	risk := algo.Dijkstra[keyT, int](g, keyT{0, 0}, g.target, math.MaxInt)
 
 	printf("Solution: %v\n", risk)
 }
 
-func dijkstra(b gridT, source, stepSize, target keyT) int {
-	inQ := map[keyT]bool{}
-	dist := gridT{}
-	less := func(a, b keyT) bool {
-		va, okA := dist[a]
-		vb, okB := dist[b]
-		switch {
-		case okA && okB:
-			return va < vb
-		case okA:
-			return true
-		default:
-			return false
-		}
-	}
-	q := algo.NewPriorityQueue(less)
-	prev := map[keyT]keyT{}
+type gridT map[keyT]int
+type keyT [2]int
 
+// graphT implements the algorithm.Graph[keyT, int] interface.
+type graphT struct {
+	b        gridT
+	stepSize keyT
+	target   keyT
+}
+
+func (g *graphT) Distance(from, to keyT) int {
+	x := to[0] % g.stepSize[0]
+	y := to[1] % g.stepSize[1]
+	d := to[0]/g.stepSize[0] + to[1]/g.stepSize[1]
+	nv := g.b[keyT{x, y}] + d
+	if nv > 9 {
+		return nv%10 + 1
+	}
+	return nv
+}
+
+func (g *graphT) Each(f func(keyT)) {
 	for y := 0; y < 5; y++ {
 		for x := 0; x < 5; x++ {
-			for oldK := range b {
-				k := keyT{oldK[0] + x*stepSize[0], oldK[1] + y*stepSize[1]}
-				dist[k] = math.MaxInt
-				if k == source {
-					dist[k] = 0
-				}
-				q.Push(k)
-				inQ[k] = true
+			for oldK := range g.b {
+				k := keyT{oldK[0] + x*g.stepSize[0], oldK[1] + y*g.stepSize[1]}
+				f(k)
 			}
 		}
 	}
-
-	valueOf := func(v keyT) int {
-		x := v[0] % stepSize[0]
-		y := v[1] % stepSize[1]
-		d := v[0]/stepSize[0] + v[1]/stepSize[1]
-		nv := b[keyT{x, y}] + d
-		if nv > 9 {
-			return nv%10 + 1
-		}
-		return nv
-	}
-
-	f := func(u, v keyT) {
-		alt := dist[u] + valueOf(v)
-		if alt < dist[v] {
-			dist[v] = alt
-			prev[v] = u
-			q.Fix(v)
-		}
-	}
-
-	for q.Len() > 0 {
-		u := q.Pop()
-		delete(inQ, u)
-
-		if u == target {
-			break
-		}
-
-		if v, ok := moveR(u, target); ok && inQ[v] {
-			f(u, v)
-		}
-		if v, ok := moveD(u, target); ok && inQ[v] {
-			f(u, v)
-		}
-		if v, ok := moveL(u, target); ok && inQ[v] {
-			f(u, v)
-		}
-		if v, ok := moveU(u, target); ok && inQ[v] {
-			f(u, v)
-		}
-	}
-
-	return dist[target]
 }
 
-type gridT map[keyT]int
-
-type keyT [2]int
+func (g *graphT) EachNeighbor(u keyT, f func(from, to keyT)) {
+	if v, ok := moveR(u, g.target); ok {
+		f(u, v)
+	}
+	if v, ok := moveD(u, g.target); ok {
+		f(u, v)
+	}
+	if v, ok := moveL(u, g.target); ok {
+		f(u, v)
+	}
+	if v, ok := moveU(u, g.target); ok {
+		f(u, v)
+	}
+}
 
 func moveR(key, goal keyT) (keyT, bool) {
 	return keyT{key[0] + 1, key[1]}, key[0]+1 <= goal[0]

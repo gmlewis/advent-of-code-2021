@@ -34,74 +34,41 @@ func process(filename string) {
 
 	xmax := len(lines[0]) - 1
 	ymax := len(lines) - 1
-	risk := dijkstra(b, keyT{0, 0}, keyT{xmax, ymax})
+	g := &graphT{b: b, target: keyT{xmax, ymax}}
+	risk := algo.Dijkstra[keyT, int](g, keyT{0, 0}, keyT{xmax, ymax}, math.MaxInt)
 
 	printf("Solution: %v\n", risk)
 }
 
-func dijkstra(b gridT, source, target keyT) int {
-	inQ := map[keyT]bool{}
-	dist := gridT{}
-	less := func(a, b keyT) bool {
-		va, okA := dist[a]
-		vb, okB := dist[b]
-		switch {
-		case okA && okB:
-			return va < vb
-		case okA:
-			return true
-		default:
-			return false
-		}
-	}
-	q := algo.NewPriorityQueue(less)
-	prev := map[keyT]keyT{}
-
-	for k := range b {
-		dist[k] = math.MaxInt
-		if k == source {
-			dist[k] = 0
-		}
-		q.Push(k)
-		inQ[k] = true
-	}
-
-	f := func(u, v keyT) {
-		alt := dist[u] + b[v]
-		if alt < dist[v] {
-			dist[v] = alt
-			prev[v] = u
-			q.Fix(v)
-		}
-	}
-
-	for q.Len() > 0 {
-		u := q.Pop()
-		delete(inQ, u)
-
-		if u == target {
-			break
-		}
-
-		if v, ok := moveR(u, target); ok && inQ[v] {
-			f(u, v)
-		}
-		if v, ok := moveD(u, target); ok && inQ[v] {
-			f(u, v)
-		}
-		if v, ok := moveL(u, target); ok && inQ[v] {
-			f(u, v)
-		}
-		if v, ok := moveU(u, target); ok && inQ[v] {
-			f(u, v)
-		}
-	}
-
-	return dist[target]
-}
-
 type gridT map[keyT]int
 type keyT [2]int
+
+// graphT implements the algorithm.Graph[keyT, int] interface.
+type graphT struct {
+	b      gridT
+	target keyT
+}
+
+func (g *graphT) Distance(from, to keyT) int { return g.b[to] }
+func (g *graphT) Each(f func(keyT)) {
+	for k := range g.b {
+		f(k)
+	}
+}
+func (g *graphT) EachNeighbor(u keyT, f func(from, to keyT)) {
+	if v, ok := moveR(u, g.target); ok {
+		f(u, v)
+	}
+	if v, ok := moveD(u, g.target); ok {
+		f(u, v)
+	}
+	if v, ok := moveL(u, g.target); ok {
+		f(u, v)
+	}
+	if v, ok := moveU(u, g.target); ok {
+		f(u, v)
+	}
+}
 
 func moveR(key, goal keyT) (keyT, bool) {
 	return keyT{key[0] + 1, key[1]}, key[0]+1 <= goal[0]
