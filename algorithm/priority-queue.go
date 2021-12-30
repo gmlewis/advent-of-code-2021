@@ -55,7 +55,9 @@ func (pq *PriorityQueue[K]) Init() {
 // Remove removes and returns the element at index i from the heap.
 // The complexity is O(log n) where n = h.Len().
 func (pq *PriorityQueue[K]) Remove(key K) {
-	heap.Remove(pq.q, pq.q.index[key])
+	if n, ok := pq.q.index[key]; ok {
+		heap.Remove(pq.q, n)
+	}
 }
 
 // Len returns the current number of items in the priority queue.
