@@ -35,9 +35,9 @@ func process(filename string) {
 	xmax := len(lines[0]) - 1
 	ymax := len(lines) - 1
 	g := &graphT{b: b, target: keyT{xmax, ymax}}
-	risk := algo.Dijkstra[keyT, int](g, keyT{0, 0}, keyT{xmax, ymax}, math.MaxInt)
+	risks := algo.Dijkstra[keyT, int](g, keyT{0, 0}, &g.target, math.MaxInt)
 
-	printf("Solution: %v\n", risk)
+	printf("Solution: %v\n", risks[g.target])
 }
 
 type gridT map[keyT]int

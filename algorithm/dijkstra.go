@@ -17,8 +17,9 @@ type Graph[K comparable, T Number] interface {
 }
 
 // Dijkstra performs Dijkstra's algorithm to find the shortest path
-// from source to target.
-func Dijkstra[K comparable, T Number](g Graph[K, T], source, target K, maxT T) T {
+// from source to target. If target is nil, then all distances are
+// calculated.
+func Dijkstra[K comparable, T Number](g Graph[K, T], source K, target *K, maxT T) map[K]T {
 	inQ := map[K]bool{}
 	dist := map[K]T{}
 	less := func(a, b K) bool {
@@ -61,12 +62,12 @@ func Dijkstra[K comparable, T Number](g Graph[K, T], source, target K, maxT T) T
 		u := q.Pop()
 		delete(inQ, u)
 
-		if u == target {
+		if target != nil && u == *target {
 			break
 		}
 
 		g.EachNeighbor(u, f)
 	}
 
-	return dist[target]
+	return dist
 }

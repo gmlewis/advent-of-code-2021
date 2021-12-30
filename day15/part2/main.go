@@ -37,9 +37,9 @@ func process(filename string) {
 	logf("xsize=%v, ysize=%v", xsize, ysize)
 
 	g := &graphT{b: b, stepSize: keyT{xsize, ysize}, target: keyT{5*xsize - 1, 5*ysize - 1}}
-	risk := algo.Dijkstra[keyT, int](g, keyT{0, 0}, g.target, math.MaxInt)
+	risks := algo.Dijkstra[keyT, int](g, keyT{0, 0}, &g.target, math.MaxInt)
 
-	printf("Solution: %v\n", risk)
+	printf("Solution: %v\n", risks[g.target])
 }
 
 type gridT map[keyT]int
