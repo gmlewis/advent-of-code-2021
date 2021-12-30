@@ -59,11 +59,12 @@ func dijkstra(b gridT, source, target keyT) int {
 
 	for k := range b {
 		dist[k] = math.MaxInt
+		if k == source {
+			dist[k] = 0
+		}
 		q.Push(k)
 		inQ[k] = true
 	}
-	dist[source] = 0
-	q.Fix(source)
 
 	f := func(u, v keyT) {
 		alt := dist[u] + b[v]

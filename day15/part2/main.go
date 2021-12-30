@@ -64,13 +64,14 @@ func dijkstra(b gridT, source, stepSize, target keyT) int {
 			for oldK := range b {
 				k := keyT{oldK[0] + x*stepSize[0], oldK[1] + y*stepSize[1]}
 				dist[k] = math.MaxInt
+				if k == source {
+					dist[k] = 0
+				}
 				q.Push(k)
 				inQ[k] = true
 			}
 		}
 	}
-	dist[source] = 0
-	q.Fix(source)
 
 	valueOf := func(v keyT) int {
 		x := v[0] % stepSize[0]
