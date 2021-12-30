@@ -3,12 +3,12 @@
 package main
 
 import (
-	"container/heap"
 	"flag"
 	"fmt"
 	"log"
 	"math"
 
+	algo "github.com/gmlewis/advent-of-code-2021/algorithm"
 	. "github.com/gmlewis/advent-of-code-2021/enum"
 	"github.com/gmlewis/advent-of-code-2021/must"
 	"github.com/gmlewis/advent-of-code-2021/strfn"
@@ -41,53 +41,22 @@ func process(filename string) {
 	printf("Solution: %v\n", risk)
 }
 
-type priorityQueue struct {
-	dist  gridT
-	index gridT
-	items []keyT
-}
-
-func (pq *priorityQueue) Len() int { return len(pq.items) }
-
-func (pq *priorityQueue) Less(a, b int) bool {
-	va, okA := pq.dist[pq.items[a]]
-	vb, okB := pq.dist[pq.items[b]]
-	switch {
-	case okA && okB:
-		return va < vb
-	case okA:
-		return true
-	default:
-		return false
-	}
-}
-
-func (pq *priorityQueue) Swap(a, b int) {
-	pq.items[a], pq.items[b] = pq.items[b], pq.items[a]
-	pq.index[pq.items[a]] = a
-	pq.index[pq.items[b]] = b
-}
-
-func (pq *priorityQueue) Push(x interface{}) {
-	n := len(pq.items)
-	item := x.(keyT)
-	pq.index[item] = n
-	pq.items = append(pq.items, item)
-}
-
-func (pq *priorityQueue) Pop() interface{} {
-	old := pq.items
-	n := len(old)
-	item := old[n-1]
-	delete(pq.index, item)
-	pq.items = old[0 : n-1]
-	return item
-}
-
 func dijkstra(b gridT, source, stepSize, target keyT) int {
 	inQ := map[keyT]bool{}
 	dist := gridT{}
-	q := &priorityQueue{dist: dist, index: gridT{}}
+	less := func(a, b keyT) bool {
+		va, okA := dist[a]
+		vb, okB := dist[b]
+		switch {
+		case okA && okB:
+			return va < vb
+		case okA:
+			return true
+		default:
+			return false
+		}
+	}
+	q := algo.NewPriorityQueue(less)
 	prev := map[keyT]keyT{}
 
 	for y := 0; y < 5; y++ {
@@ -95,13 +64,13 @@ func dijkstra(b gridT, source, stepSize, target keyT) int {
 			for oldK := range b {
 				k := keyT{oldK[0] + x*stepSize[0], oldK[1] + y*stepSize[1]}
 				dist[k] = math.MaxInt
-				heap.Push(q, k)
+				q.Push(k)
 				inQ[k] = true
 			}
 		}
 	}
 	dist[source] = 0
-	heap.Fix(q, q.index[source])
+	q.Fix(source)
 
 	valueOf := func(v keyT) int {
 		x := v[0] % stepSize[0]
@@ -119,12 +88,12 @@ func dijkstra(b gridT, source, stepSize, target keyT) int {
 		if alt < dist[v] {
 			dist[v] = alt
 			prev[v] = u
-			heap.Fix(q, q.index[v])
+			q.Fix(v)
 		}
 	}
 
 	for q.Len() > 0 {
-		u := heap.Pop(q).(keyT)
+		u := q.Pop()
 		delete(inQ, u)
 
 		if u == target {

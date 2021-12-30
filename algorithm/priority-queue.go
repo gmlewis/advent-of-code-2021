@@ -21,6 +21,9 @@ func NewPriorityQueue[K comparable](less func(K, K) bool) *PriorityQueue[K] {
 	return &PriorityQueue[K]{q: &queueT[K]{less: less, index: map[K]int{}}}
 }
 
+// Len returns the current number of items in the priority queue.
+func (pq *PriorityQueue[K]) Len() int { return len(pq.q.items) }
+
 // Push pushes the element x onto the heap.
 // The complexity is O(log n) where n = h.Len().
 func (pq *PriorityQueue[K]) Push(key K) {
