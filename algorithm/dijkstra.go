@@ -1,7 +1,7 @@
 package algorithm
 
 import (
-	"constraints"
+	"golang.org/x/exp/constraints"
 )
 
 // Number is a number.

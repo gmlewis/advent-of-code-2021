@@ -1,7 +1,7 @@
 package stream
 
 import (
-	"constraints"
+	"golang.org/x/exp/constraints"
 )
 
 // Max returns the maximal element in the channel

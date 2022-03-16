@@ -11,12 +11,12 @@ import (
 //   Ranges(0, 2), Ranges(2, 0)
 // respectively return:
 //   []int{0, 1, 2}, []int{2, 1, 0}
-func Range[T int](start, end T) (ret []T) {
+func Range[T Number](start, end T) (ret []T) {
 	d := T(1)
-	n := 1 + int(end-start)
+	n := int(1 + T(end-start))
 	if start > end {
-		d = T(-1)
-		n = 1 + int(start-end)
+		d = -d
+		n = int(1 + T(start-end))
 	}
 	ret = make([]T, 0, n)
 

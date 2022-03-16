@@ -3,7 +3,7 @@
 package enum
 
 import (
-	"constraints"
+	"golang.org/x/exp/constraints"
 )
 
 // Equals returns a function that checks if a value
@@ -46,7 +46,15 @@ func Shorter[T any](a, b []T) []T {
 
 // Number has the "+" operator.
 type Number interface {
-	constraints.Integer | constraints.Unsigned | constraints.Float | constraints.Complex
+	constraints.Integer | constraints.Float
+}
+
+// Average returns the average of a slice of numbers.
+func Average[T Number](values []T) (ret T) {
+	for _, v := range values {
+		ret += v
+	}
+	return ret / T(len(values))
 }
 
 // Sum sums up a slice of numbers.

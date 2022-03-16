@@ -1,6 +1,8 @@
 package enum
 
-import "constraints"
+import (
+	"golang.org/x/exp/constraints"
+)
 
 // Max returns the maximal element in the slice
 // (or the zero value for an empty slice).

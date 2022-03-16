@@ -3,7 +3,9 @@
 // used within "enum" and "maps" functions.
 package mathfn
 
-import "constraints"
+import (
+	"golang.org/x/exp/constraints"
+)
 
 // Number is a number.
 type Number interface {

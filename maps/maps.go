@@ -2,7 +2,9 @@
 // functions that operate on map data types.
 package maps
 
-import "constraints"
+import (
+	"golang.org/x/exp/constraints"
+)
 
 // HasKey returns a function that tests if a key exists in the map.
 func HasKey[K comparable, V any](pairs map[K]V) func(k K) bool {

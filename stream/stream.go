@@ -3,7 +3,7 @@
 package stream
 
 import (
-	"constraints"
+	"golang.org/x/exp/constraints"
 )
 
 const (
