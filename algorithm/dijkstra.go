@@ -71,3 +71,36 @@ func Dijkstra[K comparable, T Number](g Graph[K, T], source K, target *K, maxT T
 
 	return dist
 }
+
+// PathTo finds the shortest path from one node to another but instead of returning all
+// the distances, it only returns only the nodes (and their distances) along that path.
+func PathTo[K comparable, T Number](g Graph[K, T], source K, target K, maxT T) map[K]T {
+	distances := Dijkstra[K, T](g, source, &target, maxT)
+
+	breadcrumbs := map[K]T{target: distances[target]}
+	for target != source {
+		myDist := distances[target]
+		g.EachNeighbor(target, func(from, to K) {
+			if distances[to] < myDist {
+				breadcrumbs[to] = distances[to]
+				target = to
+				myDist = distances[to] // find the smallest distance
+			}
+		})
+	}
+	return breadcrumbs
+}
+
+// Max finds the node with the maximum distance and returns its key and distance.
+func Max[K comparable, T Number](distances map[K]T, maxT T) (maxKey K, maxDistance T) {
+	for k, d := range distances {
+		if d >= maxT {
+			continue
+		}
+		if d > maxDistance {
+			maxKey = k
+			maxDistance = d
+		}
+	}
+	return maxKey, maxDistance
+}
