@@ -1,19 +1,18 @@
 package must
 
 import (
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
-// ReadFile reads a file or causes a fatal error.
-// It also returns a trimmed string instead of a byte slice.
+// ReadFile reads a file as a string or causes a fatal error.
 func ReadFile(filename string) string {
-	buf, err := ioutil.ReadFile(filename)
+	buf, err := os.ReadFile(filename)
 	if err != nil {
 		fatal(err)
 	}
 
-	return strings.TrimSpace(string(buf))
+	return string(buf)
 }
 
 // ReadFileLines reads a file and returns a slice of lines.

@@ -3,7 +3,6 @@ package test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -38,7 +37,7 @@ func Benchmark(b *testing.B, filename string, process func(string), logf logFunc
 func Runner(t *testing.T, puzzle, want string, process func(string), printf *func(string, ...interface{}) (int, error)) {
 	t.Helper()
 
-	tmpfile, err := ioutil.TempFile("", "example1.txt")
+	tmpfile, err := os.CreateTemp("", "example1.txt")
 	if err != nil {
 		t.Fatal(err)
 	}
