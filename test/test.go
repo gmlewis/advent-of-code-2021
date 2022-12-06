@@ -43,6 +43,10 @@ func Runner(t *testing.T, puzzle, want string, process func(string), printf *fun
 	}
 	defer os.Remove(tmpfile.Name())
 
+	if puzzle[0] == '\n' { // Remove leading blank line.
+		puzzle = puzzle[1:]
+	}
+
 	if _, err := tmpfile.WriteString(puzzle); err != nil {
 		log.Fatal(err)
 	}
