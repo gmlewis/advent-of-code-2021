@@ -4,6 +4,194 @@ import (
 	"testing"
 )
 
+func TestFindFirst_Int(t *testing.T) {
+	tests := []struct {
+		name  string
+		items []int
+		f     func(int) bool
+		want  int
+	}{
+		{
+			name: "no items",
+			want: -1,
+		},
+		{
+			name:  "one item matches",
+			items: []int{0},
+			f:     func(v int) bool { return v >= 0 },
+			want:  0,
+		},
+		{
+			name:  "no items match",
+			items: []int{-1, -2, -3},
+			f:     func(v int) bool { return v >= 0 },
+			want:  -1,
+		},
+		{
+			name:  "all items match",
+			items: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+			f:     func(v int) bool { return v >= 0 },
+			want:  0,
+		},
+		{
+			name:  "one item does not match at start",
+			items: []int{-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+			f:     func(v int) bool { return v >= 0 },
+			want:  1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := FindFirst(tt.items, tt.f)
+			if got != tt.want {
+				t.Errorf("FindFirst = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFindFirst_String(t *testing.T) {
+	tests := []struct {
+		name  string
+		items []string
+		f     func(string) bool
+		want  int
+	}{
+		{
+			name: "no items",
+			want: -1,
+		},
+		{
+			name:  "one item matches",
+			items: []string{"yo"},
+			f:     func(v string) bool { return len(v) >= 2 },
+			want:  0,
+		},
+		{
+			name:  "no items match",
+			items: []string{"a", "b", "c"},
+			f:     func(v string) bool { return len(v) >= 2 },
+			want:  -1,
+		},
+		{
+			name:  "all items match",
+			items: []string{"yo", "ho", "and", "barrel", "of", "rum"},
+			f:     func(v string) bool { return len(v) >= 2 },
+			want:  0,
+		},
+		{
+			name:  "first item does not match",
+			items: []string{"a", "yo", "ho", "and", "a", "barrel", "of", "rum"},
+			f:     func(v string) bool { return len(v) >= 2 },
+			want:  1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := FindFirst(tt.items, tt.f)
+			if got != tt.want {
+				t.Errorf("FindFirst = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFindLast_Int(t *testing.T) {
+	tests := []struct {
+		name  string
+		items []int
+		f     func(int) bool
+		want  int
+	}{
+		{
+			name: "no items",
+			want: -1,
+		},
+		{
+			name:  "one item matches",
+			items: []int{0},
+			f:     func(v int) bool { return v >= 0 },
+			want:  0,
+		},
+		{
+			name:  "no items match",
+			items: []int{-1, -2, -3},
+			f:     func(v int) bool { return v >= 0 },
+			want:  -1,
+		},
+		{
+			name:  "all items match",
+			items: []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+			f:     func(v int) bool { return v >= 0 },
+			want:  10,
+		},
+		{
+			name:  "one item does not match at start",
+			items: []int{-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+			f:     func(v int) bool { return v >= 0 },
+			want:  11,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := FindLast(tt.items, tt.f)
+			if got != tt.want {
+				t.Errorf("FindLast = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFindLast_String(t *testing.T) {
+	tests := []struct {
+		name  string
+		items []string
+		f     func(string) bool
+		want  int
+	}{
+		{
+			name: "no items",
+			want: -1,
+		},
+		{
+			name:  "one item matches",
+			items: []string{"yo"},
+			f:     func(v string) bool { return len(v) >= 2 },
+			want:  0,
+		},
+		{
+			name:  "no items match",
+			items: []string{"a", "b", "c"},
+			f:     func(v string) bool { return len(v) >= 2 },
+			want:  -1,
+		},
+		{
+			name:  "all items match",
+			items: []string{"yo", "ho", "and", "barrel", "of", "rum"},
+			f:     func(v string) bool { return len(v) >= 2 },
+			want:  5,
+		},
+		{
+			name:  "first item does not match",
+			items: []string{"a", "yo", "ho", "and", "a", "barrel", "of", "rum"},
+			f:     func(v string) bool { return len(v) >= 2 },
+			want:  7,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := FindLast(tt.items, tt.f)
+			if got != tt.want {
+				t.Errorf("FindLast = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestFind_Int(t *testing.T) {
 	tests := []struct {
 		name   string
