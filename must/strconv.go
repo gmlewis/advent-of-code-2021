@@ -13,6 +13,15 @@ func Atoi(s string) int {
 	return v
 }
 
+// Atoi64 converts a string to an int64.
+func Atoi64(s string) int64 {
+	v, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		fatal(err)
+	}
+	return v
+}
+
 // ParseBool parses a boolean.
 // It dies if there is an error.
 func ParseBool(str string) bool {
