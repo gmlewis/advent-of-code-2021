@@ -12,7 +12,7 @@ type Number interface {
 // Graph represents a graph that can use Dijkstra's algorithm.
 type Graph[K comparable, T Number] interface {
 	Distance(from, to K) T
-	Each(func(key K))
+	Each(f func(key K))
 	EachNeighbor(from K, f func(from, to K))
 }
 
