@@ -60,3 +60,19 @@ func TestPermutationsOf_String(t *testing.T) {
 		})
 	}
 }
+
+func TestBigPermutationsOf(t *testing.T) {
+	// bigSeq := []string{"UU", "EW", "WJ", "OZ", "ZM", "RU", "WH", "MJ", "UD", "FD", "CO", "DW", "PL", "YJ", "ZI"}  // 15 items is too big => 1,307,674,368,000
+	bigSeq := []string{"UU", "EW", "WJ", "OZ", "ZM", "RU", "WH", "MJ", "UD", "FD"}
+	// 10 items => 1.27 seconds, 11 items => 55.38 seconds.
+
+	ch := PermutationsOf(bigSeq)
+	var got int
+	for range ch {
+		got++
+	}
+
+	if want := 3628800; got != want {
+		t.Errorf("PermutationsOf(%v items) = %v, want %v", len(bigSeq), got, want)
+	}
+}

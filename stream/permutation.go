@@ -5,40 +5,30 @@ import "golang.org/x/exp/slices"
 // PermutationsOf streams all permutations of the given sequence to
 // the returned channel.
 func PermutationsOf[T any](sequence []T) <-chan []T {
-	outCh := make(chan []T, defaultBufSize)
+	outCh := make(chan []T, 5)
 
-	go func() {
-		permutationsOf(outCh, sequence)
-		close(outCh)
-	}()
+	go permutationsOf(outCh, sequence)
 
 	return outCh
 }
 
-func permutationsOf[T any](ch chan<- []T, seq []T) [][]T {
+func permutationsOf[T any](ch chan<- []T, seq []T) {
+	defer close(ch)
+
 	if len(seq) == 0 {
-		return nil
+		return
 	}
 	if len(seq) <= 1 {
-		result := [][]T{seq}
-		if ch != nil {
-			ch <- seq
-			return nil
-		}
-		return result
+		ch <- seq
+		return
 	}
 
-	subperms := permutationsOf(nil, seq[1:])
-	result := [][]T{}
-	for _, sp := range subperms {
+	childCh := make(chan []T, 5)
+	go permutationsOf(childCh, seq[1:])
+
+	for sp := range childCh {
 		for i := 0; i <= len(sp); i++ {
-			subseq := slices.Insert(sp, i, seq[0])
-			if ch != nil {
-				ch <- subseq
-				continue
-			}
-			result = append(result, subseq)
+			ch <- slices.Insert(sp, i, seq[0])
 		}
 	}
-	return result
 }
