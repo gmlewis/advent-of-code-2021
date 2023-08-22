@@ -8,6 +8,7 @@ import (
 )
 
 func TestDijkstra(t *testing.T) {
+	t.Parallel()
 	g := graphT{
 		"A": {"B": 3, "C": 1},
 		"B": {"A": 3, "C": 7, "D": 5, "E": 1},

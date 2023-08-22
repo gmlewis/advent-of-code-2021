@@ -3,6 +3,7 @@ package enum
 import "testing"
 
 func TestMember_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -56,6 +57,7 @@ func TestMember_Int(t *testing.T) {
 }
 
 func TestMember_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string

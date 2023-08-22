@@ -5,6 +5,7 @@ import (
 )
 
 func TestAny(t *testing.T) {
+	t.Parallel()
 	m := map[string]int{"a": 0, "b": 1, "c": 2}
 	f1 := func(k string, v int) bool { return v < 10 }
 	if got, want := Any(m, f1), true; got != want {

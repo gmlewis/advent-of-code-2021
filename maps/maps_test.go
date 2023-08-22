@@ -9,6 +9,7 @@ import (
 )
 
 func TestHasKey(t *testing.T) {
+	t.Parallel()
 	m := map[string]int{"a": 0, "b": 1, "c": 2}
 	f := HasKey(m)
 	if !f("a") {
@@ -20,6 +21,7 @@ func TestHasKey(t *testing.T) {
 }
 
 func TestKey(t *testing.T) {
+	t.Parallel()
 	if got, want := Key(0, "value"), 0; got != want {
 		t.Errorf("Key = %v, want %v", got, want)
 	}
@@ -30,6 +32,7 @@ func TestKey(t *testing.T) {
 }
 
 func TestValue(t *testing.T) {
+	t.Parallel()
 	if got, want := Value(0, "value"), "value"; got != want {
 		t.Errorf("Value = %v, want %v", got, want)
 	}
@@ -44,6 +47,7 @@ func TestValue(t *testing.T) {
 }
 
 func TestKeys(t *testing.T) {
+	t.Parallel()
 	m := map[string]int{"a": 0, "b": 1, "c": 2}
 	got := Keys(m)
 	sort.Strings(got)
@@ -56,6 +60,7 @@ func TestKeys(t *testing.T) {
 }
 
 func TestValues(t *testing.T) {
+	t.Parallel()
 	m := map[string]int{"a": 0, "b": 1, "c": 2}
 	got := Values(m)
 	sort.Ints(got)
@@ -68,6 +73,7 @@ func TestValues(t *testing.T) {
 }
 
 func TestValueLen(t *testing.T) {
+	t.Parallel()
 	if got, want := ValueLen(0, []int{1, 2, 3}), 3; got != want {
 		t.Errorf("ValueLen = %v, want %v", got, want)
 	}
@@ -86,6 +92,7 @@ func TestValueLen(t *testing.T) {
 }
 
 func TestMap(t *testing.T) {
+	t.Parallel()
 	m := map[string]int{"a": 0, "b": 1, "c": 2}
 	f := func(k string, v int) string { return fmt.Sprintf("%v:%v", k, v) }
 	got := Map(m, f)
@@ -97,6 +104,7 @@ func TestMap(t *testing.T) {
 }
 
 func TestSwap(t *testing.T) {
+	t.Parallel()
 	m := map[string]int{"a": 0, "b": 1, "c": 2}
 	got := Swap(m)
 	want := map[int]string{0: "a", 1: "b", 2: "c"}
@@ -106,6 +114,7 @@ func TestSwap(t *testing.T) {
 }
 
 func TestSumKeys(t *testing.T) {
+	t.Parallel()
 	m := map[int]int{7: 0, 8: 1, 9: 2}
 	if got, want := SumKeys(m), 24; got != want {
 		t.Errorf("SumKeys = %v, want %v", got, want)
@@ -113,6 +122,7 @@ func TestSumKeys(t *testing.T) {
 }
 
 func TestSumValues(t *testing.T) {
+	t.Parallel()
 	m := map[int]int{7: 0, 8: 1, 9: 2}
 	if got, want := SumValues(m), 3; got != want {
 		t.Errorf("SumValues = %v, want %v", got, want)
@@ -120,6 +130,7 @@ func TestSumValues(t *testing.T) {
 }
 
 func TestProductKeys(t *testing.T) {
+	t.Parallel()
 	m := map[int]int{7: 0, 8: 1, 9: 2}
 	if got, want := ProductKeys(m), 504; got != want {
 		t.Errorf("ProductKeys = %v, want %v", got, want)
@@ -127,6 +138,7 @@ func TestProductKeys(t *testing.T) {
 }
 
 func TestProductValues(t *testing.T) {
+	t.Parallel()
 	m := map[int]int{7: 3, 8: 1, 9: 2}
 	if got, want := ProductValues(m), 6; got != want {
 		t.Errorf("ProductValues = %v, want %v", got, want)
@@ -134,6 +146,7 @@ func TestProductValues(t *testing.T) {
 }
 
 func TestShallowCopy(t *testing.T) {
+	t.Parallel()
 	m := map[int]int{7: 3, 8: 1, 9: 2}
 	got := ShallowCopy(m)
 	if &m == &got {

@@ -7,6 +7,7 @@ import (
 )
 
 func TestZip2(t *testing.T) {
+	t.Parallel()
 	type ns struct {
 		N int
 		S string

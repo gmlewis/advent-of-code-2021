@@ -7,6 +7,7 @@ import (
 )
 
 func TestEquals(t *testing.T) {
+	t.Parallel()
 	eq1 := Equals(1)
 	if got, want := eq1(1), true; got != want {
 		t.Errorf("eq1(1) = %v, want %v", got, want)
@@ -25,6 +26,7 @@ func TestEquals(t *testing.T) {
 }
 
 func TestIdentity(t *testing.T) {
+	t.Parallel()
 	if got, want := Identity(1), 1; got != want {
 		t.Errorf("Identity(1) = %v, want %v", got, want)
 	}
@@ -34,6 +36,7 @@ func TestIdentity(t *testing.T) {
 }
 
 func TestLength(t *testing.T) {
+	t.Parallel()
 	if got, want := Length[int](nil), 0; got != want {
 		t.Errorf("Length(nil) = %v, want %v", got, want)
 	}
@@ -56,6 +59,7 @@ func TestLength(t *testing.T) {
 }
 
 func TestFirst(t *testing.T) {
+	t.Parallel()
 	if got, want := First[int](nil), 0; got != want {
 		t.Errorf("First(nil) = %v, want %v", got, want)
 	}
@@ -78,6 +82,7 @@ func TestFirst(t *testing.T) {
 }
 
 func TestLonger(t *testing.T) {
+	t.Parallel()
 	if got, want := Longer[int](nil, nil), []int(nil); !cmp.Equal(got, want) {
 		t.Errorf("Longer = %v, want %v", got, want)
 	}
@@ -112,6 +117,7 @@ func TestLonger(t *testing.T) {
 }
 
 func TestShorter(t *testing.T) {
+	t.Parallel()
 	if got, want := Shorter[int](nil, nil), []int(nil); !cmp.Equal(got, want) {
 		t.Errorf("Shorter = %v, want %v", got, want)
 	}
@@ -146,6 +152,7 @@ func TestShorter(t *testing.T) {
 }
 
 func TestSum(t *testing.T) {
+	t.Parallel()
 	if got, want := Sum[int](nil), 0; got != want {
 		t.Errorf("Sum(nil) = %v, want %v", got, want)
 	}
@@ -158,6 +165,7 @@ func TestSum(t *testing.T) {
 }
 
 func TestProduct(t *testing.T) {
+	t.Parallel()
 	if got, want := Product[int](nil), 0; got != want {
 		t.Errorf("Product(nil) = %v, want %v", got, want)
 	}

@@ -6,6 +6,7 @@ import (
 )
 
 func TestParseDuration(t *testing.T) {
+	// t.Parallel() - cannot test in parallel because of 'fatal' global.
 	fatal = fakeFatal
 	fakeFatalErr = nil
 
@@ -18,6 +19,7 @@ func TestParseDuration(t *testing.T) {
 }
 
 func TestParseTime(t *testing.T) {
+	// t.Parallel()
 	fatal = fakeFatal
 	fakeFatalErr = nil
 
@@ -30,6 +32,7 @@ func TestParseTime(t *testing.T) {
 }
 
 func TestParseTimeInLocation(t *testing.T) {
+	// t.Parallel()
 	fatal = fakeFatal
 	fakeFatalErr = nil
 

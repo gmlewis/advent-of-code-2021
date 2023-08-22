@@ -7,6 +7,7 @@ import (
 )
 
 func TestChunkEvery_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		end  int

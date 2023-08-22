@@ -7,6 +7,7 @@ import (
 )
 
 func TestEach_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -41,6 +42,7 @@ func TestEach_Int(t *testing.T) {
 }
 
 func TestEach_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string
@@ -75,6 +77,7 @@ func TestEach_String(t *testing.T) {
 }
 
 func TestEachWithIndex_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int

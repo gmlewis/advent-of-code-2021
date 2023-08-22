@@ -7,6 +7,7 @@ import (
 )
 
 func TestFilter_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -66,6 +67,7 @@ func TestFilter_Int(t *testing.T) {
 }
 
 func TestFilter_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string
@@ -113,6 +115,7 @@ func TestFilter_String(t *testing.T) {
 }
 
 func TestFilterWithIndex_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int

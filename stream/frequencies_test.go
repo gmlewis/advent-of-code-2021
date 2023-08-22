@@ -9,6 +9,7 @@ import (
 )
 
 func TestFrequencies_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -41,6 +42,7 @@ func TestFrequencies_Int(t *testing.T) {
 }
 
 func TestFrequencies_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string
@@ -73,6 +75,7 @@ func TestFrequencies_String(t *testing.T) {
 }
 
 func TestFrequenciesBy_IntToString(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -105,6 +108,7 @@ func TestFrequenciesBy_IntToString(t *testing.T) {
 }
 
 func TestFrequenciesBy_StringToInt(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string

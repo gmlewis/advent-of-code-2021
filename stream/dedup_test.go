@@ -7,6 +7,7 @@ import (
 )
 
 func TestDedup_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -49,6 +50,7 @@ func TestDedup_Int(t *testing.T) {
 }
 
 func TestDedup_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string

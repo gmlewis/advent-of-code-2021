@@ -8,6 +8,7 @@ import (
 )
 
 func TestAdd(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		in   string
@@ -41,6 +42,7 @@ func TestAdd(t *testing.T) {
 }
 
 func TestExplode(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		in   string
@@ -114,6 +116,7 @@ func TestExplode(t *testing.T) {
 }
 
 func TestSplit(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		in   string
@@ -162,6 +165,7 @@ func TestSplit(t *testing.T) {
 }
 
 func TestReduce(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		in   string
@@ -191,6 +195,7 @@ func TestReduce(t *testing.T) {
 }
 
 func TestSum(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		in   []string
@@ -329,6 +334,7 @@ func TestSum(t *testing.T) {
 }
 
 func TestMagnitude(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		in   string

@@ -7,6 +7,7 @@ import (
 )
 
 func TestPermutationsOf_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		seq  []string
@@ -62,6 +63,7 @@ func TestPermutationsOf_String(t *testing.T) {
 }
 
 func TestBigPermutationsOf(t *testing.T) {
+	t.Parallel()
 	// bigSeq := []string{"UU", "EW", "WJ", "OZ", "ZM", "RU", "WH", "MJ", "UD", "FD", "CO", "DW", "PL", "YJ", "ZI"}  // 15 items is too big => 1,307,674,368,000
 	bigSeq := []string{"UU", "EW", "WJ", "OZ", "ZM", "RU", "WH", "MJ", "UD", "FD"}
 	// 10 items => 1.27 seconds, 11 items => 55.38 seconds.

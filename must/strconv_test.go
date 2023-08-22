@@ -3,6 +3,7 @@ package must
 import "testing"
 
 func TestAtoi(t *testing.T) {
+	// t.Parallel() - cannot test in parallel because of 'fatal' global.
 	fatal = fakeFatal
 	fakeFatalErr = nil
 
@@ -15,6 +16,7 @@ func TestAtoi(t *testing.T) {
 }
 
 func TestParseBool(t *testing.T) {
+	// t.Parallel()
 	fatal = fakeFatal
 	fakeFatalErr = nil
 
@@ -27,6 +29,7 @@ func TestParseBool(t *testing.T) {
 }
 
 func TestParseComplex(t *testing.T) {
+	// t.Parallel()
 	fatal = fakeFatal
 	fakeFatalErr = nil
 
@@ -39,6 +42,7 @@ func TestParseComplex(t *testing.T) {
 }
 
 func TestParseFloat(t *testing.T) {
+	// t.Parallel()
 	fatal = fakeFatal
 	fakeFatalErr = nil
 
@@ -51,6 +55,7 @@ func TestParseFloat(t *testing.T) {
 }
 
 func TestParseInt(t *testing.T) {
+	// t.Parallel()
 	fatal = fakeFatal
 	fakeFatalErr = nil
 
@@ -63,6 +68,7 @@ func TestParseInt(t *testing.T) {
 }
 
 func TestParseUint(t *testing.T) {
+	// t.Parallel()
 	fatal = fakeFatal
 	fakeFatalErr = nil
 

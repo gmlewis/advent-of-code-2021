@@ -7,6 +7,7 @@ import (
 )
 
 func TestPriorityQueue_KeyOnly(t *testing.T) {
+	t.Parallel()
 	type keyT [2]int
 	less := func(a, b keyT) bool {
 		if a[1] == b[1] {
@@ -45,6 +46,7 @@ func TestPriorityQueue_KeyOnly(t *testing.T) {
 }
 
 func TestPriorityQueue_FixAndRemove(t *testing.T) {
+	t.Parallel()
 	type keyT [2]int
 	m := map[keyT]int{
 		{0, 0}: 1,

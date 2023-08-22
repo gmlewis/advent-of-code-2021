@@ -9,6 +9,7 @@ import (
 )
 
 func TestEnhance(t *testing.T) {
+	t.Parallel()
 	lines := strings.Split(strings.TrimSpace(example1), "\n")
 	filter := ReduceWithIndex([]rune(lines[0]), filterT{}, func(i int, r rune, acc filterT) filterT {
 		if r == '#' {

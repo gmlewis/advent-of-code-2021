@@ -7,6 +7,7 @@ import (
 )
 
 func TestToChan_ToSlice(t *testing.T) {
+	t.Parallel()
 	want := []int{1, 2, 3}
 	got := ToSlice(ToChan(want))
 	if !cmp.Equal(got, want) {

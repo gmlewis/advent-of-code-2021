@@ -5,6 +5,7 @@ import (
 )
 
 func TestFindFirst_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -52,6 +53,7 @@ func TestFindFirst_Int(t *testing.T) {
 }
 
 func TestFindFirst_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string
@@ -99,6 +101,7 @@ func TestFindFirst_String(t *testing.T) {
 }
 
 func TestFindLast_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -146,6 +149,7 @@ func TestFindLast_Int(t *testing.T) {
 }
 
 func TestFindLast_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string
@@ -193,6 +197,7 @@ func TestFindLast_String(t *testing.T) {
 }
 
 func TestFind_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name   string
 		items  []int
@@ -246,6 +251,7 @@ func TestFind_Int(t *testing.T) {
 }
 
 func TestFind_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name   string
 		items  []string
@@ -299,6 +305,7 @@ func TestFind_String(t *testing.T) {
 }
 
 func TestFindWithIndex_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name   string
 		items  []int
@@ -352,6 +359,7 @@ func TestFindWithIndex_Int(t *testing.T) {
 }
 
 func TestFindOr_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -399,6 +407,7 @@ func TestFindOr_Int(t *testing.T) {
 }
 
 func TestFindOr_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string
@@ -446,6 +455,7 @@ func TestFindOr_String(t *testing.T) {
 }
 
 func TestFindOrWithIndex_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int

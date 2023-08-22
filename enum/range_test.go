@@ -7,6 +7,7 @@ import (
 )
 
 func TestRange(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		start int
@@ -54,6 +55,7 @@ func TestRange(t *testing.T) {
 }
 
 func TestRanges(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		start []int

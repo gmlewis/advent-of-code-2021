@@ -3,6 +3,7 @@ package enum
 import "testing"
 
 func TestMax_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -45,6 +46,7 @@ func TestMax_Int(t *testing.T) {
 }
 
 func TestMax_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string
@@ -87,6 +89,7 @@ func TestMax_String(t *testing.T) {
 }
 
 func TestMin_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -129,6 +132,7 @@ func TestMin_Int(t *testing.T) {
 }
 
 func TestMin_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string
@@ -171,6 +175,7 @@ func TestMin_String(t *testing.T) {
 }
 
 func TestMaxFunc_Key(t *testing.T) {
+	t.Parallel()
 	type keyT [2]int
 	tests := []struct {
 		name  string
@@ -226,6 +231,7 @@ func TestMaxFunc_Key(t *testing.T) {
 }
 
 func TestMinFunc_Key(t *testing.T) {
+	t.Parallel()
 	type keyT [2]int
 	tests := []struct {
 		name  string

@@ -8,6 +8,7 @@ import (
 )
 
 func TestSum(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		in   []string
@@ -35,6 +36,7 @@ func TestSum(t *testing.T) {
 }
 
 func TestMagnitude(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		in   string

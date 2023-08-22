@@ -6,6 +6,7 @@ import (
 )
 
 func TestReadFile(t *testing.T) {
+	// t.Parallel() - cannot test in parallel because of 'fatal' global.
 	fatal = fakeFatal
 	fakeFatalErr = nil
 
@@ -21,6 +22,7 @@ func TestReadFile(t *testing.T) {
 }
 
 func TestReadFileLines(t *testing.T) {
+	// t.Parallel()
 	fatal = fakeFatal
 	fakeFatalErr = nil
 

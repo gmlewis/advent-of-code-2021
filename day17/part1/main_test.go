@@ -7,6 +7,7 @@ import (
 )
 
 func TestShoot(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name      string
 		steps     int
@@ -84,6 +85,7 @@ func TestShoot(t *testing.T) {
 }
 
 func TestCalcHeight(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name   string
 		steps  int
@@ -130,6 +132,7 @@ func TestCalcHeight(t *testing.T) {
 }
 
 func TestSimulate(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name   string
 		xv     int

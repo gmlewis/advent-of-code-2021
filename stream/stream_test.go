@@ -7,6 +7,7 @@ import (
 )
 
 func TestFirst(t *testing.T) {
+	t.Parallel()
 	if got, want := First[int](nil), 0; got != want {
 		t.Errorf("First(nil) = %v, want %v", got, want)
 	}
@@ -29,6 +30,7 @@ func TestFirst(t *testing.T) {
 }
 
 func TestLength(t *testing.T) {
+	t.Parallel()
 	if got, want := Length[int](nil), 0; got != want {
 		t.Errorf("Length(nil) = %v, want %v", got, want)
 	}
@@ -51,6 +53,7 @@ func TestLength(t *testing.T) {
 }
 
 func TestTake(t *testing.T) {
+	t.Parallel()
 	if got, want := Take[int](nil, 5), []int(nil); !cmp.Equal(got, want) {
 		t.Errorf("Take(nil) = %v, want %v", got, want)
 	}
@@ -79,6 +82,7 @@ func TestTake(t *testing.T) {
 }
 
 func TestSum(t *testing.T) {
+	t.Parallel()
 	if got, want := Sum[int](nil), 0; got != want {
 		t.Errorf("Sum(nil) = %v, want %v", got, want)
 	}
@@ -91,6 +95,7 @@ func TestSum(t *testing.T) {
 }
 
 func TestProduct(t *testing.T) {
+	t.Parallel()
 	if got, want := Product[int](nil), 0; got != want {
 		t.Errorf("Product(nil) = %v, want %v", got, want)
 	}

@@ -7,6 +7,7 @@ import (
 )
 
 func TestScan(t *testing.T) {
+	t.Parallel()
 	want := []int{1, 3, 6, 10, 15}
 	got := Scan(Range(1, 5), 0, func(a, b int) int { return a + b })
 	if !cmp.Equal(got, want) {

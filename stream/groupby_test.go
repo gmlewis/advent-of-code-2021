@@ -9,6 +9,7 @@ import (
 )
 
 func TestGroupBy_StringToInt(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name      string
 		values    []string

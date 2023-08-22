@@ -10,6 +10,7 @@ import (
 )
 
 func TestMap_IntToString(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -45,6 +46,7 @@ func TestMap_IntToString(t *testing.T) {
 }
 
 func TestMap_StringToInt(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string
@@ -80,6 +82,7 @@ func TestMap_StringToInt(t *testing.T) {
 }
 
 func TestMapWithIndex_IntToString(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int

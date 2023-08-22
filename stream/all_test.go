@@ -3,6 +3,7 @@ package stream
 import "testing"
 
 func TestAll_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -62,6 +63,7 @@ func TestAll_Int(t *testing.T) {
 }
 
 func TestAll_String(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []string
@@ -103,6 +105,7 @@ func TestAll_String(t *testing.T) {
 }
 
 func TestAllWithIndex_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int

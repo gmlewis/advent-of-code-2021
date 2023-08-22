@@ -42,6 +42,7 @@ func (p *puzT) EachNeighbor(from keyT, f func(from, to keyT)) {
 }
 
 func TestConnectedComponents_2Dgrid(t *testing.T) {
+	t.Parallel()
 	grid := `
 ####
 

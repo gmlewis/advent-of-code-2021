@@ -3,6 +3,7 @@ package tuple
 import "testing"
 
 func TestNew4(t *testing.T) {
+	t.Parallel()
 	t4 := New4(0, "1", uint(2), 3.0)
 	if got, want := t4.A, 0; got != want {
 		t.Errorf("New4.A = %v, want %v", got, want)

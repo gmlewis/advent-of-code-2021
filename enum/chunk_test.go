@@ -7,6 +7,7 @@ import (
 )
 
 func TestChunkEvery_Int(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name  string
 		items []int
@@ -71,6 +72,7 @@ func TestChunkEvery_Int(t *testing.T) {
 }
 
 func TestChunkEvery_IntRange(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		end  int
