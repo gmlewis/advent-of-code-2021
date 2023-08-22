@@ -6,11 +6,6 @@ import (
 )
 
 // Range returns a slice of numbers that run from start to end.
-//
-// For example:
-//   Ranges(0, 2), Ranges(2, 0)
-// respectively return:
-//   []int{0, 1, 2}, []int{2, 1, 0}
 func Range[T Number](start, end T) (ret []T) {
 	d := T(1)
 	n := int(1 + T(end-start))
@@ -31,11 +26,6 @@ func Range[T Number](start, end T) (ret []T) {
 
 // Ranges returns a slice of slices-of-integers that
 // increment all values from the start to the end.
-//
-// For example:
-//   Ranges([]int{0,3,0}, []int{2,1,0})
-// returns:
-//   [][]int{{0,3,0}, {1,2,0}, {2,1,0}}
 //
 // Note that one of the ranges might overshoot if the
 // distances are not identical.

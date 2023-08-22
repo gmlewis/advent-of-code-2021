@@ -1,6 +1,7 @@
 package enum
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -109,6 +110,74 @@ func TestFilter_String(t *testing.T) {
 			got := Filter(tt.items, tt.f)
 			if !cmp.Equal(got, tt.want) {
 				t.Errorf("Filter = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFilterMap_string2int(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name  string
+		items []string
+		f     func(int) bool
+		want  []string
+	}{
+		{
+			name: "no items",
+			want: nil,
+		},
+		{
+			name:  "one item matches",
+			items: []string{"0"},
+			f:     func(v int) bool { return v >= 0 },
+			want:  []string{"0"},
+		},
+		{
+			name:  "no items match",
+			items: []string{"-1", "-2", "-3"},
+			f:     func(v int) bool { return v >= 0 },
+			want:  nil,
+		},
+		{
+			name:  "all items match",
+			items: []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
+			f:     func(v int) bool { return v >= 0 },
+			want:  []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
+		},
+		{
+			name:  "one item does not match at start",
+			items: []string{"-1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
+			f:     func(v int) bool { return v >= 0 },
+			want:  []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
+		},
+		{
+			name:  "one item does not match at end",
+			items: []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "-1"},
+			f:     func(v int) bool { return v >= 0 },
+			want:  []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
+		},
+		{
+			name:  "one item does not match at middle",
+			items: []string{"0", "1", "2", "3", "4", "-1", "5", "6", "7", "8", "9", "10"},
+			f:     func(v int) bool { return v >= 0 },
+			want:  []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
+		},
+	}
+
+	mapFunc := func(value string) int {
+		v, err := strconv.Atoi(value)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return v
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := FilterMap(tt.items, mapFunc, tt.f)
+			if !cmp.Equal(got, tt.want) {
+				t.Errorf("FilterMap = %#v, want %#v", got, tt.want)
 			}
 		})
 	}

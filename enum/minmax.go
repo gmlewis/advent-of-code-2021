@@ -6,6 +6,8 @@ import (
 
 // Max returns the maximal element in the slice
 // (or the zero value for an empty slice).
+//
+// Deprecated: As of Go 1.21, max is builtin: https://go.dev/ref/spec#Min_and_max
 func Max[T constraints.Ordered](values []T) (ret T) {
 	for i, v := range values {
 		if i == 0 || v > ret {
@@ -17,6 +19,8 @@ func Max[T constraints.Ordered](values []T) (ret T) {
 
 // Min returns the minimal element in the slice
 // (or the zero value for an empty slice).
+//
+// Deprecated: As of Go 1.21, min is builtin: https://go.dev/ref/spec#Min_and_max
 func Min[T constraints.Ordered](values []T) (ret T) {
 	for i, v := range values {
 		if i == 0 || v < ret {
